@@ -6,11 +6,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <gtk/gtk.h>
-#include <gio/gio.h>
 
+#include "calypso_GTK4.h"
 
-// #include "calypso_GTK.h"
 #include "view_modifier_glfw.h"
 
 #define NPIX_X  960
@@ -46,6 +44,7 @@ static void mainloop_4_glfw(){
 		glfwWindowShouldClose(glfw_win);
 		
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) != 0){
+            glfwMakeContextCurrent(glfw_win);
             glfwPollEvents();
             icou++;
         }
@@ -81,6 +80,7 @@ static void mainloop_4_glfw(){
 //        set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
+            glfwMakeContextCurrent(NULL);
             while (g_main_context_pending(NULL)) g_main_context_iteration(NULL, TRUE);
             jcou++;
         };
@@ -92,28 +92,46 @@ static void mainloop_4_glfw(){
 /* Callback functions for GTK */
 
 static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
-    printf("Destroy\n");
+    printf("Destroy GTK\n");
 	gtk_window_destroy(GTK_WINDOW(gtk_win));
 	glfwSetWindowShouldClose(glfw_win, GLFW_TRUE);
 }
 
-/* Callbacks for GLFW */ 
-
-void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
-	if(focused){
-/*		printf("GLFW window focused\n"); */
-//		iflag_glfw_focus = 1;
-	} else {
-/*		printf("GLFW window lost focuse\n"); */
-//		iflag_glfw_focus = 0;
-	}
+static void gtkWindowfocus_CB(GtkButton *button, gpointer user_data){
+    if (gtk_window_is_active(GTK_WINDOW(gtk_win))) {
+        glfwMakeContextCurrent(NULL);
+        g_print("GTK window gets active focus.\n");
+    } else {
+        glfwMakeContextCurrent(glfw_win);
+        g_print("GTK window lost active focus.\n");
+    }
+    return;
 }
+
+/* Callbacks for GLFW */ 
 
 void glfwWindowclose_CB(GLFWwindow *window) {
 	gtk_window_destroy(GTK_WINDOW(gtk_win));
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
 	iflag_glfw_end = 1;
 	return;
+}
+
+static void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
+    if(focused){
+        glfwMakeContextCurrent(glfw_win);
+        printf("GLFW window focused\n");
+        /*
+        iflag_glfw_focus = 1;
+        */
+    } else {
+        glfwMakeContextCurrent(NULL);
+        printf("GLFW window lost focuse\n");
+        /*
+        iflag_glfw_focus = 0;
+        */
+    }
+    return;
 }
 
 void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
@@ -315,6 +333,8 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
     GtkWidget *quitButton = gtk_button_new_with_label("Quit");
     g_signal_connect(G_OBJECT(quitButton), "clicked",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
+    g_signal_connect(G_OBJECT(quitButton), "notify::is-active", 
+                     G_CALLBACK(gtkWindowfocus_CB), NULL);
     
     GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
                                                   kemoview_gl);
