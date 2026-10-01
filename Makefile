@@ -16,12 +16,9 @@ OPTFLAGS+= $(CPPFLAGS)
 KEMO_INCLUDE= -I. -I$(GTK3_DIR) \
 -I$(MAKEDIR)                    \
 -I$(SRCDIR)/MHD/C_src/CORE_C    \
--I$(SRCDIR)/MHD/C_src/GTK       \
 -I$(SRCDIR)/MHD/C_src/CONTROLS  \
 -I$(SRCDIR)/MHD/C_src/GLSL      \
 -I$(SRCDIR)/MHD/C_src/KEMO_GL   \
--I$(SRCDIR)/MHD/C_src/KEMO_GLUT \
--I/Users/matsui/src_kemo/MHD/programs/VIEWER \
 -I/opt/homebrew/Cellar/zlib/1.3.1/include
 
 KEMO_LIBS =     -L$(MAKEDIR) -lkemo_c
@@ -39,6 +36,10 @@ FRAMEWORKS+= -L/opt/homebrew/Cellar/zlib/1.3.1/lib -lz
 
 TARGET = kemo_gtk4_test
 SRC = \
+kemoview_FFMPEG_encoder.c \
+render_on_GLFW.c \
+movie_from_GLFW_by_FFMPEG.c \
+view_modifier_glfw.c \
 calypso_GTK4.c \
 kemoview_gtk4_routines.c \
 kemoview_gtk4_viewmatrix_menu.c \
@@ -48,11 +49,7 @@ kemoview_gtk4_main_menu.c \
 kemo_glfw_gtk4_test.c
 
 OBJS = \
-$(MAKEDIR)/view_modifier_glfw.o \
-$(MAKEDIR)/render_on_GLFW.o \
-$(MAKEDIR)/kemoviewer_gl.o \
-$(MAKEDIR)/movie_from_GLFW_by_FFMPEG.o \
-$(MAKEDIR)/kemoview_FFMPEG_encoder.o
+$(MAKEDIR)/kemoviewer_gl.o
 
 all: $(TARGET)
 
