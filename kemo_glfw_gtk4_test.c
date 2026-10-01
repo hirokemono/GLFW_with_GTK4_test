@@ -78,7 +78,7 @@ static void mainloop_4_glfw(){
 
         /* Collect GTK events */
         if(iflag_glfw_end == 1) return;
-//        set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
+        set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
             glfwMakeContextCurrent(NULL);
@@ -157,7 +157,7 @@ void windowSizeCB(GLFWwindow *window, int width, int height) {
     iflag_msg_fade = 1;
     msg_timer_start = glfwGetTime();
 	
-//    update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
+    update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
     printf("retinemode %d\n", kemoview_get_retinamode(single_kemoview));
 }
 
@@ -175,7 +175,7 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
     iflag_msg_fade = 1;
     msg_timer_start = glfwGetTime();
 	
-//	update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
+	update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
 }
 
 /* Main GTK window */

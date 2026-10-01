@@ -30,8 +30,8 @@
 // #include "kemoview_gtk_mesh_menu.h"
 // #include "kemoview_gtk_PSF_window.h"
 // #include "kemoview_gtk_Fline_window.h"
-// #include "kemoview_gtk4_viewmatrix_menu.h"
-// #include "kemoview_gtk4_viewmode_menu.h"
+#include "kemoview_gtk4_viewmatrix_menu.h"
+#include "kemoview_gtk4_viewmode_menu.h"
 // #include "kemoview_gtk_menu_button.h"
 
 #include "view_modifier_glfw.h"

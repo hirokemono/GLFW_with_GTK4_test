@@ -247,26 +247,26 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
     GtkWidget *hbox_open = make_gtk4_open_file_box(kemo_gl, main_window, mbot);
     GtkWidget *savebox = make_gtk4_save_file_box(quitButton, kemo_gl);
     
-//    GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
+    GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
 //    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
 //    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
 //                                                          main_window);
 //    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
     
-//    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
-//                                                        main_window);
+    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
+                                                        main_window);
 //    mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
 //                                                    mbot->view_menu, main_window);
     
     vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(vbox_menu), hbox_open);
     gtk_box_append(GTK_BOX(vbox_menu), savebox);
-//    gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
+    gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
 //    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
 //    gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
-//    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);
+    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);
     return vbox_menu;
 }
 
