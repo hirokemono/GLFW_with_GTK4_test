@@ -1,5 +1,5 @@
 
-/* kemo_gkt4_test_1.c */
+/* kemo_gkt4_test.c */
 
 #include <math.h>
 #include <stdio.h>
@@ -158,6 +158,69 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 //	update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
 }
 
+
+GtkWidget * make_gtk_save_file_box(GtkWidget *quitButton,
+                                   struct kemoviewer_gl_type *kemo_gl){
+    GtkWidget *savebox;
+//    GtkWidget *entry_save_file = gtk_entry_new();
+//    g_object_set_data(G_OBJECT(entry_save_file), "kemoview_gl", (gpointer) kemo_gl);
+    GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
+//    g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
+//                     G_CALLBACK(image_save_CB), (gpointer) entry_save_file);
+    
+//    GtkClipboard *clipboard;
+//    clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);                                                            
+//    gtk_clipboard_clear(clipboard);                                                                                  
+//    gtk_clipboard_set_text(clipboard, "", 0);                                                                        
+
+//    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);                                                          
+//    gtk_clipboard_clear(clipboard);                                                                                
+//    gtk_clipboard_set_text(clipboard, "", 0);
+//    g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
+    
+    GtkWidget *copyButton = gtk_button_new_with_label("Copy");
+//    g_signal_connect(G_OBJECT(copyButton), "clicked",
+//                     G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
+    
+    savebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_append(GTK_BOX(savebox), imageSave_Button);
+    gtk_box_append(GTK_BOX(savebox), copyButton);
+    gtk_box_append(GTK_BOX(savebox), quitButton);
+    return savebox;
+};
+
+GtkWidget * make_gtk_main_menu_box(struct main_buttons *mbot,
+                                   GtkWidget *quitButton, GtkWidget *main_window,
+                                   struct kemoviewer_gl_type *kemo_gl){
+    GtkWidget *vbox_menu;
+    
+//    GtkWidget *hbox_open = make_gtk_open_file_box(kemo_gl, main_window, mbot);
+    GtkWidget *savebox = make_gtk_save_file_box(quitButton, kemo_gl);
+    
+//    GtkWidget *hbox_viewtype = make_gtk_viewmode_menu_box(kemo_gl, mbot->view_menu);
+//    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
+//    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
+//                                                          main_window);
+//    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
+
+//    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
+//                                                        main_window);
+//    mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
+//                                                    mbot->view_menu, main_window);
+    
+    vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    //  gtk_box_append(GTK_BOX(vbox_menu), hbox_open);
+    gtk_box_append(GTK_BOX(vbox_menu), savebox);
+    //  gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
+    //  gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
+    //  gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
+    //  gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
+    //  gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
+    //    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);
+    return vbox_menu;
+}
+
+
 /* Main GTK window */
 static void kemoview_activate(GApplication *app, gpointer user_data)
 {
@@ -171,7 +234,10 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
     g_signal_connect(G_OBJECT(quitButton), "clicked",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
     
-    gtk_window_set_child(GTK_WINDOW(gtk_win), quitButton);
+    GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
+                                                  kemoview_gl);
+    
+    gtk_window_set_child(GTK_WINDOW(gtk_win), vbox_main);
     gtk_widget_set_visible(gtk_win, TRUE);
     
     mainloop_4_glfw();
