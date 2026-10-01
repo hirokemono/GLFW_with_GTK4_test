@@ -41,6 +41,7 @@ TARGET = kemo_gtk4_test
 SRC = \
 calypso_GTK4.c \
 kemoview_gtk4_fileselector.c \
+kemoview_gtk4_main_menu.c \
 kemo_glfw_gtk4_test.c
 
 OBJS = \

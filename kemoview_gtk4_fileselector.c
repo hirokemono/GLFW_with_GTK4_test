@@ -100,7 +100,6 @@ GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
 }
 
 
-
 void save_viewmatrix_CB(GObject *source,
                         GAsyncResult *result,
                         void *data){
@@ -199,7 +198,7 @@ static void kemoview_file_open_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){
 	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
-	GtkEntryBuffer *full_path_buf = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "full_path"));
+	GtkEntryBuffer *full_path_buf = GTK_ENTRY_BUFFER(g_object_get_data(G_OBJECT(data), "full_path"));
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
@@ -213,7 +212,7 @@ static void kemoview_file_open_CB(GObject *source,
     gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
                               strlen(g_file_get_basename(file))+1);
     struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-//    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
+    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
 	

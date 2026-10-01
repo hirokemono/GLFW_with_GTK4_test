@@ -1,0 +1,272 @@
+/*
+ *  kemoview_gtk4_main_menu.c
+ *  Kemoview_Cocoa
+ *
+ *  Created by Hiroaki Matsui on 12/03/04.
+ *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
+ *
+ */
+
+#include "kemoview_gtk4_main_menu.h"
+
+
+struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data){
+	struct main_buttons *mbot = (struct main_buttons *) malloc(sizeof(struct main_buttons));
+    if (mbot == NULL) {
+        printf("malloc error for main_buttons\n");
+        exit(0);
+    }
+
+//    mbot->psf_gmenu = alloc_psf_gtk_menu();
+//    mbot->fline_gmenu =  (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+//    mbot->tracer_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
+//    mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
+//    mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
+
+    mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+
+//    mbot->rot_gmenu = init_rotation_menu_box();
+//    mbot->quilt_gmenu = init_quilt_menu_box();
+//    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
+	return mbot;
+};
+
+void dealloc_main_buttons(struct main_buttons *mbot){
+//    dealloc_psf_gtk_menu(mbot->psf_gmenu);
+//    free(mbot->tracer_gmenu);
+//    free(mbot->fline_gmenu);
+//    free(mbot->mesh_vws);
+//    free(mbot->evo_gmenu);
+
+//    dealloc_light_views_4_viewer(mbot->lightparams_vws);
+	
+//	free(mbot->rot_gmenu);
+	free(mbot->view_menu);
+	
+	free(mbot);
+	return;
+};
+
+static void open_file_CB(GtkButton *button, gpointer *user_data){
+    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(user_data, "window"));
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(user_data, "kemoview_gl");
+    
+    GtkEntryBuffer *full_path_buf = gtk_entry_buffer_new("", -1);
+    kemoview_gtk4_read_file_select(button, main_window, entry_buf, full_path_buf);
+    return;
+}
+
+static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    
+    struct gl_texure_image *render_image;
+    if(kemoview_get_view_type_flag(kemo_gl->kemoview_data) == VIEW_STEREO){
+        render_image = draw_anaglyph_to_rgb_gl(kemo_gl->kemoview_data,
+                                               kemo_gl->kemo_VAOs,
+                                               kemo_gl->kemo_shaders);
+    }else{
+        render_image = draw_objects_to_rgb_gl(kemo_gl->kemoview_data,
+                                              kemo_gl->kemo_VAOs,
+                                              kemo_gl->kemo_shaders);
+    }
+    
+    struct gl_texure_image *fliped_img = alloc_kemoview_gl_texure();
+    alloc_draw_psf_texture(render_image->nipxel_xy[0],
+                           render_image->nipxel_xy[1],
+                           fliped_img);
+    flip_gl_bitmap(render_image->nipxel_xy[0], render_image->nipxel_xy[1],
+                   render_image->texure_rgba, fliped_img->texure_rgba);
+    /*
+    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->texure_rgba,
+                                                 GDK_COLORSPACE_RGB, FALSE, 8,
+                                                 fliped_img->nipxel_xy[0], fliped_img->nipxel_xy[1],
+                                                 (3*fliped_img->nipxel_xy[0]),
+                                                 NULL, NULL);
+    GtkClipboard *clipboard = (GtkClipboard *) user_data;
+    gtk_clipboard_set_image(clipboard, pixbuf);
+    dealloc_kemoview_gl_texure(render_image);
+    dealloc_kemoview_gl_texure(fliped_img);
+    */
+    return;
+}
+
+/*
+static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
+    struct main_buttons *mbot = (struct main_buttons *)user_data;
+    gchar * text = gtk_button_get_label(button);
+    char test1[1];
+    test1[0] = text[1];
+    if(test1[0] == 110){
+        gtk_button_set_label(button, "Off");
+        gtk_widget_set_sensitive(mbot->expander_view, FALSE);
+        gtk_widget_set_sensitive(mbot->expander_pref, FALSE);
+//        sel_mesh_menu_box(mbot, FALSE);
+    }else if(test1[0] == 102){
+        gtk_button_set_label(button, "On");
+        gtk_widget_set_sensitive(mbot->expander_view, TRUE);
+        gtk_widget_set_sensitive(mbot->expander_pref, TRUE);
+//        sel_mesh_menu_box(mbot, TRUE);
+    };
+    return;
+}
+*/
+/*
+static void image_save_CB(GtkButton *button, gpointer user_data){
+    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    kemoview_gtk4_save_file_select(button, user_data);
+    int id_imagefmt_by_input;
+    int i_quilt;
+    
+//    if(iflag_set == IZERO) return;
+    
+    int iflag_quilt = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE);
+    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+
+    struct kv_string *filename 
+            = kemoview_init_kvstring_by_string(gtk_entry_buffer_get_text(entry_buf));
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    
+    kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+    id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
+    if(id_imagefmt_by_input < 0) {
+        id_imagefmt_by_input = kemoview_get_view_integer(kemo_gl->kemoview_data,
+                                                         IMAGE_FORMAT_FLAG);;
+        kemoview_free_kvstring(file_prefix);
+        file_prefix = kemoview_init_kvstring_by_string(filename->string);
+    };
+    if(id_imagefmt_by_input == 0) return;
+    kemoview_free_kvstring(filename);
+    kemoview_free_kvstring(stripped_ext);
+    
+    printf("header: %s\n", file_prefix->string);
+    if(iflag_quilt == 0){
+        struct gl_texure_image *image_t = kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data,
+                                                                        kemo_gl->kemo_VAOs,
+                                                                        kemo_gl->kemo_shaders);
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      image_t->nipxel_xy[0], image_t->nipxel_xy[1],
+                                      image_t->texure_rgba);
+        dealloc_kemoview_gl_texure(image_t);
+    } else {
+        int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_COLUMN);
+        int nimg_raw =    kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_RAW);
+        unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
+                                                                      (nimg_raw * npix_y));
+        for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
+            draw_quilt(i_quilt, kemo_gl);
+            kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   quilt_image);
+       };
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      (nimg_column * npix_x),
+                                      (nimg_raw * npix_y), quilt_image);
+        free(quilt_image);
+        printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+        draw_full_gl(kemo_gl);
+    }
+    free(image);
+    kemoview_free_kvstring(file_prefix);
+    
+    return;
+};
+*/
+static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
+                                           GtkWidget *main_window,
+                                           struct main_buttons *mbot){
+    GtkWidget *hbox_open;
+    
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkWidget *entry_file = gtk_entry_new_with_buffer(entry_buf);
+    g_object_set_data(G_OBJECT(entry_buf), "buttons", (gpointer)  mbot);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
+
+//    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
+//                                               mbot->lightparams_vws,
+//                                               mbot->evo_gmenu);
+    
+    GtkWidget *open_Button = gtk_button_new_with_label("Open...");
+    g_signal_connect(G_OBJECT(open_Button), "clicked",
+                     G_CALLBACK(open_file_CB), (gpointer) entry_buf);
+    
+    hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+//    gtk_box_append(GTK_BOX(hbox_open), menuGrid, TRUE, TRUE, 0);
+    gtk_box_append(GTK_BOX(hbox_open), gtk_label_new("File: "));
+    gtk_box_append(GTK_BOX(hbox_open), entry_file);
+    gtk_box_append(GTK_BOX(hbox_open), open_Button);
+    return hbox_open;
+}
+
+
+static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
+                                           struct kemoviewer_gl_type *kemo_gl){
+    GtkWidget *savebox;
+    GtkEntryBuffer *entry_buf_save_file = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf_save_file), "kemoview_gl", (gpointer) kemo_gl);
+    GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
+//    g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
+//                     G_CALLBACK(image_save_CB), (gpointer) entry_buf_save_file);
+    /*
+    GtkClipboard *clipboard;
+    clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);                                                            
+    gtk_clipboard_clear(clipboard);                                                                                  
+    gtk_clipboard_set_text(clipboard, "", 0);                                                                        
+
+    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);                                                          
+    gtk_clipboard_clear(clipboard);                                                                                
+    gtk_clipboard_set_text(clipboard, "", 0);
+    g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
+    */
+    GtkWidget *copyButton = gtk_button_new_with_label("Copy");
+//    g_signal_connect(G_OBJECT(copyButton), "clicked",
+//                     G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
+    
+    savebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_append(GTK_BOX(savebox), imageSave_Button);
+    gtk_box_append(GTK_BOX(savebox), copyButton);
+    gtk_box_append(GTK_BOX(savebox), quitButton);
+    return savebox;
+};
+
+GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
+                                    GtkWidget *quitButton, GtkWidget *main_window,
+                                    struct kemoviewer_gl_type *kemo_gl){
+    GtkWidget *vbox_menu;
+    
+    GtkWidget *hbox_open = make_gtk4_open_file_box(kemo_gl, main_window, mbot);
+    GtkWidget *savebox = make_gtk4_save_file_box(quitButton, kemo_gl);
+    
+//    GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
+//    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
+//    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
+//                                                          main_window);
+//    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
+    
+//    mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
+//                                                        main_window);
+//    mbot->expander_quilt = init_quilt_menu_expander(kemo_gl, mbot->quilt_gmenu,
+//                                                    mbot->view_menu, main_window);
+    
+    vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_box_append(GTK_BOX(vbox_menu), hbox_open);
+    gtk_box_append(GTK_BOX(vbox_menu), savebox);
+//    gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
+//    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
+//    gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
+//    gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
+//    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
+//    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);
+    return vbox_menu;
+}
+
