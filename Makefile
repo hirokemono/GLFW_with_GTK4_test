@@ -40,6 +40,7 @@ FRAMEWORKS+= -L/opt/homebrew/Cellar/zlib/1.3.1/lib -lz
 TARGET = kemo_gtk4_test
 SRC = \
 calypso_GTK4.c \
+kemoview_gtk4_fileselector.c \
 kemo_glfw_gtk4_test.c
 
 OBJS = \

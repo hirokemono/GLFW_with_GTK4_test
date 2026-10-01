@@ -8,6 +8,7 @@
 
 
 #include "calypso_GTK4.h"
+#include "kemoview_gtk4_fileselector.h"
 
 #include "view_modifier_glfw.h"
 
@@ -198,35 +199,15 @@ static void file_opened (GObject      *source,
     g_object_unref(file);
 }
 
-static void kemoview_gtk_read_file_select(GtkButton *button, gpointer entry_data){
-	int response;
-	GtkEntry *entry = GTK_ENTRY(entry_data);
-    GtkWidget *parent = GTK_WIDGET(g_object_get_data(G_OBJECT(entry_data), "parent"));
-	GtkFileChooser *chooser;
-	
-	GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
-
-	/* generate file selection widget*/
-	GtkFileDialog *dialog = gtk_file_dialog_new();
-    GtkFileFilter *filter = gtk_file_filter_new();
-    g_object_unref (filter);
-    
-    gtk_file_dialog_open (dialog, parent, NULL, file_opened, entry);
-	return;
-}
-
 static void open_file_CB(GtkButton *button, gpointer user_data){
+    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
     struct kv_string *filename;
-    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "window"));
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(user_data, "window"));
     struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+            = (struct kemoviewer_gl_type *) g_object_get_data(user_data, "kemoview_gl");
     
-    kemoview_gtk_read_file_select(button, user_data);
-//    if(iflag_set == IZERO) return;
-//    GtkEntry *entry = GTK_ENTRY(user_data);
-//    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(user_data), "buttons");
-//    filename = kemoview_init_kvstring_by_string(gtk_entry_get_text(entry));
-//    
+    GtkEntryBuffer *full_path_buf = gtk_entry_buffer_new("", -1);
+    kemoview_gtk4_read_file_select(button, main_window, entry_buf, full_path_buf);
 //    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
     return;
 };
@@ -236,10 +217,12 @@ static GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
                                           struct main_buttons *mbot){
     GtkWidget *hbox_open;
     
-    GtkWidget *entry_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(entry_file), "buttons", (gpointer)  mbot);
-    g_object_set_data(G_OBJECT(entry_file), "kemoview_gl", (gpointer) kemo_gl);
-    g_object_set_data(G_OBJECT(entry_file), "window", (gpointer) main_window);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkWidget *entry_file = gtk_entry_new_with_buffer(entry_buf);
+    gtk_entry_set_visibility(entry_file, TRUE);
+    g_object_set_data(G_OBJECT(entry_buf), "buttons", (gpointer)  mbot);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
 
 //    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
 //                                               mbot->lightparams_vws,
@@ -247,7 +230,7 @@ static GtkWidget * make_gtk_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",
-                     G_CALLBACK(open_file_CB), (gpointer)entry_file);
+                     G_CALLBACK(open_file_CB), (gpointer) entry_buf);
     
     hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 //    gtk_box_append(GTK_BOX(hbox_open), menuGrid, TRUE, TRUE, 0);
