@@ -1,13 +1,16 @@
 
-/* kemoviewer_glfw_gtk.c */
-
-
-/* kemo_mesh_viewer_glfw_gtk.c*/
+/* kemo_gkt4_test_1.c */
 
 #include <math.h>
-#include "kemo_mesh_viewer_glfw_gtk.h"
-#include "set_texture_4_psf.h"
-#include "move_draw_objects_gl.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <gtk/gtk.h>
+
+
+// #include "calypso_GTK.h"
+#include "view_modifier_glfw.h"
 
 #define NPIX_X  960
 #define NPIX_Y  800
@@ -72,14 +75,7 @@ static void mainloop_4_glfw(){
             };
         };
 
-/*
-            printf("gtk callback %d %d %d %d \n", icou, jcou,
-            glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED),
-            (int) gtk_window_is_active(gtk_win));
- */
-
         /* Collect GTK events */
-//        if(mbot == NULL) return;
         if(iflag_glfw_end == 1) return;
 //        set_viewmatrix_value(single_kemoview, mbot->view_menu, gtk_win);
 
@@ -87,17 +83,16 @@ static void mainloop_4_glfw(){
             while (g_main_context_pending(NULL)) g_main_context_iteration(NULL, TRUE);
             jcou++;
         };
-//        if(icou%10000==0 || jcou%10000==0) printf("icou %d %d\n", icou, jcou);
         if(icou%1000==0 || jcou%1000==0) printf("GLFW count: %d, GTK count: %d\n", icou, jcou);
 	};
-//	dealloc_main_buttons(mbot);
 	return;
 }
 
 /* Callback functions for GTK */
 
 static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
-	gtk_widget_destroy(gtk_win);
+    printf("Destroy\n");
+	gtk_window_destroy(GTK_WINDOW(gtk_win));
 	glfwSetWindowShouldClose(glfw_win, GLFW_TRUE);
 }
 
@@ -114,10 +109,8 @@ void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
 }
 
 void glfwWindowclose_CB(GLFWwindow *window) {
-	gtk_widget_destroy(gtk_win);
+	gtk_window_destroy(GTK_WINDOW(gtk_win));
 	glfwSetWindowShouldClose(window, GLFW_TRUE);
-//	iflag_glfw_focus = 0;
-//	iflag_gtk_focus = 0;
 	iflag_glfw_end = 1;
 	return;
 }
@@ -167,46 +160,21 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 
 
 /* Main GTK window */
-void kemoview_main_window(struct kemoviewer_type *kemoviewer_data){
-    /*
-    mbot = init_main_buttons(kemoviewer_data);
-	*/
-    gtk_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	
-    
-    gtk_window_set_title(GTK_WINDOW(gtk_win), "CalypsoView menu");
-    gtk_widget_set_size_request(gtk_win, 150, -1);
-    gtk_container_set_border_width(GTK_CONTAINER(gtk_win), 5);
+static void kemoview_activate(GApplication *app, gpointer user_data)
+{
+    gtk_win = gtk_window_new();
     g_signal_connect(G_OBJECT(gtk_win), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);
+    gtk_window_set_application(GTK_WINDOW(gtk_win), GTK_APPLICATION(app));
+    gtk_widget_set_visible(gtk_win, TRUE);
     
-	/*
-    iflag_fast_prev = 0;
-    
-    GtkWidget *quitButton = gtk_button_new_with_label("Quit");
-    g_signal_connect(G_OBJECT(quitButton), "clicked",
-                     G_CALLBACK(gtkWindowclose_CB), NULL);
-    GtkWidget *vbox_main = make_gtk_main_menu_box(mbot, quitButton, gtk_win,
-                                                  kemoview_gl);
-    mbot->psf_gmenu->iflag_psfBox =      0;
-    mbot->tracer_gmenu->iflag_flineBox = 0;
-    mbot->fline_gmenu->iflag_flineBox =  0;
-    mbot->mesh_vws->iflag_meshBox =      0;
-    mbot->id_current[0] = 1;
-    activate_evolution_menu(single_kemoview, mbot->itemTEvo);
-	gtk_container_add(GTK_CONTAINER(gtk_win), vbox_main);
-    
-	gtk_widget_show(quitButton);
-    gtk_widget_show_all(vbox_main);
-    */
-	gtk_widget_show(gtk_win);
-	return;
+    mainloop_4_glfw();
 }
 
 /* Main routine for C */
 
-int draw_mesh_kemo(void) {
-	int narg_glut = 0;
-	char **arg_glut;
+int draw_mesh_kemo(int argc, char *argv[]) {
+	GtkApplication *app;
+    
 	int iflag_retinamode = 1;
 	/*! glfw Initialization*/
 	if(!glfwInit()) return -1;
@@ -285,17 +253,21 @@ int draw_mesh_kemo(void) {
 	
     /*! GTK Initialization*/
     /* gtk_set_locale(); */
-    gtk_init(&narg_glut, &arg_glut);
-	kemoview_main_window(single_kemoview);
-	mainloop_4_glfw();
+    app = gtk_application_new("com.example.KemoViewTest", 
+                              G_APPLICATION_DEFAULT_FLAGS);
+	g_signal_connect(G_OBJECT(app), "activate", G_CALLBACK(kemoview_activate), NULL);
+    int status = g_application_run(G_APPLICATION(app), argc, argv);
+//    g_application_activate(app);
+//    mainloop_4_glfw();
 	glfwTerminate();
     
+    g_object_unref(app);
     return 0;
 };
 
 
 int main(int argc, char *argv[]){
-	int ierr = draw_mesh_kemo();
+	int ierr = draw_mesh_kemo(argc, argv);
 	return ierr;
 };
 

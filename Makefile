@@ -40,8 +40,8 @@ FRAMEWORKS = -framework OpenGL  -framework CoreVideo  -framework IOKit -framewor
 FRAMEWORKS+= -L/opt/homebrew/Cellar/zlib/1.3.1/lib -lz 
 
 
-TARGET = testview
-SRC = kemoview_test_glfw.c
+TARGET = kemo_gtk4_test
+SRC = kemo_glfw_gtk4_test.c
 
 OBJS = \
 $(MAKEDIR)/view_modifier_glfw.o \
@@ -56,8 +56,8 @@ $(KEMO_LIB_FILES):
 	cd $(MAKEDIR); make $(KEMO_LIB_FILES)
 
 $(TARGET): $(SRC) $(OBJS) $(KEMO_LIB_FILES)
-	$(CC) $(OPTFLAGS) $(GTK3_CFLAGS) $(KEMO_INCLUDE) -o $@  $< \
-	$(OBJS) $(KEMO_LIBS)  $(GTK3_LIBS) $(FRAMEWORKS)
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@  $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 clean:
 	rm -rf *.o *.mod *~
