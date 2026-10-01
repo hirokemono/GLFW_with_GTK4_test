@@ -126,10 +126,14 @@ static void eye_position_z_CB(GtkWidget *entry, gpointer user_data){
 static void scale_CB(GtkWidget *entry, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
     double gtk_floatvalue = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-    
+    printf("updating value: %f,  \n", gtk_floatvalue, 
+           kemo_gl->kemoview_data->view_s->iso_scale);
     kemoview_set_view_parameter(ISET_SCALE, 0, gtk_floatvalue,
                                 kemo_gl->kemoview_data);
+    printf("updated value: %f, %f \n", gtk_floatvalue, 
+           kemo_gl->kemoview_data->view_s->iso_scale);
     draw_fast_gl(kemo_gl);
+	gtk_spin_button_update(GTK_SPIN_BUTTON(entry));
     return;
 };
 

@@ -10,11 +10,10 @@
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoviewer.h"
 #include "kemoviewer_gl.h"
-#include "kemoview_gtk_main_menu.h"
-#include "tree_view_4_colormap.h"
+//#include "tree_view_4_colormap.h"
 #include "view_modifier_glfw.h"
-#include "kemoview_gtk_PSF_surface_menu.h"
-#include "kemoview_gtk_main_menu.h"
+//#include "kemoview_gtk_PSF_surface_menu.h"
+#include "kemoview_gtk4_main_menu.h"
 
 static const gchar *gtk_selected_filename;
 
@@ -37,11 +36,12 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 	
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
     kemoview_free_kvstring(filename);
-	
-//    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
-//    init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
-//    init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
-//    init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
+    
+    /*
+    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
+    init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
+    init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
     
     if(iflag_datatype == 0 || iflag_datatype == IFLAG_MESH){
         mbot->evo_gmenu->istart_evo = 1;
@@ -53,9 +53,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     printf("kemo_gl->kemoview_data->istep_evo %d\n", kemo_gl->kemoview_data->istep_evo);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_start), (double) mbot->evo_gmenu->istart_evo);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_end),   (double) mbot->evo_gmenu->iend_evo);
-    
-//    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
-    
+    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
+    */
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -119,7 +118,7 @@ void save_viewmatrix_CB(GObject *source,
 };
 
 
-
+/*
 static void load_colormap_file_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){
@@ -142,7 +141,7 @@ static void load_colormap_file_CB(GObject *source,
     draw_full_gl(kemo_gl);
     return;
 };
-
+*/
 void load_viewmatrix_CB(GObject *source,
                         GAsyncResult *result,
                         gpointer data){
