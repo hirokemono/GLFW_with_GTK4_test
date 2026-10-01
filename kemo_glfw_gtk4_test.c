@@ -158,13 +158,20 @@ void frameBufferSizeCB(GLFWwindow *window, int nx_buf, int ny_buf){
 //	update_windowsize_menu(kemoview_gl, mbot->view_menu, gtk_win);
 }
 
-
 /* Main GTK window */
 static void kemoview_activate(GApplication *app, gpointer user_data)
 {
     gtk_win = gtk_window_new();
-    g_signal_connect(G_OBJECT(gtk_win), "destroy", G_CALLBACK(gtkWindowclose_CB), NULL);
+    g_signal_connect(G_OBJECT(gtk_win), "destroy",
+                     G_CALLBACK(gtkWindowclose_CB), NULL);
     gtk_window_set_application(GTK_WINDOW(gtk_win), GTK_APPLICATION(app));
+    
+    iflag_fast_prev = 0;
+    GtkWidget *quitButton = gtk_button_new_with_label("Quit");
+    g_signal_connect(G_OBJECT(quitButton), "clicked",
+                     G_CALLBACK(gtkWindowclose_CB), NULL);
+    
+    gtk_window_set_child(GTK_WINDOW(gtk_win), quitButton);
     gtk_widget_set_visible(gtk_win, TRUE);
     
     mainloop_4_glfw();
@@ -257,8 +264,6 @@ int draw_mesh_kemo(int argc, char *argv[]) {
                               G_APPLICATION_DEFAULT_FLAGS);
 	g_signal_connect(G_OBJECT(app), "activate", G_CALLBACK(kemoview_activate), NULL);
     int status = g_application_run(G_APPLICATION(app), argc, argv);
-//    g_application_activate(app);
-//    mainloop_4_glfw();
 	glfwTerminate();
     
     g_object_unref(app);
