@@ -30,9 +30,6 @@ KEMO_LIB_FILES =  $(MAKEDIR)/libkemo_c.a
 
 PACKAGES = glfw3 libavutil libavcodec libavformat libswscale libpng
 
-GTK3_CFLAGS = $(shell pkg-config --cflags gtk+-3.0 $(PACKAGES))
-GTK3_LIBS =   $(shell pkg-config --libs gtk+-3.0 $(PACKAGES))
-
 GTK4_CFLAGS = $(shell pkg-config --cflags gtk4 $(PACKAGES))
 GTK4_LIBS =   $(shell pkg-config --libs gtk4 $(PACKAGES))
 
@@ -41,7 +38,9 @@ FRAMEWORKS+= -L/opt/homebrew/Cellar/zlib/1.3.1/lib -lz
 
 
 TARGET = kemo_gtk4_test
-SRC = kemo_glfw_gtk4_test.c
+SRC = \
+calypso_GTK4.c \
+kemo_glfw_gtk4_test.c
 
 OBJS = \
 $(MAKEDIR)/view_modifier_glfw.o \
@@ -56,7 +55,7 @@ $(KEMO_LIB_FILES):
 	cd $(MAKEDIR); make $(KEMO_LIB_FILES)
 
 $(TARGET): $(SRC) $(OBJS) $(KEMO_LIB_FILES)
-	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@  $< \
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 clean:
