@@ -206,7 +206,6 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
     gtk_window_set_child(GTK_WINDOW(gtk_win), vbox_main);
     gtk_widget_set_visible(gtk_win, TRUE);
     
-    gtk_widget_set_sensitive(quitButton, FALSE);
     mainloop_4_glfw();
 }
 

@@ -316,18 +316,21 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 }
 
 void draw_full_gl(struct kemoviewer_gl_type *kemo_gl){
+    glfwMakeContextCurrent(glfw_window);
     kemoview_gl_full_draw(kemo_gl);
     glfwSwapBuffers(glfw_window);
     return;
 };
 
 void draw_fast_gl(struct kemoviewer_gl_type *kemo_gl){
+    glfwMakeContextCurrent(glfw_window);
     kemoview_gl_fast_draw(kemo_gl);
     glfwSwapBuffers(glfw_window);
     return;
 };
 
 void draw_quilt(int istep_qult, struct kemoviewer_gl_type *kemo_gl){
+    glfwMakeContextCurrent(glfw_window);
     kemoview_gl_quilt_draw(istep_qult, kemo_gl);
     glfwSwapBuffers(glfw_window);
     return;
