@@ -79,6 +79,17 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
                            fliped_img);
     flip_gl_bitmap(render_image->nipxel_xy[0], render_image->nipxel_xy[1],
                    render_image->texure_rgba, fliped_img->texure_rgba);
+    
+    GdkTexture *texture;
+    GBytes *bytes = g_bytes_new (bytes, render_image->nipxel_xy[0]*render_image->nipxel_xy[0]*8*3);
+    texture = gdk_memory_texture_new (render_image->nipxel_xy[0],
+                                      render_image->nipxel_xy[1],
+                                      GDK_MEMORY_A8R8G8B8, // or your specific GdkMemoryFormat
+                                      bytes,
+                                      3);
+    GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (button));
+    gdk_clipboard_set(clipboard, GDK_TYPE_TEXTURE, texture);
+
     /*
     GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->texure_rgba,
                                                  GDK_COLORSPACE_RGB, FALSE, 8,
@@ -90,6 +101,7 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     dealloc_kemoview_gl_texure(render_image);
     dealloc_kemoview_gl_texure(fliped_img);
     */
+    
     return;
 }
 
@@ -229,8 +241,8 @@ static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
     g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
     */
     GtkWidget *copyButton = gtk_button_new_with_label("Copy");
-//    g_signal_connect(G_OBJECT(copyButton), "clicked",
-//                     G_CALLBACK(gtkCopyToClipboard_CB), (gpointer) clipboard);
+    g_signal_connect(G_OBJECT(copyButton), "clicked",
+                     G_CALLBACK(gtkCopyToClipboard_CB), NULL);
     
     savebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_append(GTK_BOX(savebox), imageSave_Button);
