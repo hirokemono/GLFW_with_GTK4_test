@@ -82,6 +82,10 @@ static void mainloop_4_glfw(){
 
 		if(glfwGetWindowAttrib(glfw_win, GLFW_FOCUSED) == 0){
             glfwMakeContextCurrent(NULL);
+            
+//            gtk_window_set_focus(gtk_win, gtk_win);
+//            gtk_window_set_modal(gtk_win, TRUE);
+//            gtk_window_present(gtk_win);
             while (g_main_context_pending(NULL)) g_main_context_iteration(NULL, TRUE);
             jcou++;
         };
@@ -186,14 +190,15 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
     gtk_win = gtk_window_new();
     g_signal_connect(G_OBJECT(gtk_win), "destroy",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
+    g_signal_connect(G_OBJECT(gtk_win), "notify::is-active", 
+                     G_CALLBACK(gtkWindowfocus_CB), NULL);
     gtk_window_set_application(GTK_WINDOW(gtk_win), GTK_APPLICATION(app));
     
     iflag_fast_prev = 0;
     GtkWidget *quitButton = gtk_button_new_with_label("Quit");
     g_signal_connect(G_OBJECT(quitButton), "clicked",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
-    g_signal_connect(G_OBJECT(quitButton), "notify::is-active", 
-                     G_CALLBACK(gtkWindowfocus_CB), NULL);
+    
     
     GtkWidget *vbox_main = make_gtk4_main_menu_box(mbot, quitButton, gtk_win,
                                                    kemoview_gl);
@@ -201,6 +206,7 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
     gtk_window_set_child(GTK_WINDOW(gtk_win), vbox_main);
     gtk_widget_set_visible(gtk_win, TRUE);
     
+    gtk_widget_set_sensitive(quitButton, FALSE);
     mainloop_4_glfw();
 }
 
