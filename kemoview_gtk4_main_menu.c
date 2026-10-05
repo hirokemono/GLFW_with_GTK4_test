@@ -62,16 +62,7 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
-    struct gl_texure_image *render_image;
-    if(kemoview_get_view_type_flag(kemo_gl->kemoview_data) == VIEW_STEREO){
-        render_image = draw_anaglyph_to_rgb_gl(kemo_gl->kemoview_data,
-                                               kemo_gl->kemo_VAOs,
-                                               kemo_gl->kemo_shaders);
-    }else{
-        render_image = draw_objects_to_rgb_gl(kemo_gl->kemoview_data,
-                                              kemo_gl->kemo_VAOs,
-                                              kemo_gl->kemo_shaders);
-    }
+    struct gl_texure_image *render_image = sel_draw_GLFW_anaglyph_to_rgb(kemo_gl);
     
     struct gl_texure_image *fliped_img = alloc_kemoview_gl_texure();
     alloc_draw_psf_texture(render_image->nipxel_xy[0],
@@ -80,28 +71,22 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     flip_gl_bitmap(render_image->nipxel_xy[0], render_image->nipxel_xy[1],
                    render_image->texure_rgba, fliped_img->texure_rgba);
     
+    unsigned int isize = render_image->nipxel_xy[0]*render_image->nipxel_xy[0] * 8 * 3;
+    GBytes *bytes = g_bytes_new_static(fliped_img->texure_rgba, isize);
     GdkTexture *texture;
-    GBytes *bytes = g_bytes_new (bytes, render_image->nipxel_xy[0]*render_image->nipxel_xy[0]*8*3);
     texture = gdk_memory_texture_new (render_image->nipxel_xy[0],
                                       render_image->nipxel_xy[1],
-                                      GDK_MEMORY_A8R8G8B8, // or your specific GdkMemoryFormat
+                                      GDK_MEMORY_B8G8R8,
                                       bytes,
-                                      3);
+                                      (3*render_image->nipxel_xy[0]));
+    
+    
     GdkClipboard *clipboard = gtk_widget_get_clipboard (GTK_WIDGET (button));
     gdk_clipboard_set(clipboard, GDK_TYPE_TEXTURE, texture);
-
-    /*
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_data((const guchar *) fliped_img->texure_rgba,
-                                                 GDK_COLORSPACE_RGB, FALSE, 8,
-                                                 fliped_img->nipxel_xy[0], fliped_img->nipxel_xy[1],
-                                                 (3*fliped_img->nipxel_xy[0]),
-                                                 NULL, NULL);
-    GtkClipboard *clipboard = (GtkClipboard *) user_data;
-    gtk_clipboard_set_image(clipboard, pixbuf);
-    dealloc_kemoview_gl_texure(render_image);
+    g_bytes_unref(bytes);
+    g_object_unref(texture);
     dealloc_kemoview_gl_texure(fliped_img);
-    */
-    
+    dealloc_kemoview_gl_texure(render_image);
     return;
 }
 
@@ -240,9 +225,11 @@ static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
     gtk_clipboard_set_text(clipboard, "", 0);
     g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
     */
+    GtkEntryBuffer *entry_buf_Copy = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf_Copy), "kemoview_gl", (gpointer) kemo_gl);
     GtkWidget *copyButton = gtk_button_new_with_label("Copy");
     g_signal_connect(G_OBJECT(copyButton), "clicked",
-                     G_CALLBACK(gtkCopyToClipboard_CB), NULL);
+                     G_CALLBACK(gtkCopyToClipboard_CB), entry_buf_Copy);
     
     savebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_append(GTK_BOX(savebox), imageSave_Button);
