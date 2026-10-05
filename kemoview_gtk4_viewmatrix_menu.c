@@ -64,34 +64,20 @@ void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,
 };
 
 static void save_viewmatrix_CB(GtkButton *button, gpointer user_data){
-    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
+    GtkWindow *window = GTK_WINDOW(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
-    kemoview_gtk4_save_file_select(button, user_data);
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_buffer_get_text(entry_buf));
-    
-    kemoview_write_modelview_file(filename, kemo_gl->kemoview_data);
-    kemoview_free_kvstring(filename);
-    
+    kemoview_gtk4_save_viewmatrix_select(kemo_gl, window);
     return;
 };
 
 static void load_viewmatrix_CB(GtkButton *button, gpointer user_data){
-    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
+    GtkWindow *window = GTK_WINDOW(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
 
-    GtkEntryBuffer *full_path_buf = gtk_entry_buffer_new("", -1);
-//    kemoview_gtk4_read_file_select(button, window, user_data, full_path_buf);
-    
-    struct kv_string *filename
-            = kemoview_init_kvstring_by_string(gtk_entry_buffer_get_text(entry_buf));
-    kemoview_load_modelview_file(filename, kemo_gl->kemoview_data);
-    kemoview_free_kvstring(filename);
-    
-    draw_full_gl(kemo_gl);
+    kemoview_gtk4_read_viewmatrix_select(kemo_gl, window);
     return;
 };
 

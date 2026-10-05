@@ -298,6 +298,39 @@ static void kemoview_save_image_CB(GObject *source,
     return;
 };
 
+static void kemoview_open_viewmat_CB(GObject *source,
+                                     GAsyncResult *result,
+                                     gpointer data){
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
+    
+    GFile *file = gfile_from_kemoview_open_dialog(GTK_FILE_DIALOG (source), result);
+    
+    if(!file) return;
+    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
+    kemoview_load_modelview_file(filename, kemo_gl->kemoview_data);
+	kemoview_free_kvstring(filename);
+    g_object_unref(file);
+    draw_full_gl(kemo_gl);
+    return;
+}
+
+static void kemoview_save_viewmat_CB(GObject *source,
+                                     GAsyncResult *result,
+                                     gpointer data){
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
+    
+    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
+    
+    if(!file) return;
+    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
+    kemoview_write_modelview_file(filename, kemo_gl->kemoview_data);
+    kemoview_free_kvstring(filename);
+    g_object_unref(file);
+    return;
+};
+
 static void kemoview_file_save_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){
@@ -336,17 +369,47 @@ void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
 	return;
 }
 
-void kemoview_gtk4_save_image_select(GtkButton *button, gpointer data){
-    GtkWindow *window = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
-    
-    /* generate file selection widget*/
-    printf("gtk_file_dialog_save_image\n");
+void kemoview_gtk4_save_image_select(struct kemoviewer_gl_type *kemo_gl, 
+                                     GtkWindow *window){
 	GtkFileDialog *dialog = gtk_file_dialog_new();
     GtkFileFilter *filter = gtk_file_filter_new();
     GCancellable *cancellable = g_cancellable_new();
     g_cancellable_cancel(cancellable);
     
-    gtk_file_dialog_save(dialog, window, cancellable, kemoview_save_image_CB, data);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    gtk_file_dialog_save(dialog, window, cancellable, kemoview_save_image_CB, entry_buf);
+    g_object_unref(filter);
+    g_object_unref(cancellable);
+	return;
+}
+
+void kemoview_gtk4_read_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
+                                          GtkWindow *window){
+	GtkFileDialog *dialog = gtk_file_dialog_new();
+    GtkFileFilter *filter = gtk_file_filter_new();
+    GCancellable *cancellable = g_cancellable_new();
+    g_cancellable_cancel(cancellable);
+    
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    gtk_file_dialog_open(dialog, window, cancellable, 
+                         kemoview_open_viewmat_CB, G_OBJECT(entry_buf));
+    g_object_unref(filter);
+    g_object_unref(cancellable);
+	return;
+}
+
+void kemoview_gtk4_save_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
+                                          GtkWindow *window){
+	GtkFileDialog *dialog = gtk_file_dialog_new();
+    GtkFileFilter *filter = gtk_file_filter_new();
+    GCancellable *cancellable = g_cancellable_new();
+    g_cancellable_cancel(cancellable);
+    
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    gtk_file_dialog_save(dialog, window, cancellable, kemoview_save_viewmat_CB, G_OBJECT(entry_buf));
     g_object_unref(filter);
     g_object_unref(cancellable);
 	return;

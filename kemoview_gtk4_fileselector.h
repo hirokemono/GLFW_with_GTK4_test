@@ -16,6 +16,7 @@
 #include "calypso_GTK4.h"
 
 #include "kemoviewer.h"
+#include "kemoviewer_gl.h"
 
 /*  prototypes */
 /* Routines for inout from console */
@@ -23,7 +24,14 @@
 void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
                                     GtkEntryBuffer *entry_buf,
                                     GtkEntryBuffer *full_path_buf);
-void kemoview_gtk4_save_image_select(GtkButton *button, gpointer data);
+void kemoview_gtk4_save_image_select(struct kemoviewer_gl_type *kemo_gl, 
+                                     GtkWindow *window);
+
+void kemoview_gtk4_read_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
+                                          GtkWindow *window);
+void kemoview_gtk4_save_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
+                                          GtkWindow *window);
+
 void kemoview_gtk4_save_file_select(GtkButton *button, gpointer data);
 
 struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap);

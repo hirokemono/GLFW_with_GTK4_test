@@ -91,10 +91,10 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
 }
 
 static void image_save_CB(GtkButton *button, gpointer user_data){
-    GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
+    GtkWidget *window = GTK_WIDGET(g_object_get_data(user_data, "window"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    kemoview_gtk4_save_image_select(button, user_data);
+    kemoview_gtk4_save_image_select(kemo_gl, window);
     return;
 };
 
@@ -128,10 +128,13 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
 
 
 static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
+                                           GtkWidget *main_window,
                                            struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *savebox;
     GtkEntryBuffer *entry_buf_save_file = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf_save_file), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf_save_file), "window", (gpointer) main_window);
+    
     GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
     g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
                      G_CALLBACK(image_save_CB), (gpointer) entry_buf_save_file);
@@ -155,7 +158,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
     GtkWidget *vbox_menu;
     
     GtkWidget *hbox_open = make_gtk4_open_file_box(kemo_gl, main_window, mbot);
-    GtkWidget *savebox = make_gtk4_save_file_box(quitButton, kemo_gl);
+    GtkWidget *savebox = make_gtk4_save_file_box(quitButton, main_window, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
 //    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
