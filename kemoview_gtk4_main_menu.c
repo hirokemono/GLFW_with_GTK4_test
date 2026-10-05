@@ -90,94 +90,15 @@ static void gtkCopyToClipboard_CB(GtkButton *button, gpointer user_data){
     return;
 }
 
-/*
-static void gtkhidetest_CB(GtkButton *button, gpointer user_data){
-    struct main_buttons *mbot = (struct main_buttons *)user_data;
-    gchar * text = gtk_button_get_label(button);
-    char test1[1];
-    test1[0] = text[1];
-    if(test1[0] == 110){
-        gtk_button_set_label(button, "Off");
-        gtk_widget_set_sensitive(mbot->expander_view, FALSE);
-        gtk_widget_set_sensitive(mbot->expander_pref, FALSE);
-//        sel_mesh_menu_box(mbot, FALSE);
-    }else if(test1[0] == 102){
-        gtk_button_set_label(button, "On");
-        gtk_widget_set_sensitive(mbot->expander_view, TRUE);
-        gtk_widget_set_sensitive(mbot->expander_pref, TRUE);
-//        sel_mesh_menu_box(mbot, TRUE);
-    };
-    return;
-}
-*/
-/*
 static void image_save_CB(GtkButton *button, gpointer user_data){
     GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    kemoview_gtk4_save_file_select(button, user_data);
-    int id_imagefmt_by_input;
-    int i_quilt;
-    
-//    if(iflag_set == IZERO) return;
-    
-    int iflag_quilt = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE);
-    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
-    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
-    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
-
-    struct kv_string *filename 
-            = kemoview_init_kvstring_by_string(gtk_entry_buffer_get_text(entry_buf));
-    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
-    struct kv_string *file_prefix = kemoview_alloc_kvstring();
-    
-    kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-    id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
-    if(id_imagefmt_by_input < 0) {
-        id_imagefmt_by_input = kemoview_get_view_integer(kemo_gl->kemoview_data,
-                                                         IMAGE_FORMAT_FLAG);;
-        kemoview_free_kvstring(file_prefix);
-        file_prefix = kemoview_init_kvstring_by_string(filename->string);
-    };
-    if(id_imagefmt_by_input == 0) return;
-    kemoview_free_kvstring(filename);
-    kemoview_free_kvstring(stripped_ext);
-    
-    printf("header: %s\n", file_prefix->string);
-    if(iflag_quilt == 0){
-        struct gl_texure_image *image_t = kemoview_get_gl_buffer_to_bmp(kemo_gl->kemoview_data,
-                                                                        kemo_gl->kemo_VAOs,
-                                                                        kemo_gl->kemo_shaders);
-        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
-                                      image_t->nipxel_xy[0], image_t->nipxel_xy[1],
-                                      image_t->texure_rgba);
-        dealloc_kemoview_gl_texure(image_t);
-    } else {
-        int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data,
-                                                  ISET_QUILT_COLUMN);
-        int nimg_raw =    kemoview_get_quilt_nums(kemo_gl->kemoview_data,
-                                                  ISET_QUILT_RAW);
-        unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
-                                                                      (nimg_raw * npix_y));
-        for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
-            draw_quilt(i_quilt, kemo_gl);
-            kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
-                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
-                                   quilt_image);
-       };
-        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
-                                      (nimg_column * npix_x),
-                                      (nimg_raw * npix_y), quilt_image);
-        free(quilt_image);
-        printf("quilt! %d x %d\n", nimg_column, nimg_raw);
-        draw_full_gl(kemo_gl);
-    }
-    free(image);
-    kemoview_free_kvstring(file_prefix);
-    
+    kemoview_gtk4_save_image_select(button, user_data);
     return;
 };
-*/
+
+
 static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
                                            GtkWidget *main_window,
                                            struct main_buttons *mbot){
@@ -212,19 +133,9 @@ static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
     GtkEntryBuffer *entry_buf_save_file = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf_save_file), "kemoview_gl", (gpointer) kemo_gl);
     GtkWidget *imageSave_Button = gtk_button_new_with_label("Save Image...");
-//    g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
-//                     G_CALLBACK(image_save_CB), (gpointer) entry_buf_save_file);
-    /*
-    GtkClipboard *clipboard;
-    clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);                                                            
-    gtk_clipboard_clear(clipboard);                                                                                  
-    gtk_clipboard_set_text(clipboard, "", 0);                                                                        
-
-    clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);                                                          
-    gtk_clipboard_clear(clipboard);                                                                                
-    gtk_clipboard_set_text(clipboard, "", 0);
-    g_object_set_data(G_OBJECT(clipboard), "kemoview_gl", (gpointer) kemo_gl);
-    */
+    g_signal_connect(G_OBJECT(imageSave_Button), "clicked",
+                     G_CALLBACK(image_save_CB), (gpointer) entry_buf_save_file);
+    
     GtkEntryBuffer *entry_buf_Copy = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf_Copy), "kemoview_gl", (gpointer) kemo_gl);
     GtkWidget *copyButton = gtk_button_new_with_label("Copy");

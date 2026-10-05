@@ -59,6 +59,62 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 	return;
 };
 
+static void save_kemoview_image_file(struct kemoviewer_gl_type *kemo_gl, 
+                                     struct kv_string *filename){
+    int i_quilt;
+    int iflag_quilt = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE);
+    int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
+    int npix_y = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y);
+    unsigned char *image = kemoview_alloc_RGB_buffer_to_bmp(npix_x, npix_y);
+
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    
+    kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+    int id_imagefmt_by_input = kemoview_set_image_file_format_id(stripped_ext);
+    if(id_imagefmt_by_input < 0) {
+        id_imagefmt_by_input = kemoview_get_view_integer(kemo_gl->kemoview_data,
+                                                         IMAGE_FORMAT_FLAG);;
+        kemoview_free_kvstring(file_prefix);
+        file_prefix = kemoview_init_kvstring_by_string(filename->string);
+    };
+    if(id_imagefmt_by_input == 0) return;
+    kemoview_free_kvstring(filename);
+    kemoview_free_kvstring(stripped_ext);
+    
+    printf("header: %s\n", file_prefix->string);
+    if(iflag_quilt == 0){
+        struct gl_texure_image *image_t = sel_draw_GLFW_buffer_to_rgb(kemo_gl);
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      image_t->nipxel_xy[0], image_t->nipxel_xy[1],
+                                      image_t->texure_rgba);
+        dealloc_kemoview_gl_texure(image_t);
+    } else {
+        int nimg_column = kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_COLUMN);
+        int nimg_raw =    kemoview_get_quilt_nums(kemo_gl->kemoview_data,
+                                                  ISET_QUILT_RAW);
+        unsigned char *quilt_image = kemoview_alloc_RGB_buffer_to_bmp((nimg_column * npix_x),
+                                                                      (nimg_raw * npix_y));
+        for(i_quilt=0;i_quilt<(nimg_column*nimg_raw);i_quilt++){
+            draw_quilt(i_quilt, kemo_gl);
+            kemoview_add_quilt_img(i_quilt, kemo_gl->kemoview_data,
+                                   kemo_gl->kemo_VAOs, kemo_gl->kemo_shaders,
+                                   quilt_image);
+       };
+        kemoview_write_window_to_file(id_imagefmt_by_input, file_prefix,
+                                      (nimg_column * npix_x),
+                                      (nimg_raw * npix_y), quilt_image);
+        free(quilt_image);
+        printf("quilt! %d x %d\n", nimg_column, nimg_raw);
+        draw_full_gl(kemo_gl);
+    }
+    free(image);
+    kemoview_free_kvstring(file_prefix);
+    
+    return;
+};
+
 int load_texture_file_gtk4(GtkWidget *window, struct kv_string *file_prefix){
     struct kv_string *stripped_ext;
 	int id_img;
@@ -220,6 +276,28 @@ static void kemoview_file_open_CB(GObject *source,
     return;
 }
 
+static void kemoview_save_image_CB(GObject *source,
+                                  GAsyncResult *result,
+                                  gpointer data){
+	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
+    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(data), "buttons");
+    
+    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
+    
+    if(!file) return;
+    gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
+                              strlen(g_file_get_basename(file))+1);
+    
+    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
+    save_kemoview_image_file(kemo_gl, filename);
+    kemoview_free_kvstring(filename);
+    g_object_unref(file);
+    return;
+};
+
 static void kemoview_file_save_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){
@@ -238,8 +316,6 @@ static void kemoview_file_save_CB(GObject *source,
     open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
-	
-    draw_full_gl(kemo_gl);
     return;
 }
 
@@ -255,6 +331,22 @@ void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
     g_object_set_data(G_OBJECT(entry_buf), "full_path", G_OBJECT(full_path_buf));
     gtk_file_dialog_open(dialog, window, cancellable, 
                          kemoview_file_open_CB, G_OBJECT(entry_buf));
+    g_object_unref(filter);
+    g_object_unref(cancellable);
+	return;
+}
+
+void kemoview_gtk4_save_image_select(GtkButton *button, gpointer data){
+    GtkWindow *window = GTK_WINDOW(g_object_get_data(G_OBJECT(data), "parent"));
+    
+    /* generate file selection widget*/
+    printf("gtk_file_dialog_save_image\n");
+	GtkFileDialog *dialog = gtk_file_dialog_new();
+    GtkFileFilter *filter = gtk_file_filter_new();
+    GCancellable *cancellable = g_cancellable_new();
+    g_cancellable_cancel(cancellable);
+    
+    gtk_file_dialog_save(dialog, window, cancellable, kemoview_save_image_CB, data);
     g_object_unref(filter);
     g_object_unref(cancellable);
 	return;

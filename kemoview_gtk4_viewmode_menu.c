@@ -125,7 +125,6 @@ GtkWidget * make_gtk4_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
 	gtk_box_append(GTK_BOX(hbox_viewtype), gtk_label_new("View type: "));
     gtk_box_append(GTK_BOX(hbox_viewtype), combobox_viewtype);
     
-    printf("TAkotakota \n");
     return hbox_viewtype;
 }
 
