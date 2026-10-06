@@ -267,7 +267,7 @@ static void kemoview_file_open_CB(GObject *source,
     gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
                               strlen(g_file_get_basename(file))+1);
     struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-//  open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
+    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
     draw_full_gl(kemo_gl);
