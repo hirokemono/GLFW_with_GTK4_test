@@ -18,6 +18,20 @@ const char * const axis_list[] = {hd_Xaxis,
                                   hd_Zaxis,
                                   NULL};
 
+
+const char * const hd_NoImage =   "No Image";  //  NO_SAVE_FILE
+const char * const hd_PNGimage =  "PNG";       //  SAVE_PNG
+const char * const hd_BMPimage =  "BMP";       //  SAVE_BMP
+const char * const hd_Movie =     "Movie";     //  SAVE_QT_MOVIE
+
+const char * const image_fmt_list[] = {hd_NoImage,
+                                       hd_PNGimage,
+                                       hd_BMPimage,
+#ifdef FFMPEG
+                                       hd_Movie,
+#endif
+                                       NULL};
+
 static void init_rotation_axis_dropdown(struct rotation_gtk_menu *rot_gmenu,
                                         GtkWidget *rot_axis_button){
 	if(rot_gmenu->iaxis_rot == Z_AXIS){
@@ -79,7 +93,7 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     GtkListItemFactory *rot_axis_factory = gtk_signal_list_item_factory_new ();
     gtk_drop_down_set_header_factory (GTK_DROP_DOWN(rot_axis_button), rot_axis_factory);
-    g_object_unref(rot_axis_expression);
+//    g_object_unref(rot_axis_expression);     Do not release GtkExpression!!
     g_object_unref(rot_axis_factory);
     g_object_unref(rot_axis_flat);
     init_rotation_axis_dropdown(rot_gmenu, rot_axis_button);
@@ -88,6 +102,81 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
 	gtk_box_append(GTK_BOX(hbox_rotation_dir), gtk_label_new("Rotation axis: "));
 	gtk_box_append(GTK_BOX(hbox_rotation_dir), rot_axis_button);
     return hbox_rotation_dir;
+}
+
+
+static void init_rotation_file_fmt_dropdown(struct rotation_gtk_menu *rot_gmenu,
+                                            GtkWidget *rot_file_fmt_button){
+	if(rot_gmenu->id_fmt_rot == SAVE_BMP){
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_file_fmt_button), 2);
+	} else if(rot_gmenu->id_fmt_rot == SAVE_PNG){
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_file_fmt_button), 1);
+	} else {
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_file_fmt_button), 0);
+	};
+    return;
+}
+
+static int find_selected_rot_file_format(const char *text){
+    int index_mode = -100;
+    if(kemoview_compare_string((int) strlen(text), text, hd_Movie) > 0){index_mode = SAVE_QT_MOVIE;}
+    else if(kemoview_compare_string((int) strlen(text), text, hd_PNGimage) > 0){index_mode = SAVE_PNG;}
+    else if(kemoview_compare_string((int) strlen(text), text, hd_BMPimage) > 0){index_mode = SAVE_BMP;}
+    else {index_mode = NO_SAVE_FILE;};
+    return index_mode;
+}
+
+static void selected_rot_file_fmt_CB(GtkDropDown *dropdown,
+                                     GParamSpec *pspec,
+                                     gpointer user_data)
+{
+    struct rotation_gtk_menu *rot_gmenu
+            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+/* The dropdown model returns a GtkStringObject when created from strings */
+    GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
+    
+    if(selected_item == NULL) return;
+    const char *text = gtk_string_object_get_string(selected_item);
+    rot_gmenu->iaxis_rot = find_selected_rot_file_format(text);
+    return;
+}
+
+
+GtkWidget * init_rotation_image_format_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                            struct rotation_gtk_menu *rot_gmenu){
+    GtkWidget *hbox_rotation_fileformat;
+    
+    GtkStringList *rot_file_fmt_model = gtk_string_list_new(image_fmt_list);
+    GListStore *rot_file_fmt_store = g_list_store_new(G_TYPE_LIST_MODEL);
+    g_list_store_append(rot_file_fmt_store, rot_file_fmt_model);
+    g_object_unref(rot_file_fmt_model);
+    GtkFlattenListModel *rot_file_fmt_flat = gtk_flatten_list_model_new(G_LIST_MODEL(rot_file_fmt_store));
+    GtkExpression *rot_file_fmt_expression = gtk_property_expression_new (GTK_TYPE_STRING_OBJECT,
+                                                                          NULL,
+                                                                          "string");
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    
+    GtkWidget *rot_file_fmt_button = gtk_drop_down_new(G_LIST_MODEL(rot_file_fmt_flat),
+                                                       rot_file_fmt_expression);
+    g_signal_connect(G_OBJECT(rot_file_fmt_button), "notify::selected-item", 
+                     G_CALLBACK (selected_rot_file_fmt_CB), G_OBJECT(entry_buf));
+    
+    GtkListItemFactory *rot_file_fmt_factory = gtk_signal_list_item_factory_new ();
+    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(rot_file_fmt_button), rot_file_fmt_factory);
+//    g_object_unref(rot_file_fmt_expression);       Do not release GtkExpression!!
+    g_object_unref(rot_file_fmt_factory);
+    g_object_unref(rot_file_fmt_flat);
+    init_rotation_file_fmt_dropdown(rot_gmenu, rot_file_fmt_button);
+    
+    hbox_rotation_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_append(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "));
+	gtk_box_append(GTK_BOX(hbox_rotation_fileformat), rot_file_fmt_button);
+    return hbox_rotation_fileformat;
 }
 
 
@@ -114,17 +203,6 @@ int gtk_selected_combobox_index(GtkComboBox *combobox){
 	return index_mode;
 };
 
-GtkWidget * create_fixed_label_w_index_tree(void){
-    /* Construct empty list storage */
-    GtkListStore *child_model = gtk_list_store_new(3, G_TYPE_INT, G_TYPE_STRING, G_TYPE_INT);    
-    /* Construct model for sorting and set to tree view */
-    GtkTreeModel *model = gtk_tree_model_sort_new_with_model(GTK_TREE_MODEL(child_model));
-    GtkWidget *label_tree = gtk_tree_view_new();
-
-    gtk_tree_view_set_model(GTK_TREE_VIEW(label_tree), model);
-    return label_tree;
-}
-
 
 int append_ci_item_to_tree(const int index, const char *c_tbl, 
                            const int i_data, GtkTreeModel *child_model)
@@ -150,18 +228,6 @@ struct rotation_gtk_menu * init_rotation_menu_box(void){
 	rot_gmenu->inc_deg = 2;
 	rot_gmenu->iaxis_rot = Z_AXIS;
 	return rot_gmenu;
-};
-
-static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
-{
-	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    
-    rot_gmenu->id_fmt_rot = gtk_selected_combobox_index(combobox_filefmt);
-    draw_full_gl(kemo_gl);
-	return;
 };
 
 static void rotation_FPS_CB(GtkWidget *entry, gpointer user_data)
@@ -235,84 +301,51 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
     
     
-	GtkWidget *hbox_rotation_dir = init_rotation_direction_hbox(kemo_gl, rot_gmenu);
+    GtkWidget *hbox_rotation_dir = init_rotation_direction_hbox(kemo_gl, rot_gmenu);
+    GtkWidget *hbox_rotation_fileformat = init_rotation_image_format_hbox(kemo_gl, rot_gmenu);
     
-	GtkWidget *label_tree_rotation_fileformat = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_rotation_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_fileformat));  
-	GtkTreeModel *child_model_rotation_fileformat = 
-			gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_fileformat));
-	int index = 0;
-	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE,  child_model_rotation_fileformat);
-	index = append_ci_item_to_tree(index, "PNG",      SAVE_PNG,      child_model_rotation_fileformat);
-	index = append_ci_item_to_tree(index, "BMP",      SAVE_BMP,      child_model_rotation_fileformat);
-#ifdef FFMPEG
-    index = append_ci_item_to_tree(index, "Movie",    SAVE_QT_MOVIE, child_model_rotation_fileformat);
-#endif
-
-	rot_gmenu->combobox_rotation_fileformat = 
-			gtk_combo_box_new_with_model(child_model_rotation_fileformat);
-	GtkCellRenderer *renderer_rotation_fileformat = gtk_cell_renderer_text_new();
-	rot_gmenu->id_fmt_rot = NO_SAVE_FILE;
-	if(rot_gmenu->id_fmt_rot == SAVE_BMP){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 2);
-	} else if(rot_gmenu->id_fmt_rot == SAVE_PNG){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 1);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_fileformat), 0);
-	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_fileformat), 
-							   renderer_rotation_fileformat, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_fileformat), 
-								   renderer_rotation_fileformat, "text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_fileformat), "changed",
-                     G_CALLBACK(set_rotation_fileformat_CB), entry_rotation_file);
-	
-	
     rot_gmenu->i_FPS = 30;
-	GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(rot_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
-	rot_gmenu->spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
+    GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(rot_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
+    rot_gmenu->spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_FPS), 0);
-	g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_FPS), "value-changed",
-					 G_CALLBACK(rotation_FPS_CB),entry_rotation_file);
-		
+    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_FPS), "value-changed",
+                     G_CALLBACK(rotation_FPS_CB),entry_rotation_file);
+    
     GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
     rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
     gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_increment), 0);
     g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_increment), "value-changed",
                      G_CALLBACK(rotation_increment_CB),entry_rotation_file);
         
-	rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
-	g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
-					 G_CALLBACK(rotation_view_CB), (gpointer)entry_rotation_file);
-	rot_gmenu->rotSave_Button = gtk_button_new_with_label("Save Rotation");
-	g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
-					 G_CALLBACK(rotation_save_CB), (gpointer)entry_rotation_file);
-	
-	
-	GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
-	gtk_box_append(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment);
-	
+    rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
+    g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
+                     G_CALLBACK(rotation_view_CB), (gpointer)entry_rotation_file);
+    rot_gmenu->rotSave_Button = gtk_button_new_with_label("Save Rotation");
+    g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
+                     G_CALLBACK(rotation_save_CB), (gpointer)entry_rotation_file);
+    
+    
+    GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
+    gtk_box_append(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment);
+    
     GtkWidget *hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "));
     gtk_box_append(GTK_BOX(hbox_rot_FPS), rot_gmenu->spin_rot_FPS);
-    	
-	GtkWidget *hbox_rotation_fileformat = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_rotation_fileformat), gtk_label_new("File format: "));
-	gtk_box_append(GTK_BOX(hbox_rotation_fileformat), rot_gmenu->combobox_rotation_fileformat);
-	
-	GtkWidget *hbox_rotation_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotView_Button);
-	gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotSave_Button);
-	
-	
+    
+    
+    GtkWidget *hbox_rotation_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotView_Button);
+    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotSave_Button);
+    
+    
     GtkWidget *rot_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_append(GTK_BOX(rot_box), hbox_rotation_dir);
-	gtk_box_append(GTK_BOX(rot_box), hbox_rot_increment);
+    gtk_box_append(GTK_BOX(rot_box), hbox_rotation_dir);
+    gtk_box_append(GTK_BOX(rot_box), hbox_rot_increment);
     gtk_box_append(GTK_BOX(rot_box), hbox_rot_FPS);
-	gtk_box_append(GTK_BOX(rot_box), hbox_rotation_fileformat);
-	gtk_box_append(GTK_BOX(rot_box), hbox_rotation_save);
-	
-	expander_rot = wrap_into_scroll_expansion_gtk4("Rotation", 360, 240, window, rot_box);
-	return expander_rot;
+    gtk_box_append(GTK_BOX(rot_box), hbox_rotation_fileformat);
+    gtk_box_append(GTK_BOX(rot_box), hbox_rotation_save);
+    
+    expander_rot = wrap_into_scroll_expansion_gtk4("Rotation", 360, 240, window, rot_box);
+    return expander_rot;
 }

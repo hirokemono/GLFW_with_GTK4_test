@@ -134,9 +134,9 @@ GtkWidget * make_gtk4_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
 //    g_signal_connect (viewmode_factory, "setup", G_CALLBACK (setup_header_CB), NULL);
 //    g_signal_connect (viewmode_factory, "bind", G_CALLBACK (bind_header_CB), NULL);
     gtk_drop_down_set_header_factory (GTK_DROP_DOWN (viewmode_button), viewmode_factory);
-    g_object_unref (viewmode_expression);
-    g_object_unref (viewmode_factory);
-    g_object_unref (viewmode_flat);
+//    g_object_unref(viewmode_expression);     Do not release GtkExpression!!
+    g_object_unref(viewmode_factory);
+    g_object_unref(viewmode_flat);
     
     init_viewmode_dropdown(kemo_gl, viewmode_button);
     
