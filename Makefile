@@ -42,6 +42,7 @@ movie_from_GLFW_by_FFMPEG.c \
 view_modifier_glfw.c \
 calypso_GTK4.c \
 kemoview_gtk4_routines.c \
+kemoview_gtk4_rotation_menu.c \
 kemoview_gtk4_viewmatrix_menu.c \
 kemoview_gtk4_viewmode_menu.c \
 kemoview_gtk4_fileselector.c \

@@ -25,7 +25,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
     mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
 
-//    mbot->rot_gmenu = init_rotation_menu_box();
+    mbot->rot_gmenu = init_rotation_menu_box();
 //    mbot->quilt_gmenu = init_quilt_menu_box();
 //    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	return mbot;
@@ -40,7 +40,7 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 
 //    dealloc_light_views_4_viewer(mbot->lightparams_vws);
 	
-//	free(mbot->rot_gmenu);
+	free(mbot->rot_gmenu);
 	free(mbot->view_menu);
 	
 	free(mbot);
@@ -162,8 +162,8 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
     
     GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
 //    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
-//    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
-//                                                          main_window);
+    GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
+                                                          main_window);
 //    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
     
     mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
@@ -176,7 +176,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
     gtk_box_append(GTK_BOX(vbox_menu), savebox);
     gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
 //    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
-//    gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
+    gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
     gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);

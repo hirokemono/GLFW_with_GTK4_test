@@ -24,23 +24,21 @@ const char * const view_modes[] = {hd_3Dview,
                                    hd_YZview,
                                    NULL};
 
-const char * const init_view_mode_list
-
 static void init_viewmode_dropdown(struct kemoviewer_gl_type *kemo_gl,
                                    GtkWidget *viewmode_button){
     int iflag_mode = kemoview_get_view_type_flag(kemo_gl->kemoview_data);
     if(iflag_mode == VIEW_YZ){
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 5);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 5);
     }else if(iflag_mode == VIEW_XZ){
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 4);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 4);
     }else if(iflag_mode == VIEW_XY){
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 3);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 3);
     }else if(iflag_mode == VIEW_MAP){
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 2);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 2);
     }else if(iflag_mode == VIEW_STEREO){
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 1);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 1);
     } else {
-        gtk_drop_down_set_selected(GTK_COMBO_BOX(viewmode_button), 0);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 0);
     };
     return;
 }
@@ -136,7 +134,9 @@ GtkWidget * make_gtk4_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
 //    g_signal_connect (viewmode_factory, "setup", G_CALLBACK (setup_header_CB), NULL);
 //    g_signal_connect (viewmode_factory, "bind", G_CALLBACK (bind_header_CB), NULL);
     gtk_drop_down_set_header_factory (GTK_DROP_DOWN (viewmode_button), viewmode_factory);
+    g_object_unref (viewmode_expression);
     g_object_unref (viewmode_factory);
+    g_object_unref (viewmode_flat);
     
     init_viewmode_dropdown(kemo_gl, viewmode_button);
     

@@ -23,7 +23,7 @@
 // #include "tree_view_4_light_position.h"
 #include "kemoview_gtk4_fileselector.h"
 // #include "kemoview_gtk_evolution_menu.h"
-// #include "kemoview_gtk_rotation_menu.h"
+#include "kemoview_gtk4_rotation_menu.h"
 // #include "kemoview_gtk_quilt_menu.h"
 // #include "kemoview_gtk_axis_menu.h"
 // #include "kemoview_gtk_preference_menu.h"
@@ -55,7 +55,7 @@ struct main_buttons{
     GtkWidget *expander_pref;
 //    struct lightparams_view *lightparams_vws;
     
-//    struct rotation_gtk_menu *rot_gmenu;
+    struct rotation_gtk_menu *rot_gmenu;
     
     GtkWidget *expander_quilt;
     struct quilt_gtk_menu *quilt_gmenu;
