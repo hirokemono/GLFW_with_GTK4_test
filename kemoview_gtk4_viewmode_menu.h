@@ -17,10 +17,6 @@
 #include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "skip_comment_c.h"
-#include "m_kemoviewer_data.h"
-// #include "tree_views_4_fixed_lists_GTK.h"
-// #include "tree_view_viewer_colormap.h"
-// #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 
 #include "view_modifier_glfw.h"
