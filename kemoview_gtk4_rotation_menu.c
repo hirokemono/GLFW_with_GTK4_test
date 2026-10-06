@@ -52,10 +52,42 @@ static void selected_rot_axis_CB(GtkDropDown *dropdown,
     
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string(selected_item);
-    printf("Selected: %s\n", text);
     rot_gmenu->iaxis_rot = find_selected_rotation_axis(text);
-//    draw_full_gl(kemo_gl);
     return;
+}
+
+GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                        struct rotation_gtk_menu *rot_gmenu){
+    GtkWidget *hbox_rotation_dir;
+    
+    GtkStringList *rot_axis_model = gtk_string_list_new(axis_list);
+    GListStore *rot_axis_store = g_list_store_new(G_TYPE_LIST_MODEL);
+    g_list_store_append(rot_axis_store, rot_axis_model);
+    g_object_unref(rot_axis_model);
+    GtkFlattenListModel *rot_axis_flat = gtk_flatten_list_model_new(G_LIST_MODEL(rot_axis_store));
+    GtkExpression *rot_axis_expression = gtk_property_expression_new (GTK_TYPE_STRING_OBJECT,
+                                                                      NULL,
+                                                                      "string");
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    
+    GtkWidget *rot_axis_button = gtk_drop_down_new(G_LIST_MODEL(rot_axis_flat), rot_axis_expression);
+    g_signal_connect(G_OBJECT(rot_axis_button), "notify::selected-item", 
+                     G_CALLBACK (selected_rot_axis_CB), G_OBJECT(entry_buf));
+    
+    GtkListItemFactory *rot_axis_factory = gtk_signal_list_item_factory_new ();
+    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(rot_axis_button), rot_axis_factory);
+    g_object_unref(rot_axis_expression);
+    g_object_unref(rot_axis_factory);
+    g_object_unref(rot_axis_flat);
+    init_rotation_axis_dropdown(rot_gmenu, rot_axis_button);
+    
+    hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+	gtk_box_append(GTK_BOX(hbox_rotation_dir), gtk_label_new("Rotation axis: "));
+	gtk_box_append(GTK_BOX(hbox_rotation_dir), rot_axis_button);
+    return hbox_rotation_dir;
 }
 
 
@@ -118,18 +150,6 @@ struct rotation_gtk_menu * init_rotation_menu_box(void){
 	rot_gmenu->inc_deg = 2;
 	rot_gmenu->iaxis_rot = Z_AXIS;
 	return rot_gmenu;
-};
-
-static void set_rotation_direction_CB(GtkComboBox *combobox_rotdir, gpointer user_data)
-{
-	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    
-    rot_gmenu->iaxis_rot = gtk_selected_combobox_index(combobox_rotdir);
-	draw_full_gl(kemo_gl);
-	return;
 };
 
 static void set_rotation_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user_data)
@@ -207,69 +227,21 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                         struct rotation_gtk_menu *rot_gmenu,
                                         GtkWidget *window){
-	GtkWidget *expander_rot;
-	
-	GtkWidget *entry_rotation_file = gtk_entry_new();
+    GtkWidget *expander_rot;
+    
+    GtkWidget *entry_rotation_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(entry_rotation_file), "kemoview_gl",  (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_rotation_file), "parent", (gpointer) window);
-	g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
-
-	GtkWidget *label_tree_rotation_dir = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_rotation_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_dir));  
-	GtkTreeModel *child_model_rotation_dir = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_dir));
-	int index = 0;
-	index = append_ci_item_to_tree(index, "X-axis", X_AXIS, child_model_rotation_dir);
-	index = append_ci_item_to_tree(index, "Y-axis", Y_AXIS, child_model_rotation_dir);
-	index = append_ci_item_to_tree(index, "Z-axis", Z_AXIS, child_model_rotation_dir);
-	
-	rot_gmenu->combobox_rotation_dir = gtk_combo_box_new_with_model(child_model_rotation_dir);
-	GtkCellRenderer *renderer_rotation_dir = gtk_cell_renderer_text_new();
-	if(rot_gmenu->iaxis_rot == Z_AXIS){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 2);
-	} else if(rot_gmenu->iaxis_rot == Y_AXIS){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 1);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(rot_gmenu->combobox_rotation_dir), 0);
-	};
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_dir),
-							   renderer_rotation_dir, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(rot_gmenu->combobox_rotation_dir), 
-								   renderer_rotation_dir, "text", COLUMN_FIELD_NAME, NULL);
-	g_signal_connect(G_OBJECT(rot_gmenu->combobox_rotation_dir), "changed",
-				G_CALLBACK(set_rotation_direction_CB), entry_rotation_file);
+    g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
     
     
-    GtkStringList *rot_axis_model = gtk_string_list_new(axis_list);
-    GListStore *rot_axis_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(rot_axis_store, rot_axis_model);
-    g_object_unref(rot_axis_model);
-    GtkFlattenListModel *viewmode_flat = gtk_flatten_list_model_new(G_LIST_MODEL(rot_axis_store));
-    GtkExpression *viewmode_expression = gtk_property_expression_new (GTK_TYPE_STRING_OBJECT,
-                                                                      NULL,
-                                                                      "string");
+	GtkWidget *hbox_rotation_dir = init_rotation_direction_hbox(kemo_gl, rot_gmenu);
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
-    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
-    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
-    
-    GtkWidget *rot_axis_button = gtk_drop_down_new(G_LIST_MODEL(viewmode_flat), viewmode_expression);
-    g_signal_connect(G_OBJECT(rot_axis_button), "notify::selected-item", 
-                     G_CALLBACK (selected_rot_axis_CB), G_OBJECT(entry_buf));
-    
-    GtkListItemFactory *rot_axis_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(rot_axis_button), rot_axis_factory);
-    g_object_unref(viewmode_expression);
-    g_object_unref(rot_axis_factory);
-    g_object_unref(viewmode_flat);
-    init_rotation_axis_dropdown(rot_gmenu, rot_axis_button);
-    
-    
-	
 	GtkWidget *label_tree_rotation_fileformat = create_fixed_label_w_index_tree();
 	GtkTreeModel *model_rotation_fileformat = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_rotation_fileformat));  
 	GtkTreeModel *child_model_rotation_fileformat = 
 			gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_rotation_fileformat));
-	index = 0;
+	int index = 0;
 	index = append_ci_item_to_tree(index, "No Image", NO_SAVE_FILE,  child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "PNG",      SAVE_PNG,      child_model_rotation_fileformat);
 	index = append_ci_item_to_tree(index, "BMP",      SAVE_BMP,      child_model_rotation_fileformat);
@@ -316,11 +288,6 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
 	g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
 					 G_CALLBACK(rotation_save_CB), (gpointer)entry_rotation_file);
 	
-	
-	GtkWidget *hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_rotation_dir), gtk_label_new("Rotation axis: "));
-	gtk_box_append(GTK_BOX(hbox_rotation_dir), rot_axis_button);
-	gtk_box_append(GTK_BOX(hbox_rotation_dir), rot_gmenu->combobox_rotation_dir);
 	
 	GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
