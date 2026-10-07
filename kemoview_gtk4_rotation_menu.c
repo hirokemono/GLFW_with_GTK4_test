@@ -46,7 +46,6 @@ struct rotation_gtk_menu * init_rotation_menu_box(void){
 
 
 /*    Buttons to set rotation direction  */
-
 static void init_rotation_axis_dropdown(struct rotation_gtk_menu *rot_gmenu,
                                         GtkWidget *rot_axis_button){
 	if(rot_gmenu->iaxis_rot == Z_AXIS){
@@ -70,8 +69,7 @@ static int find_selected_rotation_axis(const char *text){
 
 static void selected_rot_axis_CB(GtkDropDown *dropdown,
                                  GParamSpec *pspec,
-                                 gpointer user_data)
-{
+                                 gpointer user_data){
     struct rotation_gtk_menu *rot_gmenu
             = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
     struct kemoviewer_gl_type *kemo_gl
@@ -119,7 +117,7 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
     return hbox_rotation_dir;
 }
 
-
+/*    Buttons to set rotation movie image format  */
 static void init_rotation_file_fmt_dropdown(struct rotation_gtk_menu *rot_gmenu,
                                             GtkWidget *rot_file_fmt_button){
 	if(rot_gmenu->id_fmt_rot == SAVE_BMP){
@@ -154,7 +152,8 @@ static void selected_rot_file_fmt_CB(GtkDropDown *dropdown,
     
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string(selected_item);
-    rot_gmenu->iaxis_rot = find_selected_rot_file_format(text);
+    rot_gmenu->id_fmt_rot = find_selected_rot_file_format(text);
+    
     return;
 }
 
@@ -195,67 +194,14 @@ GtkWidget * init_rotation_image_format_hbox(struct kemoviewer_gl_type *kemo_gl,
 }
 
 
-
-int gtk_selected_combobox_index(GtkComboBox *combobox){
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox);
-    GtkTreeIter iter;
-    
-    gchar *row_string;
-    int index_field;
-    int index_mode;
-    
-    gint idx = gtk_combo_box_get_active(combobox);
-    if(idx < 0) return -1;
-    
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
-    
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
-    
-	printf("Selected mode %d, %s\n", index_mode, row_string);
-	return index_mode;
-};
-
-static void rotation_FPS_CB(GtkWidget *entry, gpointer user_data)
-{
-    struct rotation_gtk_menu *rot_gmenu
-            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-     rot_gmenu->i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-/*    printf("FPS %d\n", rot_gmenu->i_FPS);*/
-}
-
-static void rotation_increment_CB(GtkWidget *entry, gpointer user_data)
-{
-	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-	 rot_gmenu->inc_deg = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-/*	printf("radius %d\n", radius);*/
-}
-
-static void rotation_view_CB(GtkButton *button, gpointer user_data){
-	GtkEntry *entry = GTK_ENTRY(user_data);
-	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
-	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-	
-	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    draw_rotate_views(kemo_gl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
-	return;
-};
-
-
+/*    Buttons to invole rotation view or to save rotation movie    */
 static void kemoview_save_rot_images_CB(GObject *source,
                                         GAsyncResult *result,
                                         gpointer data){
-    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
 	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(data), "rotation");
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(data), "rotation_menu");
     
     GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG(source), result);
     if(!file) return;
@@ -265,6 +211,7 @@ static void kemoview_save_rot_images_CB(GObject *source,
     kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
     
     int id_image = kemoview_set_image_file_format_id(stripped_ext);
+    printf("id_format %d %d \n", rot_gmenu->id_fmt_rot, id_image);
     if(id_image < 0) {id_image = rot_gmenu->id_fmt_rot;};
 	kemoview_free_kvstring(stripped_ext);
 	kemoview_free_kvstring(filename);
@@ -277,10 +224,9 @@ static void kemoview_save_rot_images_CB(GObject *source,
 };
 
 static void rotation_save_CB(GtkButton *button, gpointer user_data){
-	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
 	struct rotation_gtk_menu *rot_gmenu 
-			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
@@ -289,13 +235,106 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
     GCancellable *cancellable = g_cancellable_new();
     g_cancellable_cancel(cancellable);
     
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)   kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     gtk_file_dialog_save(dialog, window, cancellable, 
-                         kemoview_save_rot_images_CB, user_data);
+                         kemoview_save_rot_images_CB, G_OBJECT(entry_buf));
     g_object_unref(filter);
     g_object_unref(cancellable);
 	return;
 };
 
+static void rotation_view_CB(GtkButton *button, gpointer user_data){
+	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+	
+	gtk_window_set_focus(GTK_WINDOW(window), NULL);
+    draw_rotate_views(kemo_gl, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg, IONE);
+	return;
+};
+
+GtkWidget * init_rotation_image_save_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                          struct rotation_gtk_menu *rot_gmenu,
+                                          GtkWidget *window){
+    GtkWidget *hbox_rotation_save;
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "parent",        (gpointer) window);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",   (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
+    
+    rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
+    g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
+                     G_CALLBACK(rotation_view_CB), G_OBJECT(entry_buf));
+    rot_gmenu->rotSave_Button = gtk_button_new_with_label("Save Rotation");
+    g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
+                     G_CALLBACK(rotation_save_CB), G_OBJECT(entry_buf));
+    
+    hbox_rotation_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotView_Button);
+    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotSave_Button);
+    return hbox_rotation_save;
+}
+
+
+/*    box to set movie FPS   */
+static void rotation_FPS_CB(GtkWidget *entry, gpointer user_data){
+    struct rotation_gtk_menu *rot_gmenu
+            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
+    rot_gmenu->i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+/*    printf("FPS %d\n", rot_gmenu->i_FPS);*/
+}
+
+GtkWidget * init_rotation_movie_FPS_hbox(struct rotation_gtk_menu *rot_gmenu){
+    GtkWidget *hbox_rot_FPS;
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
+    
+    rot_gmenu->i_FPS = 30;
+    GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(rot_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
+    rot_gmenu->spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_FPS), 0);
+    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_FPS), "value-changed",
+                     G_CALLBACK(rotation_FPS_CB), G_OBJECT(entry_buf));
+    
+    hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "));
+    gtk_box_append(GTK_BOX(hbox_rot_FPS), rot_gmenu->spin_rot_FPS);
+    return hbox_rot_FPS;
+}
+
+
+/*    box to set rotation increment   */
+static void rotation_increment_CB(GtkWidget *entry, gpointer user_data)
+{
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
+	 rot_gmenu->inc_deg = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+/*	printf("radius %d\n", radius);*/
+}
+
+GtkWidget * init_rotation_increhemt_hbox(struct rotation_gtk_menu *rot_gmenu){
+    GtkWidget *expander_rot;
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
+    
+    GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
+    rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_increment), 0);
+    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_increment), "value-changed",
+                     G_CALLBACK(rotation_increment_CB),G_OBJECT(entry_buf));
+        
+    GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
+    gtk_box_append(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment);
+    return hbox_rot_increment;
+}
 
 GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                         struct rotation_gtk_menu *rot_gmenu,
@@ -305,46 +344,14 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *entry_rotation_file = gtk_entry_new();
     g_object_set_data(G_OBJECT(entry_rotation_file), "kemoview_gl",  (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_rotation_file), "parent", (gpointer) window);
-    g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
+    g_object_set_data(G_OBJECT(entry_rotation_file), "rotation_menu", (gpointer) rot_gmenu);
     
     
+    GtkWidget *hbox_rot_increment = init_rotation_increhemt_hbox(rot_gmenu);
+    GtkWidget *hbox_rot_FPS =             init_rotation_movie_FPS_hbox(rot_gmenu);
     GtkWidget *hbox_rotation_dir =        init_rotation_direction_hbox(kemo_gl, rot_gmenu);
     GtkWidget *hbox_rotation_fileformat = init_rotation_image_format_hbox(kemo_gl, rot_gmenu);
-    
-    rot_gmenu->i_FPS = 30;
-    GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(rot_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
-    rot_gmenu->spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_FPS), 0);
-    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_FPS), "value-changed",
-                     G_CALLBACK(rotation_FPS_CB),entry_rotation_file);
-    
-    GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
-    rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_increment), 0);
-    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_increment), "value-changed",
-                     G_CALLBACK(rotation_increment_CB),entry_rotation_file);
-        
-    rot_gmenu->rotView_Button = gtk_button_new_with_label("View Rotation");
-    g_signal_connect(G_OBJECT(rot_gmenu->rotView_Button), "clicked", 
-                     G_CALLBACK(rotation_view_CB), (gpointer)entry_rotation_file);
-    rot_gmenu->rotSave_Button = gtk_button_new_with_label("Save Rotation");
-    g_signal_connect(G_OBJECT(rot_gmenu->rotSave_Button), "clicked", 
-                     G_CALLBACK(rotation_save_CB), (gpointer)entry_rotation_file);
-    
-    
-    GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
-    gtk_box_append(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment);
-    
-    GtkWidget *hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "));
-    gtk_box_append(GTK_BOX(hbox_rot_FPS), rot_gmenu->spin_rot_FPS);
-    
-    
-    GtkWidget *hbox_rotation_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotView_Button);
-    gtk_box_append(GTK_BOX(hbox_rotation_save), rot_gmenu->rotSave_Button);
-    
+    GtkWidget *hbox_rotation_save =       init_rotation_image_save_hbox(kemo_gl, rot_gmenu, window);
     
     GtkWidget *rot_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(rot_box), hbox_rotation_dir);
