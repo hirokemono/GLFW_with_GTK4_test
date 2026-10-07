@@ -33,9 +33,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 	printf("stripped_ext %s\n", stripped_ext->string);
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
-	
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
-    kemoview_free_kvstring(filename);
+    return;
     
     /*
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
@@ -271,8 +270,6 @@ static void kemoview_file_open_CB(GObject *source,
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
     draw_full_gl(kemo_gl);
-    printf("full path: %s \n", gtk_entry_buffer_get_text(entry_buf));
-    printf("Open file: %s \n", gtk_entry_buffer_get_text(full_path_buf));
     return;
 }
 

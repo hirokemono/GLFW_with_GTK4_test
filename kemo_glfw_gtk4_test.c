@@ -140,12 +140,13 @@ static void glfwWindowFocus_CB(GLFWwindow *window, int focused) {
 }
 
 void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
-	struct kv_string *filename;
-	for (int i = 0; i < num; i++) {
-		filename = kemoview_init_kvstring_by_string(paths[i]);
-//        open_kemoviewer_file_glfw(kemoview_gl, filename, mbot, gtk_win);
+    struct kv_string *filename;
+    for (int i = 0; i < num; i++) {
+        filename = kemoview_init_kvstring_by_string(paths[i]);
+        open_kemoviewer_file_glfw(kemoview_gl, filename, mbot, gtk_win);
+        kemoview_free_kvstring(filename);
         printf("Drugged file: %s\n", filename->string);
-	}
+    }
 }
 
 void windowSizeCB(GLFWwindow *window, int width, int height) {

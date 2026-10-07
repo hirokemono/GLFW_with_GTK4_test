@@ -46,8 +46,10 @@ kemoview_gtk4_rotation_menu.c \
 kemoview_gtk4_rotation_expander.c \
 kemoview_gtk4_viewmatrix_menu.c \
 kemoview_gtk4_viewmode_menu.c \
-kemoview_gtk4_fileselector.c \
-kemoview_gtk4_main_menu.c \
+kemoview_gtk4_fileselector.c  \
+kemoview_gtk4_PSF_menu.c      \
+kemoview_gtk4_PSF_window.c    \
+kemoview_gtk4_main_menu.c     \
 kemo_glfw_gtk4_test.c
 
 OBJS = \

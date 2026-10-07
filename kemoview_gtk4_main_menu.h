@@ -29,7 +29,8 @@
 // #include "kemoview_gtk_axis_menu.h"
 // #include "kemoview_gtk_preference_menu.h"
 // #include "kemoview_gtk_mesh_menu.h"
-// #include "kemoview_gtk_PSF_window.h"
+#include "kemoview_gtk4_PSF_menu.h"
+#include "kemoview_gtk4_PSF_window.h"
 // #include "kemoview_gtk_Fline_window.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 #include "kemoview_gtk4_viewmode_menu.h"
@@ -40,7 +41,7 @@
 
 struct main_buttons{
     int id_current[1];
-//    struct psf_gtk_menu *psf_gmenu;
+    struct psf_gtk_menu *psf_gmenu;
 //    struct fieldline_gtk_menu *fline_gmenu;
 //    struct fieldline_gtk_menu *tracer_gmenu;
     
