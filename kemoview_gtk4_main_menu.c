@@ -172,6 +172,11 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
 //                                                    mbot->view_menu, main_window);
     
     vbox_menu = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_widget_set_margin_top(vbox_menu,    5);
+    gtk_widget_set_margin_bottom(vbox_menu, 5);
+    gtk_widget_set_margin_start(vbox_menu,  5);
+    gtk_widget_set_margin_end(vbox_menu,    5);
+    
     gtk_box_append(GTK_BOX(vbox_menu), hbox_open);
     gtk_box_append(GTK_BOX(vbox_menu), savebox);
     gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);

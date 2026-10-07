@@ -147,7 +147,12 @@ GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_surf);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_color);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_vect);
+    
     psf_menu_frame = wrap_into_frame_gtk4("Surfaces", psf_vbox);
+    gtk_widget_set_margin_top(psf_menu_frame,    5);
+    gtk_widget_set_margin_bottom(psf_menu_frame, 5);
+    gtk_widget_set_margin_start(psf_menu_frame,  5);
+    gtk_widget_set_margin_end(psf_menu_frame,    5);
     return psf_menu_frame;
 }
 
@@ -178,10 +183,6 @@ void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
     psf_gmenu->psfWin = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
     gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
-    gtk_widget_set_margin_top(psf_gmenu->psfWin,    5);
-    gtk_widget_set_margin_bottom(psf_gmenu->psfWin, 5);
-    gtk_widget_set_margin_start(psf_gmenu->psfWin,  5);
-    gtk_widget_set_margin_end(psf_gmenu->psfWin,    5);
     
     g_object_set_data(G_OBJECT(itemTEvo), "psfmenu", (gpointer) psf_gmenu);
     g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);

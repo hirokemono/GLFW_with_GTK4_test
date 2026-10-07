@@ -34,10 +34,9 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
-    return;
     
-    /*
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
+    /*
     init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
     init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
     init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
