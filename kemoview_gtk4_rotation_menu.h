@@ -1,11 +1,11 @@
-/*
+/***********************************************************************
  *  kemoview_gtk4_rotation_menu.h
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
  *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
  *
- */
+ ***********************************************************************/
 #ifndef KEMOVIEW_GTK4_ROTATION_MENU_
 #define KEMOVIEW_GTK4_ROTATION_MENU_
 
@@ -17,27 +17,24 @@
 #include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
-// #include "tree_view_chara_int_GTK.h"
-// #include "tree_views_4_fixed_lists_GTK.h"
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_routines.h"
 
 #include "view_modifier_glfw.h"
 
 struct rotation_gtk_menu{
-	int id_fmt_rot;
-	
+    int id_fmt_rot;
+    
     int i_FPS;
-	int inc_deg;
-	int iaxis_rot;
-		
-    GtkWidget *combobox_rotation_dir;
-	GtkWidget *spin_rot_increment;
+    int inc_deg;
+    int iaxis_rot;
+    
+    GtkWidget *spin_rot_increment;
     GtkWidget *spin_rot_FPS;
 
-	GtkWidget *combobox_rotation_fileformat;
-	GtkWidget *rotView_Button;
-	GtkWidget *rotSave_Button;
+    GtkWidget *combobox_rotation_fileformat;
+    GtkWidget *rotView_Button;
+    GtkWidget *rotSave_Button;
 };
 
 

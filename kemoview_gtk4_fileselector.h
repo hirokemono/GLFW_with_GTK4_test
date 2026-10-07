@@ -21,6 +21,12 @@
 /*  prototypes */
 /* Routines for inout from console */
 
+GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result);
+GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result);
+
+
 void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
                                     GtkEntryBuffer *entry_buf,
                                     GtkEntryBuffer *full_path_buf);

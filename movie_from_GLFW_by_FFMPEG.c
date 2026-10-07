@@ -166,6 +166,7 @@ void sel_lc_write_rotate_views(GLFWwindow *glfw_win,
     kemoview_set_view_integer(ISET_DRAW_MODE, MOVIE_DRAW, kemo_gl->kemoview_data);
     kemoview_set_view_integer(ISET_ROTATE_AXIS, i_axis, kemo_gl->kemoview_data);
     glfwFocusWindow(glfw_win);
+        printf("sel_lc_write_rotate_views %d\n", iflag_img);
     
 #ifdef FFMPEG
     if(iflag_img == SAVE_QT_MOVIE){

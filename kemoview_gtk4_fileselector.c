@@ -59,8 +59,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
 	return;
 };
 
-static void save_kemoview_image_file(struct kemoviewer_gl_type *kemo_gl, 
-                                     struct kv_string *filename){
+void save_kemoview_image_file(struct kemoviewer_gl_type *kemo_gl, 
+                              struct kv_string *filename){
     int i_quilt;
     int iflag_quilt = kemoview_get_quilt_nums(kemo_gl->kemoview_data, ISET_QUILT_MODE);
     int npix_x = kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X);
@@ -276,28 +276,6 @@ static void kemoview_file_open_CB(GObject *source,
     return;
 }
 
-static void kemoview_save_image_CB(GObject *source,
-                                  GAsyncResult *result,
-                                  gpointer data){
-	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
-    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
-    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(data), "buttons");
-    
-    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
-    
-    if(!file) return;
-    gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
-                              strlen(g_file_get_basename(file))+1);
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-    save_kemoview_image_file(kemo_gl, filename);
-    kemoview_free_kvstring(filename);
-    g_object_unref(file);
-    return;
-};
-
 static void kemoview_open_viewmat_CB(GObject *source,
                                      GAsyncResult *result,
                                      gpointer data){
@@ -369,6 +347,28 @@ void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
 	return;
 }
 
+static void kemoview_save_image_CB(GObject *source,
+                                  GAsyncResult *result,
+                                  gpointer data){
+	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
+    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(data), "buttons");
+    
+    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
+    
+    if(!file) return;
+    gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
+                              strlen(g_file_get_basename(file))+1);
+    
+    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
+    save_kemoview_image_file(kemo_gl, filename);
+    kemoview_free_kvstring(filename);
+    g_object_unref(file);
+    return;
+};
+
 void kemoview_gtk4_save_image_select(struct kemoviewer_gl_type *kemo_gl, 
                                      GtkWindow *window){
 	GtkFileDialog *dialog = gtk_file_dialog_new();
@@ -383,6 +383,7 @@ void kemoview_gtk4_save_image_select(struct kemoviewer_gl_type *kemo_gl,
     g_object_unref(cancellable);
 	return;
 }
+
 
 void kemoview_gtk4_read_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
                                           GtkWindow *window){

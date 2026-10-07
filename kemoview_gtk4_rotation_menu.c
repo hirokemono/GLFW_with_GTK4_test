@@ -259,6 +259,35 @@ static void rotation_view_CB(GtkButton *button, gpointer user_data){
 	return;
 };
 
+
+static void kemoview_save_rot_images_CB(GObject *source,
+                                        GAsyncResult *result,
+                                        gpointer data){
+    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "parent"));
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
+	struct rotation_gtk_menu *rot_gmenu 
+			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(data), "rotation");
+    
+    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG(source), result);
+    if(!file) return;
+    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
+    
+    int id_image = kemoview_set_image_file_format_id(stripped_ext);
+    if(id_image < 0) {id_image = rot_gmenu->id_fmt_rot;};
+	kemoview_free_kvstring(stripped_ext);
+	kemoview_free_kvstring(filename);
+    g_object_unref(file);
+    if(id_image == 0) return;
+    
+    sel_write_rotate_views(kemo_gl, id_image, file_prefix,
+                           rot_gmenu->i_FPS, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
+    return;
+};
+
 static void rotation_save_CB(GtkButton *button, gpointer user_data){
 	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(user_data);
 	GtkWidget *window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent"));
@@ -266,26 +295,16 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
 			= (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-
-	int id_image;
-    kemoview_gtk4_save_file_select(button, G_OBJECT(entry_buf));
-	struct kv_string *filename = kemoview_init_kvstring_by_string(gtk_entry_buffer_get_text(entry_buf));
-    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
-	struct kv_string *file_prefix = kemoview_alloc_kvstring();
-	
-	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-	id_image = kemoview_set_image_file_format_id(stripped_ext);
-	if(id_image < 0) {
-		id_image = rot_gmenu->id_fmt_rot;
-	};
-	if(id_image == 0) return;
-	kemoview_free_kvstring(stripped_ext);
-	kemoview_free_kvstring(filename);
-	
-	gtk_window_set_focus(GTK_WINDOW(window), NULL);
-    sel_write_rotate_views(kemo_gl, rot_gmenu->id_fmt_rot, file_prefix,
-                           rot_gmenu->i_FPS, rot_gmenu->iaxis_rot, rot_gmenu->inc_deg);
-	
+    
+	GtkFileDialog *dialog = gtk_file_dialog_new();
+    GtkFileFilter *filter = gtk_file_filter_new();
+    GCancellable *cancellable = g_cancellable_new();
+    g_cancellable_cancel(cancellable);
+    
+    gtk_file_dialog_save(dialog, window, cancellable, 
+                         kemoview_save_rot_images_CB, user_data);
+    g_object_unref(filter);
+    g_object_unref(cancellable);
 	return;
 };
 
@@ -301,7 +320,7 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_rotation_file), "rotation", (gpointer) rot_gmenu);
     
     
-    GtkWidget *hbox_rotation_dir = init_rotation_direction_hbox(kemo_gl, rot_gmenu);
+    GtkWidget *hbox_rotation_dir =        init_rotation_direction_hbox(kemo_gl, rot_gmenu);
     GtkWidget *hbox_rotation_fileformat = init_rotation_image_format_hbox(kemo_gl, rot_gmenu);
     
     rot_gmenu->i_FPS = 30;
