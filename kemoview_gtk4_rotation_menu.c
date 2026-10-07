@@ -32,6 +32,21 @@ const char * const image_fmt_list[] = {hd_NoImage,
 #endif
                                        NULL};
 
+
+
+struct rotation_gtk_menu * init_rotation_menu_box(void){
+	struct rotation_gtk_menu *rot_gmenu
+			= (struct rotation_gtk_menu *)  malloc(sizeof(struct rotation_gtk_menu));
+	rot_gmenu->id_fmt_rot = 0;
+	
+	rot_gmenu->inc_deg = 2;
+	rot_gmenu->iaxis_rot = Z_AXIS;
+	return rot_gmenu;
+};
+
+
+/*    Buttons to set rotation direction  */
+
 static void init_rotation_axis_dropdown(struct rotation_gtk_menu *rot_gmenu,
                                         GtkWidget *rot_axis_button){
 	if(rot_gmenu->iaxis_rot == Z_AXIS){
@@ -201,33 +216,6 @@ int gtk_selected_combobox_index(GtkComboBox *combobox){
     
 	printf("Selected mode %d, %s\n", index_mode, row_string);
 	return index_mode;
-};
-
-
-int append_ci_item_to_tree(const int index, const char *c_tbl, 
-                           const int i_data, GtkTreeModel *child_model)
-{
-    GtkTreeIter iter;
-    
-    gtk_list_store_append(GTK_LIST_STORE(child_model), &iter);
-    gtk_list_store_set(GTK_LIST_STORE(child_model), &iter,
-                       COLUMN_FIELD_INDEX, index,
-                       COLUMN_FIELD_NAME,  c_tbl,
-                       COLUMN_FIELD_MATH,  i_data,
-                       -1);
-    return index + 1;
-}
-
-
-
-struct rotation_gtk_menu * init_rotation_menu_box(void){
-	struct rotation_gtk_menu *rot_gmenu
-			= (struct rotation_gtk_menu *)  malloc(sizeof(struct rotation_gtk_menu));
-	rot_gmenu->id_fmt_rot = 0;
-	
-	rot_gmenu->inc_deg = 2;
-	rot_gmenu->iaxis_rot = Z_AXIS;
-	return rot_gmenu;
 };
 
 static void rotation_FPS_CB(GtkWidget *entry, gpointer user_data)
