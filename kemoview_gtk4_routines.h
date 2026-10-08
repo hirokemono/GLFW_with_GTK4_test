@@ -14,7 +14,6 @@
 #include <string.h>
 
 #include "calypso_GTK4.h"
-// #include "tree_views_4_fixed_lists_GTK.h"
 
 
 /*  prototypes */

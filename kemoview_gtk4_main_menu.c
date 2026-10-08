@@ -27,7 +27,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
     mbot->rot_gmenu = init_rotation_menu_box();
 //    mbot->quilt_gmenu = init_quilt_menu_box();
-//    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
+    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
 	return mbot;
 };
 
@@ -37,14 +37,14 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 //    free(mbot->fline_gmenu);
 //    free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
-
-//    dealloc_light_views_4_viewer(mbot->lightparams_vws);
-	
-	free(mbot->rot_gmenu);
-	free(mbot->view_menu);
-	
-	free(mbot);
-	return;
+    
+    dealloc_light_views_4_viewer(mbot->lightparams_vws);
+    
+    free(mbot->rot_gmenu);
+    free(mbot->view_menu);
+    
+    free(mbot);
+    return;
 };
 
 static void open_file_CB(GtkButton *button, gpointer *user_data){
@@ -119,7 +119,7 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(open_file_CB), (gpointer) entry_buf);
     
     hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-//    gtk_box_append(GTK_BOX(hbox_open), menuGrid, TRUE, TRUE, 0);
+//    gtk_box_append(GTK_BOX(hbox_open), menuGrid);
     gtk_box_append(GTK_BOX(hbox_open), gtk_label_new("File: "));
     gtk_box_append(GTK_BOX(hbox_open), entry_file);
     gtk_box_append(GTK_BOX(hbox_open), open_Button);

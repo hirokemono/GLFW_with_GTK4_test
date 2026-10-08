@@ -40,7 +40,10 @@ kemoview_FFMPEG_encoder.c \
 render_on_GLFW.c \
 movie_from_GLFW_by_FFMPEG.c \
 view_modifier_glfw.c \
+\
 calypso_GTK4.c \
+tree_view_real3_GTK.c \
+tree_views_4_fixed_lists_GTK.c        \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_image_format_selector.c \
 kemoview_gtk4_rotation_menu.c         \
@@ -51,6 +54,8 @@ kemoview_gtk4_fileselector.c          \
 kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
+kemoview_gtk4_light_menu.c            \
+kemoview_gtk4_menu_button.c           \
 kemoview_gtk4_main_menu.c             \
 kemo_glfw_gtk4_test.c
 
@@ -65,6 +70,9 @@ $(KEMO_LIB_FILES):
 $(TARGET): $(SRC) $(OBJS) $(KEMO_LIB_FILES)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+%.o: %.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -c $<
 
 clean:
 	rm -rf *.o *.mod *~

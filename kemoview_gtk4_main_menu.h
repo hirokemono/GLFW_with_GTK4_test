@@ -20,7 +20,7 @@
 #include "calypso_GTK4.h"
 // #include "tree_views_4_fixed_lists_GTK.h"
 // #include "tree_view_viewer_colormap.h"
-// #include "tree_view_4_light_position.h"
+#include "kemoview_gtk4_light_menu.h"
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_evolution_menu.h"
 #include "kemoview_gtk4_rotation_menu.h"
@@ -34,7 +34,7 @@
 // #include "kemoview_gtk_Fline_window.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 #include "kemoview_gtk4_viewmode_menu.h"
-// #include "kemoview_gtk_menu_button.h"
+#include "kemoview_gtk4_menu_button.h"
 
 #include "view_modifier_glfw.h"
 
@@ -55,7 +55,7 @@ struct main_buttons{
     struct view_widgets *view_menu;
     
     GtkWidget *expander_pref;
-//    struct lightparams_view *lightparams_vws;
+    struct lightparams_view *lightparams_vws;
     
     struct rotation_gtk_menu *rot_gmenu;
     

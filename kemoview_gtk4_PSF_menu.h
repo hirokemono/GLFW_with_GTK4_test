@@ -21,7 +21,7 @@
 //#include "tree_view_chara_int_GTK.h"
 //#include "tree_view_4_colormap.h"
 //#include "tree_view_kemoview_colormap.h"
-//#include "tree_view_4_light_position.h"
+#include "kemoview_gtk4_light_menu.h"
 //#include "tree_view_viewer_colormap.h"
 #include "kemoview_gtk4_fileselector.h"
 //#include "kemoview_gtk_PSF_surface_menu.h"
