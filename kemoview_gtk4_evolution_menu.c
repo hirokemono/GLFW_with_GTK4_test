@@ -20,6 +20,7 @@ struct evolution_gtk_menu * init_evoluaiton_menu_box(struct kemoviewer_type *kem
 	evo_gmenu->inc_evo =    1;
 	
     evo_gmenu->id_fmt_evo = NO_SAVE_FILE;
+    evo_gmenu->i_FPS = 30;
     
     kemoview_set_object_property_flags(0, TIME_LABEL_SWITCH, kemo_sgl);
 	kemoview_set_object_property_flags(0, FILE_STEP_LABEL_SWITCH, kemo_sgl);
@@ -119,8 +120,7 @@ static GtkWidget * init_evolution_image_save_hbox(struct kemoviewer_gl_type *kem
 }
 
 
-
-
+/*    Buttons to set start, stop, and increment    */
 
 
 static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
@@ -133,6 +133,7 @@ static void draw_time_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
     draw_full_gl(kemo_gl);
 	return;
 };
+
 static void draw_fileindex_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
@@ -163,119 +164,96 @@ static void evo_increment_CB(GtkWidget *entry, gpointer user_data)
 	evo_gmenu->inc_evo = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
 }
 
-static void evo_FPS_CB(GtkWidget *entry, gpointer user_data)
-{
-    struct evolution_gtk_menu *evo_gmenu
-            = (struct evolution_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "evolution");
-    evo_gmenu->i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-}
 
-
-static void set_evoluaiton_menu_expander(struct kemoviewer_gl_type *kemo_gl,
-                                         struct evolution_gtk_menu *evo_gmenu){
-    evo_gmenu->entry_evo_file = gtk_entry_new();
-    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "evolution", (gpointer) evo_gmenu);
-    g_object_set_data(G_OBJECT(evo_gmenu->entry_evo_file), "kemoview_gl",  (gpointer) kemo_gl);
-    
-    evo_gmenu->switch_timelabel = gtk_switch_new();
-    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, TIME_LABEL_SWITCH) == 0){
-        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), FALSE);
-    } else {
-        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_timelabel), TRUE);
-    };
-    g_signal_connect(G_OBJECT(evo_gmenu->switch_timelabel), "notify::active",
-                     G_CALLBACK(draw_time_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
-    evo_gmenu->switch_fileindex = gtk_switch_new();
-    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, FILE_STEP_LABEL_SWITCH) == 0){
-        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), FALSE);
-    } else {
-        gtk_switch_set_active(GTK_SWITCH(evo_gmenu->switch_fileindex), TRUE);
-    };
-    g_signal_connect(G_OBJECT(evo_gmenu->switch_fileindex), "notify::active",
-                     G_CALLBACK(draw_fileindex_switch_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
-    evo_gmenu->istart_evo = 1;
-    evo_gmenu->iend_evo =   1;
-    evo_gmenu->inc_evo =    1;
-    
-    GtkAdjustment *adj_evo_start = gtk_adjustment_new(evo_gmenu->istart_evo, 0, 1.0e30, 1, 1, 0.0);
-    evo_gmenu->spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 1, 0);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(evo_gmenu->spin_evo_start), 0);
-    g_signal_connect(evo_gmenu->spin_evo_start, "value-changed",
-                     G_CALLBACK(evo_start_step_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
-    GtkAdjustment *adj_evo_end = gtk_adjustment_new(evo_gmenu->iend_evo, 0.00, 1.0e30, 1, 1, 0.0);
-    evo_gmenu->spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 1, 0);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(evo_gmenu->spin_evo_end), 0);
-    g_signal_connect(evo_gmenu->spin_evo_end, "value-changed",
-                     G_CALLBACK(evo_end_step_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
-    GtkAdjustment *adj_evo_increment = gtk_adjustment_new(evo_gmenu->inc_evo, 0, 1.0e30, 1, 1, 0.0);
-    evo_gmenu->spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 1, 0);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(evo_gmenu->spin_evo_increment), 0);
-    g_signal_connect(evo_gmenu->spin_evo_increment, "value-changed",
-                     G_CALLBACK(evo_increment_CB), (gpointer) evo_gmenu->entry_evo_file);
-    
-    evo_gmenu->i_FPS = 30;
-    GtkAdjustment *adj_evo_FPS = gtk_adjustment_new(evo_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
-    evo_gmenu->spin_evo_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_FPS), 0, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(evo_gmenu->spin_evo_FPS), 0);
-    gtk_editable_set_width_chars(GTK_EDITABLE(evo_gmenu->spin_evo_FPS), 6);
-    g_signal_connect(evo_gmenu->spin_evo_FPS, "value-changed",
-                     G_CALLBACK(evo_FPS_CB), (gpointer) evo_gmenu->entry_evo_file);
-    return;
-}
-
-static GtkWidget * pack_evoluaiton_menu_box(struct kemoviewer_gl_type *kemo_gl,
-                                            struct evolution_gtk_menu *evo_gmenu,
-                                            GtkWidget *window){
+static GtkWidget * init_evoluaiton_menu_vbox(struct kemoviewer_gl_type *kemo_gl,
+                                             struct evolution_gtk_menu *evo_gmenu){
     GtkWidget *evo_box;
     
-    GtkWidget *hbox_evo_fileformat = init_image_format_hbox(&evo_gmenu->id_fmt_evo);
-    GtkWidget *hbox_evo_save =       init_evolution_image_save_hbox(kemo_gl, evo_gmenu, window);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "evolution", (gpointer) evo_gmenu);
     
-    GtkWidget *hbox_time = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_time), gtk_label_new("Draw time: "));
-    gtk_box_append(GTK_BOX(hbox_time), evo_gmenu->switch_timelabel);
+    GtkWidget *switch_timelabel = gtk_switch_new();
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, TIME_LABEL_SWITCH) == 0){
+        gtk_switch_set_active(GTK_SWITCH(switch_timelabel), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(switch_timelabel), TRUE);
+    };
+    g_signal_connect(G_OBJECT(switch_timelabel), "notify::active",
+                     G_CALLBACK(draw_time_switch_CB), G_OBJECT(entry_buf));
     
-    GtkWidget *hbox_fileindex = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_fileindex), gtk_label_new("Draw file step: "));
-    gtk_box_append(GTK_BOX(hbox_fileindex), evo_gmenu->switch_fileindex);
+    GtkWidget *switch_fileindex = gtk_switch_new();
+    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data, FILE_STEP_LABEL_SWITCH) == 0){
+        gtk_switch_set_active(GTK_SWITCH(switch_fileindex), FALSE);
+    } else {
+        gtk_switch_set_active(GTK_SWITCH(switch_fileindex), TRUE);
+    };
+    g_signal_connect(G_OBJECT(switch_fileindex), "notify::active",
+                     G_CALLBACK(draw_fileindex_switch_CB), G_OBJECT(entry_buf));
+    
+    GtkAdjustment *adj_evo_start = gtk_adjustment_new(evo_gmenu->istart_evo, 0, 1.0e30, 1, 1, 0.0);
+    GtkWidget *spin_evo_start = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_start), 1, 0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(spin_evo_start), 0);
+    g_signal_connect(spin_evo_start, "value-changed", G_CALLBACK(evo_start_step_CB),
+                     G_OBJECT(entry_buf));
+    
+    GtkAdjustment *adj_evo_end = gtk_adjustment_new(evo_gmenu->iend_evo, 0.00, 1.0e30, 1, 1, 0.0);
+    GtkWidget *spin_evo_end = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_end), 1, 0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(spin_evo_end), 0);
+    g_signal_connect(spin_evo_end, "value-changed", G_CALLBACK(evo_end_step_CB),
+                     G_OBJECT(entry_buf));
+    
+    GtkAdjustment *adj_evo_increment = gtk_adjustment_new(evo_gmenu->inc_evo, 0, 1.0e30, 1, 1, 0.0);
+    GtkWidget *spin_evo_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_evo_increment), 1, 0);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(spin_evo_increment), 0);
+    g_signal_connect(spin_evo_increment, "value-changed", G_CALLBACK(evo_increment_CB), 
+                     G_OBJECT(entry_buf));
+    
+    GtkWidget *hbox_time_sw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_time_sw), gtk_label_new("Draw time: "));
+    gtk_box_append(GTK_BOX(hbox_time_sw), switch_timelabel);
+    
+    GtkWidget *hbox_fileindex_sw = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_fileindex_sw), gtk_label_new("Draw file step: "));
+    gtk_box_append(GTK_BOX(hbox_fileindex_sw), switch_fileindex);
     
     GtkWidget *hbox_evo_start = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_evo_start), gtk_label_new("Start step: "));
-    gtk_box_append(GTK_BOX(hbox_evo_start), evo_gmenu->spin_evo_start);
+    gtk_box_append(GTK_BOX(hbox_evo_start), spin_evo_start);
     GtkWidget *hbox_evo_end = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_evo_end), gtk_label_new("End step: "));
-    gtk_box_append(GTK_BOX(hbox_evo_end), evo_gmenu->spin_evo_end);
+    gtk_box_append(GTK_BOX(hbox_evo_end), spin_evo_end);
     GtkWidget *hbox_evo_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_evo_increment), gtk_label_new("Increment: "));
-    gtk_box_append(GTK_BOX(hbox_evo_increment), evo_gmenu->spin_evo_increment);
-    
-    GtkWidget *hbox_evo_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_evo_FPS), gtk_label_new("FPS in movie: "));
-    gtk_box_append(GTK_BOX(hbox_evo_FPS), evo_gmenu->spin_evo_FPS);
-    
+    gtk_box_append(GTK_BOX(hbox_evo_increment), spin_evo_increment);
     
     evo_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(evo_box), hbox_time);
-    gtk_box_append(GTK_BOX(evo_box), hbox_fileindex);
+    gtk_box_append(GTK_BOX(evo_box), hbox_time_sw);
+    gtk_box_append(GTK_BOX(evo_box), hbox_fileindex_sw);
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_start);
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_end);
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_increment);
+    return evo_box;
+}
+
+static void append_evoluaiton_movie_box(struct kemoviewer_gl_type *kemo_gl,
+                                        struct evolution_gtk_menu *evo_gmenu,
+                                        GtkWidget *window, GtkWidget *evo_box){
+    GtkWidget *hbox_evo_FPS =        init_movie_FPS_hbox(&evo_gmenu->i_FPS);
+    GtkWidget *hbox_evo_fileformat = init_image_format_hbox(&evo_gmenu->id_fmt_evo);
+    GtkWidget *hbox_evo_save =       init_evolution_image_save_hbox(kemo_gl, evo_gmenu, window);
+    
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_FPS);
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_fileformat);
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_save);
-
-    return evo_box;
+    return;
 }
 
 GtkWidget * init_evolution_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                          struct evolution_gtk_menu *evo_gmenu,
                                          GtkWidget *window){
-    set_evoluaiton_menu_expander(kemo_gl, evo_gmenu);
-    GtkWidget *evo_box = pack_evoluaiton_menu_box(kemo_gl, evo_gmenu, window);
+    GtkWidget *evo_box = init_evoluaiton_menu_vbox(kemo_gl, evo_gmenu);
+    append_evoluaiton_movie_box(kemo_gl, evo_gmenu, window, evo_box);
     return wrap_into_scroll_expansion_gtk4("Evolution", 360, 280, window, evo_box);
 }
 

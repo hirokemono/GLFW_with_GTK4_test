@@ -93,3 +93,30 @@ GtkWidget * init_image_format_hbox(int *id_image_format){
 	gtk_box_append(GTK_BOX(hbox_image_format), image_format_button);
     return hbox_image_format;
 }
+
+/*    box to set movie FPS   */
+
+static void movie_FPS_CB(GtkWidget *entry, gpointer user_data){
+    int *i_FPS = (int *) g_object_get_data(G_OBJECT(user_data), "movie_FPS");
+    *i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
+/*    printf("FPS %d\n", *i_FPS);*/
+}
+
+GtkWidget * init_movie_FPS_hbox(int *i_FPS){
+    GtkWidget *hbox_rot_FPS;
+    
+    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "movie_FPS", (gpointer) i_FPS);
+    
+    GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(*i_FPS, 1, 180, 1, 1, 0.0);
+    GtkWidget *spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(spin_rot_FPS), 0);
+    g_signal_connect(G_OBJECT(spin_rot_FPS), "value-changed",
+                     G_CALLBACK(movie_FPS_CB), G_OBJECT(entry_buf));
+    
+    hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "));
+    gtk_box_append(GTK_BOX(hbox_rot_FPS), spin_rot_FPS);
+    return hbox_rot_FPS;
+}
+

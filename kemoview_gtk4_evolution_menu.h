@@ -32,27 +32,6 @@ struct evolution_gtk_menu{
     int iend_evo;
     int inc_evo;
     int i_FPS;
-    
-    GtkWidget *switch_timelabel;
-    GtkWidget *switch_fileindex;
-    GtkWidget *spin_evo_start;
-    GtkWidget *spin_evo_end;
-    GtkWidget *spin_evo_increment;
-    GtkWidget *spin_evo_FPS;
-
-    GtkWidget *combobox_evo_fileformat;
-    
-    GtkWidget *entry_evo_file;
-    
-    GtkWidget *hbox_time;
-    GtkWidget *hbox_fileindex;
-    GtkWidget *hbox_evo_start;
-    GtkWidget *hbox_evo_end;
-    GtkWidget *hbox_evo_increment;
-    GtkWidget *hbox_evo_filename;
-    GtkWidget *hbox_evo_fileformat;
-    GtkWidget *hbox_evo_save;
-    GtkWidget *evo_box;
 };
 
 /*  prototypes */

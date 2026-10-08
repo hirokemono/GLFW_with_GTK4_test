@@ -21,5 +21,6 @@
 /*  prototypes */
 
 GtkWidget * init_image_format_hbox(int *id_image_format);
+GtkWidget * init_movie_FPS_hbox(int *i_FPS);
 
 #endif  /* KEMOVIEW_GTK4_IMAGE_FORMAT_SELECTOR_ */

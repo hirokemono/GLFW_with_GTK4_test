@@ -51,8 +51,8 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     printf("kemo_gl->kemoview_data->istep_evo %d\n", kemo_gl->kemoview_data->istep_evo);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_start), (double) mbot->evo_gmenu->istart_evo);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_end),   (double) mbot->evo_gmenu->iend_evo);
-    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
     */
+    activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
     draw_full_gl(kemo_gl);
 	return;
 };

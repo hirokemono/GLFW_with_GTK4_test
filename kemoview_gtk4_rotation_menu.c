@@ -25,16 +25,18 @@ struct rotation_gtk_menu * init_rotation_menu_box(void){
 	
 	rot_gmenu->inc_deg = 2;
 	rot_gmenu->iaxis_rot = Z_AXIS;
-	return rot_gmenu;
+    
+    rot_gmenu->i_FPS = 30;
+ return rot_gmenu;
 };
 
 
 /*    Buttons to set rotation direction  */
-static void init_rotation_axis_dropdown(struct rotation_gtk_menu *rot_gmenu,
+static void init_rotation_axis_dropdown(int iaxis_rot,
                                         GtkWidget *rot_axis_button){
-	if(rot_gmenu->iaxis_rot == Z_AXIS){
+	if(iaxis_rot == Z_AXIS){
 		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_axis_button), 2);
-	} else if(rot_gmenu->iaxis_rot == Y_AXIS){
+	} else if(iaxis_rot == Y_AXIS){
 		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_axis_button), 1);
 	} else {
 		gtk_drop_down_set_selected(GTK_DROP_DOWN(rot_axis_button), 0);
@@ -93,40 +95,12 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
 //    g_object_unref(rot_axis_expression);     Do not release GtkExpression!!
     g_object_unref(rot_axis_factory);
     g_object_unref(rot_axis_flat);
-    init_rotation_axis_dropdown(rot_gmenu, rot_axis_button);
+    init_rotation_axis_dropdown(rot_gmenu->iaxis_rot, rot_axis_button);
     
     hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
 	gtk_box_append(GTK_BOX(hbox_rotation_dir), gtk_label_new("Rotation axis: "));
 	gtk_box_append(GTK_BOX(hbox_rotation_dir), rot_axis_button);
     return hbox_rotation_dir;
-}
-
-
-/*    box to set movie FPS   */
-static void rotation_FPS_CB(GtkWidget *entry, gpointer user_data){
-    struct rotation_gtk_menu *rot_gmenu
-            = (struct rotation_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "rotation_menu");
-    rot_gmenu->i_FPS = (int) gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(entry));
-/*    printf("FPS %d\n", rot_gmenu->i_FPS);*/
-}
-
-GtkWidget * init_rotation_movie_FPS_hbox(struct rotation_gtk_menu *rot_gmenu){
-    GtkWidget *hbox_rot_FPS;
-    
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
-    g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
-    
-    rot_gmenu->i_FPS = 30;
-    GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(rot_gmenu->i_FPS, 1, 180, 1, 1, 0.0);
-    rot_gmenu->spin_rot_FPS = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_FPS), 0, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_FPS), 0);
-    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_FPS), "value-changed",
-                     G_CALLBACK(rotation_FPS_CB), G_OBJECT(entry_buf));
-    
-    hbox_rot_FPS = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_rot_FPS), gtk_label_new("FPS for movie: "));
-    gtk_box_append(GTK_BOX(hbox_rot_FPS), rot_gmenu->spin_rot_FPS);
-    return hbox_rot_FPS;
 }
 
 
@@ -146,13 +120,13 @@ GtkWidget * init_rotation_increment_hbox(struct rotation_gtk_menu *rot_gmenu){
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     
     GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
-    rot_gmenu->spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
-    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(rot_gmenu->spin_rot_increment), 0);
-    g_signal_connect(G_OBJECT(rot_gmenu->spin_rot_increment), "value-changed",
+    GtkWidget *spin_rot_increment = gtk_spin_button_new(GTK_ADJUSTMENT(adj_rot_increment), 0, 1);
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(spin_rot_increment), 0);
+    g_signal_connect(G_OBJECT(spin_rot_increment), "value-changed",
                      G_CALLBACK(rotation_increment_CB),G_OBJECT(entry_buf));
         
     GtkWidget *hbox_rot_increment = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_rot_increment), gtk_label_new("Step (Deg.): "));
-    gtk_box_append(GTK_BOX(hbox_rot_increment), rot_gmenu->spin_rot_increment);
+    gtk_box_append(GTK_BOX(hbox_rot_increment), spin_rot_increment);
     return hbox_rot_increment;
 }

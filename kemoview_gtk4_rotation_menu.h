@@ -28,9 +28,6 @@ struct rotation_gtk_menu{
     int i_FPS;
     int inc_deg;
     int iaxis_rot;
-    
-    GtkWidget *spin_rot_increment;
-    GtkWidget *spin_rot_FPS;
 };
 
 
@@ -40,7 +37,7 @@ struct rotation_gtk_menu * init_rotation_menu_box(void);
 
 GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
                                          struct rotation_gtk_menu *rot_gmenu);
-GtkWidget * init_rotation_movie_FPS_hbox(struct rotation_gtk_menu *rot_gmenu);
+GtkWidget * init_movie_FPS_hbox(int *i_FPS);
 GtkWidget * init_rotation_increment_hbox(struct rotation_gtk_menu *rot_gmenu);
 
 #endif  /* KEMOVIEW_GTK4_ROTATION_MENU_ */

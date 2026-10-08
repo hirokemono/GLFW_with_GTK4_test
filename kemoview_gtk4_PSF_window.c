@@ -37,7 +37,7 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     kemoview_set_viewtype(VIEW_3D, kemo_gl->kemoview_data);
 	
     init_psf_window(kemo_gl, psf_gmenu, main_window, itemTEvo);
-//    activate_evolution_menu(kemo_gl->kemoview_data, itemTEvo);
+    activate_evolution_menu(kemo_gl->kemoview_data, itemTEvo);
     gtk_widget_queue_draw(psf_gmenu->psfWin);
     draw_full_gl(kemo_gl);
 };
