@@ -1,11 +1,11 @@
-/*
+/***********************************************************************
  *  kemoview_gtk4_main_menu.h
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
  *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
  *
- */
+ ***********************************************************************/
 #ifndef KEMOVIEW_GTK4_MAIN_MENU_
 #define KEMOVIEW_GTK4_MAIN_MENU_
 
@@ -22,7 +22,7 @@
 // #include "tree_view_viewer_colormap.h"
 // #include "tree_view_4_light_position.h"
 #include "kemoview_gtk4_fileselector.h"
-// #include "kemoview_gtk_evolution_menu.h"
+#include "kemoview_gtk4_evolution_menu.h"
 #include "kemoview_gtk4_rotation_menu.h"
 #include "kemoview_gtk4_rotation_expander.h"
 // #include "kemoview_gtk_quilt_menu.h"
@@ -49,7 +49,7 @@ struct main_buttons{
 //    struct kemoview_mesh_view *mesh_vws;
     
     GtkWidget *itemTEvo;
-//    struct evolution_gtk_menu *evo_gmenu;
+    struct evolution_gtk_menu *evo_gmenu;
     
     GtkWidget *expander_view;
     struct view_widgets *view_menu;

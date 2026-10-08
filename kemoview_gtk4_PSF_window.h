@@ -23,7 +23,7 @@
 // #include "tree_view_viewer_colormap.h"
 // #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk4_PSF_menu.h"
-// #include "kemoview_gtk_evolution_menu.h"
+#include "kemoview_gtk4_evolution_menu.h"
 // #include "kemoview_gtk_fline_selectors.h"
 
 #include "view_modifier_glfw.h"

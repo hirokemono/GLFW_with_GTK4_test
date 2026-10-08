@@ -31,9 +31,6 @@ struct rotation_gtk_menu{
     
     GtkWidget *spin_rot_increment;
     GtkWidget *spin_rot_FPS;
-    
-    GtkWidget *rotView_Button;
-    GtkWidget *rotSave_Button;
 };
 
 

@@ -17,6 +17,7 @@
 #include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 
+#include "kemoview_gtk4_image_format_selector.h"
 #include "kemoview_gtk4_rotation_menu.h"
 
 /*  prototypes */

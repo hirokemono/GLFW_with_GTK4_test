@@ -21,7 +21,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 //    mbot->fline_gmenu =  (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
 //    mbot->tracer_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
 //    mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
-//    mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
+    mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
 
     mbot->view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
 
@@ -36,7 +36,7 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 //    free(mbot->tracer_gmenu);
 //    free(mbot->fline_gmenu);
 //    free(mbot->mesh_vws);
-//    free(mbot->evo_gmenu);
+    free(mbot->evo_gmenu);
 
 //    dealloc_light_views_4_viewer(mbot->lightparams_vws);
 	
@@ -164,7 +164,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
 //    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
                                                           main_window);
-//    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
+    mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
     
     mbot->expander_view = init_viewmatrix_menu_expander(kemo_gl, mbot->view_menu,
                                                         main_window);
@@ -182,7 +182,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
     gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
 //    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
     gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
-//    gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
+    gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
     gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_view);
     return vbox_menu;
