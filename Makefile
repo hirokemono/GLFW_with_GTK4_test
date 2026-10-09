@@ -19,7 +19,7 @@ KEMO_INCLUDE= -I. -I$(GTK3_DIR) \
 -I$(SRCDIR)/MHD/C_src/CONTROLS  \
 -I$(SRCDIR)/MHD/C_src/GLSL      \
 -I$(SRCDIR)/MHD/C_src/KEMO_GL   \
--I/opt/homebrew/Cellar/zlib/1.3.1/include
+-I/opt/homebrew/opt/zlib
 
 KEMO_LIBS =     -L$(MAKEDIR) -lkemo_c
 KEMO_LIB_FILES =  $(MAKEDIR)/libkemo_c.a 
@@ -31,7 +31,7 @@ GTK4_CFLAGS = $(shell pkg-config --cflags gtk4 $(PACKAGES))
 GTK4_LIBS =   $(shell pkg-config --libs gtk4 $(PACKAGES))
 
 FRAMEWORKS = -framework OpenGL  -framework CoreVideo  -framework IOKit -framework Cocoa
-FRAMEWORKS+= -L/opt/homebrew/Cellar/zlib/1.3.1/lib -lz 
+FRAMEWORKS+= -L/opt/homebrew/opt/zlib/lib -lz
 
 
 TARGET = kemo_gtk4_test
