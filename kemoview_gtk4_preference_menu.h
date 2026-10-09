@@ -13,11 +13,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "calypso_GTK4.h"
+#include "kemoviewer.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
+
+#include "calypso_GTK4.h"
 //#include "tree_view_4_pvr_colormap.h"
-//#include "kemoview_gtk_colorsel.h"
+#include "kemoview_gtk4_colorsel.h"
 //#include "kemoview_gtk_routines.h"
 //#include "kemoview_gtk_rotation_menu.h"
 //#include "kemoview_gtk_shading_mode_menu.h"

@@ -9,10 +9,14 @@
 
 #include "kemoview_gtk4_menu_button.h"
 
-static void prefWindowclose_CB (GtkWidget *new_win, gpointer user_data)
+GtkWidget *pref_win;
+
+static void prefWindowclose_CB(GtkWidget *new_win, gpointer user_data)
 {
-    GtkWidget *menu_item = GTK_WIDGET(user_data);
-    gtk_widget_set_sensitive(menu_item, TRUE);
+//    GtkWidget *menu_item = GTK_WIDGET(user_data);
+    //    gtk_widget_set_sensitive(menu_item, TRUE);
+    printf("Close preference\n");
+    gtk_window_destroy(GTK_WINDOW(new_win));
 };
 
 static void preference_CB(GSimpleAction *simple,
@@ -24,7 +28,7 @@ static void preference_CB(GSimpleAction *simple,
     struct lightparams_view *lightparams_vws
             = (struct lightparams_view *) g_object_get_data(G_OBJECT(user_data), "lights");
     
-    GtkWidget *pref_win = gtk_window_new();
+    pref_win = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(pref_win), "Preferences");
     gtk_widget_set_size_request(pref_win, 150, -1);
     g_signal_connect(G_OBJECT(pref_win), "destroy",

@@ -45,6 +45,7 @@ calypso_GTK4.c \
 tree_view_real3_GTK.c \
 tree_views_4_fixed_lists_GTK.c        \
 kemoview_gtk4_routines.c              \
+kemoview_gtk4_colorsel.c              \
 kemoview_gtk4_image_format_selector.c \
 kemoview_gtk4_rotation_menu.c         \
 kemoview_gtk4_rotation_expander.c     \
@@ -76,12 +77,17 @@ menu_test: menutest/menu_test.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
+color_dialog_test: color_dialog/color_dialog_test.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
 %.o: %.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -c $<
 
 clean:
 	rm -rf *.o *.mod *~
 	rm -rf menu_test*
+	rm -rf color_dialog_test*
 	for target in $(TARGET); do \
 		(rm -fr $${target}*) \
 	done; \
