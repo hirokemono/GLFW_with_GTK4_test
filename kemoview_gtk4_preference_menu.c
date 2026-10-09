@@ -17,7 +17,6 @@ static void set_image_fileformat_CB(GtkComboBox *combobox_filefmt, gpointer user
     int id_img_format = gtk_selected_combobox_index(combobox_filefmt);
     kemoview_set_view_integer(IMAGE_FORMAT_FLAG, id_img_format,
                               kemo_gl->kemoview_data);
-	draw_full_gl(kemo_gl);
 	return;
 };
 */
@@ -75,6 +74,7 @@ GtkWidget * init_default_image_format_menu(struct kemoviewer_gl_type *kemo_gl){
 GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
                                  struct lightparams_view *lightparams_vws,
                                  GtkWidget *window){
+    int id_def_format[1];
     GtkWidget *pref_vbox;
     
     float color[4];
@@ -94,13 +94,13 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
 //    GtkWidget *Axis_frame =      init_axis_position_menu(kemo_gl);
 //    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemo_gl, window);
 //    GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemo_gl);
-//    GtkWidget *ImgFormat_frame = init_default_image_format_menu(kemo_gl);
+    GtkWidget *ImgFormat_frame = init_image_format_hbox(kemo_gl, id_def_format);
 
     
     pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(pref_vbox), BGselButton);
 //    gtk_box_append(GTK_BOX(pref_vbox), NumThread_frame);
-//    gtk_box_append(GTK_BOX(pref_vbox), ImgFormat_frame);
+    gtk_box_append(GTK_BOX(pref_vbox), ImgFormat_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), lighting_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), Tube_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), Shading_frame);

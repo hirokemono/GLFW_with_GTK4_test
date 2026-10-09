@@ -17,6 +17,11 @@ const char * const hd_Movie =     "Movie";     //  SAVE_QT_MOVIE
 const char * const image_fmt_list[] = {hd_NoImage,
                                        hd_PNGimage,
                                        hd_BMPimage,
+                                       NULL};
+
+const char * const movie_fmt_list[] = {hd_NoImage,
+                                       hd_PNGimage,
+                                       hd_BMPimage,
 #ifdef FFMPEG
                                        hd_Movie,
 #endif
@@ -45,10 +50,12 @@ static int find_selected_movie_format(const char *text){
     return index_mode;
 }
 
-static void selected_rot_file_fmt_CB(GtkDropDown *dropdown,
+static void selected_movie_format_CB(GtkDropDown *dropdown,
                                      GParamSpec *pspec,
                                      gpointer user_data)
 {
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *id_image_format = (int *) g_object_get_data(G_OBJECT(user_data), "image_format");
 /* The dropdown model returns a GtkStringObject when created from strings */
     GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
@@ -56,30 +63,32 @@ static void selected_rot_file_fmt_CB(GtkDropDown *dropdown,
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string(selected_item);
     *id_image_format = find_selected_movie_format(text);
-    
+    kemoview_set_view_integer(IMAGE_FORMAT_FLAG, *id_image_format,
+                              kemo_gl->kemoview_data);
     return;
 }
 
 
-GtkWidget * init_image_format_hbox(int *id_image_format){
-    GtkWidget *hbox_image_format;
+static GtkWidget * init_image_format_button(struct kemoviewer_gl_type *kemo_gl,
+                                            GtkStringList *image_format_model, 
+                                            int *id_image_format){
+    GtkWidget *image_format_button;
     
-    GtkStringList *image_format_model = gtk_string_list_new(image_fmt_list);
     GListStore *image_format_store = g_list_store_new(G_TYPE_LIST_MODEL);
     g_list_store_append(image_format_store, image_format_model);
-    g_object_unref(image_format_model);
     GtkFlattenListModel *image_format_flat = gtk_flatten_list_model_new(G_LIST_MODEL(image_format_store));
     GtkExpression *image_format_expression = gtk_property_expression_new(GTK_TYPE_STRING_OBJECT,
                                                                          NULL,
                                                                          "string");
     
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "image_format", (gpointer) id_image_format);
     
-    GtkWidget *image_format_button = gtk_drop_down_new(G_LIST_MODEL(image_format_flat),
-                                                      image_format_expression);
+    image_format_button = gtk_drop_down_new(G_LIST_MODEL(image_format_flat),
+                                            image_format_expression);
     g_signal_connect(G_OBJECT(image_format_button), "notify::selected-item", 
-                     G_CALLBACK (selected_rot_file_fmt_CB), G_OBJECT(entry_buf));
+                     G_CALLBACK (selected_movie_format_CB), G_OBJECT(entry_buf));
     
     GtkListItemFactory *rot_file_fmt_factory = gtk_signal_list_item_factory_new ();
     gtk_drop_down_set_header_factory (GTK_DROP_DOWN(image_format_button), rot_file_fmt_factory);
@@ -88,11 +97,42 @@ GtkWidget * init_image_format_hbox(int *id_image_format){
     g_object_unref(image_format_flat);
     init_image_format_dropdown(*id_image_format, image_format_button);
     
+    return image_format_button;
+}
+
+
+GtkWidget * init_image_format_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                   int *id_image_format){
+    GtkWidget *hbox_image_format;
+    
+    GtkStringList *movie_format_model = gtk_string_list_new(image_fmt_list);
+    GtkWidget *image_format_button = init_image_format_button(kemo_gl,
+                                                              movie_format_model, 
+                                                              id_image_format);
+    g_object_unref(movie_format_model);
+    
     hbox_image_format = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_image_format), gtk_label_new("File format: "));
-	gtk_box_append(GTK_BOX(hbox_image_format), image_format_button);
+    gtk_box_append(GTK_BOX(hbox_image_format), gtk_label_new("Image Format: "));
+    gtk_box_append(GTK_BOX(hbox_image_format), image_format_button);
     return hbox_image_format;
 }
+
+GtkWidget * init_movie_format_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                   int *id_image_format){
+    GtkWidget *hbox_image_format;
+    
+    GtkStringList *movie_format_model = gtk_string_list_new(movie_fmt_list);
+    GtkWidget *image_format_button = init_image_format_button(kemo_gl,
+                                                              movie_format_model, 
+                                                              id_image_format);
+    g_object_unref(movie_format_model);
+    
+    hbox_image_format = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_image_format), gtk_label_new("Movie Format: "));
+    gtk_box_append(GTK_BOX(hbox_image_format), image_format_button);
+    return hbox_image_format;
+}
+
 
 /*    box to set movie FPS   */
 

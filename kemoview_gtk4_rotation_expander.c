@@ -113,7 +113,7 @@ GtkWidget * init_rotation_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_rot_increment =       init_rotation_increment_hbox(rot_gmenu);
     GtkWidget *hbox_rotation_dir =        init_rotation_direction_hbox(kemo_gl, rot_gmenu);
     GtkWidget *hbox_rot_FPS =             init_movie_FPS_hbox(&rot_gmenu->i_FPS);
-    GtkWidget *hbox_rotation_fileformat = init_image_format_hbox(&rot_gmenu->id_fmt_rot);
+    GtkWidget *hbox_rotation_fileformat = init_movie_format_hbox(kemo_gl, &rot_gmenu->id_fmt_rot);
     GtkWidget *hbox_rotation_save =       init_rotation_image_save_hbox(kemo_gl, rot_gmenu, window);
     
     GtkWidget *rot_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);

@@ -24,6 +24,7 @@
 //#include "kemoview_gtk_tube_pref_menu.h"
 //#include "kemoview_gtk_axis_prefs_menu.h"
 //#include "kemoview_gtk_performance_menu.h"
+#include "kemoview_gtk4_image_format_selector.h"
 #include "kemoview_gtk4_lighting_menu.h"
 
 #include "view_modifier_glfw.h"

@@ -240,7 +240,7 @@ static void append_evoluaiton_movie_box(struct kemoviewer_gl_type *kemo_gl,
                                         struct evolution_gtk_menu *evo_gmenu,
                                         GtkWidget *window, GtkWidget *evo_box){
     GtkWidget *hbox_evo_FPS =        init_movie_FPS_hbox(&evo_gmenu->i_FPS);
-    GtkWidget *hbox_evo_fileformat = init_image_format_hbox(&evo_gmenu->id_fmt_evo);
+    GtkWidget *hbox_evo_fileformat = init_movie_format_hbox(kemo_gl, &evo_gmenu->id_fmt_evo);
     GtkWidget *hbox_evo_save =       init_evolution_image_save_hbox(kemo_gl, evo_gmenu, window);
     
     gtk_box_append(GTK_BOX(evo_box), hbox_evo_FPS);
