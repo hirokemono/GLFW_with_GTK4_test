@@ -188,12 +188,11 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
 {
     mbot = init_main_buttons(single_kemoview);
     
-    gtk_win = gtk_window_new();
+    gtk_win = gtk_application_window_new(app);
     g_signal_connect(G_OBJECT(gtk_win), "destroy",
                      G_CALLBACK(gtkWindowclose_CB), NULL);
     g_signal_connect(G_OBJECT(gtk_win), "notify::is-active", 
                      G_CALLBACK(gtkWindowfocus_CB), NULL);
-    gtk_window_set_application(GTK_WINDOW(gtk_win), GTK_APPLICATION(app));
     
     iflag_fast_prev = 0;
     GtkWidget *quitButton = gtk_button_new_with_label("Quit");

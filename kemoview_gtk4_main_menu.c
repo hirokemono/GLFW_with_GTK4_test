@@ -102,6 +102,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
                                            GtkWidget *main_window,
                                            struct main_buttons *mbot){
+    printf("main_window aho %p\n", main_window);
     GtkWidget *hbox_open;
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
@@ -110,16 +111,16 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
 
-//    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
+    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
 //                                               mbot->lightparams_vws,
-//                                               mbot->evo_gmenu);
+                                               mbot->evo_gmenu);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",
                      G_CALLBACK(open_file_CB), (gpointer) entry_buf);
     
     hbox_open = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-//    gtk_box_append(GTK_BOX(hbox_open), menuGrid);
+    gtk_box_append(GTK_BOX(hbox_open), menuGrid);
     gtk_box_append(GTK_BOX(hbox_open), gtk_label_new("File: "));
     gtk_box_append(GTK_BOX(hbox_open), entry_file);
     gtk_box_append(GTK_BOX(hbox_open), open_Button);

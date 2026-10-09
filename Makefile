@@ -71,11 +71,16 @@ $(TARGET): $(SRC) $(OBJS) $(KEMO_LIB_FILES)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
+menu_test: menutest/menu_test.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
 %.o: %.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -c $<
 
 clean:
 	rm -rf *.o *.mod *~
+	rm -rf menu_test*
 	for target in $(TARGET); do \
 		(rm -fr $${target}*) \
 	done; \
