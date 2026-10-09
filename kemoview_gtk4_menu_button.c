@@ -23,20 +23,21 @@ static void preference_CB(GSimpleAction *simple,
                           GVariant      *parameter,
                           gpointer       user_data){
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent_win"));
+    GtkWidget *pref_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "preference_win"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     struct lightparams_view *lightparams_vws
             = (struct lightparams_view *) g_object_get_data(G_OBJECT(user_data), "lights");
     
-    pref_win = gtk_window_new();
-    gtk_window_set_title(GTK_WINDOW(pref_win), "Preferences");
-    gtk_widget_set_size_request(pref_win, 150, -1);
-    g_signal_connect(G_OBJECT(pref_win), "destroy",
+    pref_window = gtk_window_new();
+    gtk_window_set_title(GTK_WINDOW(pref_window), "Preferences");
+    gtk_widget_set_size_request(pref_window, 150, -1);
+    g_signal_connect(G_OBJECT(pref_window), "destroy",
                      G_CALLBACK(prefWindowclose_CB), G_OBJECT(main_window));
     
-    GtkWidget *frame_pref = init_preference_scrollbox(kemo_gl, lightparams_vws, pref_win);
-    gtk_window_set_child(GTK_WINDOW(pref_win), frame_pref);
-    gtk_widget_set_visible(pref_win, TRUE);
+    GtkWidget *frame_pref = init_preference_scrollbox(kemo_gl, lightparams_vws, pref_window);
+    gtk_window_set_child(GTK_WINDOW(pref_window), frame_pref);
+    gtk_widget_set_visible(pref_window, TRUE);
     gtk_widget_set_sensitive(main_window, FALSE);
 }
 
