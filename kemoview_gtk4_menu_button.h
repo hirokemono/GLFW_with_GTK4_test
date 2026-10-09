@@ -20,7 +20,7 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-//#include "kemoview_gtk_preference_menu.h"
+#include "kemoview_gtk4_preference_menu.h"
 #include "kemoview_gtk4_evolution_menu.h"
 
 /*  prototypes */
