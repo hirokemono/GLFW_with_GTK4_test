@@ -100,7 +100,7 @@ static void image_save_CB(GtkButton *button, gpointer user_data){
 
 
 static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
-                                           GtkWidget *main_window,
+                                           GtkWidget *main_window, GLFWwindow *glfw_win,
                                            struct main_buttons *mbot){
     printf("main_window aho %p\n", main_window);
     GtkWidget *hbox_open;
@@ -111,7 +111,7 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
 
-    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
+    GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window, glfw_win,
                                                mbot->pref_vws);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
@@ -152,12 +152,12 @@ static GtkWidget * make_gtk4_save_file_box(GtkWidget *quitButton,
     return savebox;
 };
 
-GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
+GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot, GLFWwindow *glfw_win,
                                     GtkWidget *quitButton, GtkWidget *main_window,
                                     struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *vbox_menu;
     
-    GtkWidget *hbox_open = make_gtk4_open_file_box(kemo_gl, main_window, mbot);
+    GtkWidget *hbox_open = make_gtk4_open_file_box(kemo_gl, main_window, glfw_win, mbot);
     GtkWidget *savebox = make_gtk4_save_file_box(quitButton, main_window, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);

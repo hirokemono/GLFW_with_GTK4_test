@@ -21,6 +21,8 @@
 #include "kemoview_gtk4_light_menu.h"
 #include "kemoview_gtk4_preference_menu.h"
 
+#include "view_modifier_glfw.h"
+
 struct preference_view{
     struct lightparams_view *light_vws;
     
@@ -34,6 +36,6 @@ void dealloc_preference_view(struct preference_view *pref_vws);
 
 void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
                             struct preference_view *pref_vws,
-                            GtkWidget *main_window);
+                            GtkWidget *main_window, GLFWwindow *glfw_win);
 
 #endif   /*  KEMOVIEW_GTK4_PREFERENCE_MENU_  */

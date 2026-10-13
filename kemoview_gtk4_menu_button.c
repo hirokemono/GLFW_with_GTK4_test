@@ -35,13 +35,14 @@ static void prefWindowfocus_CB(GtkWidget *widget, gpointer user_data){
 static void preference_CB(GSimpleAction *simple,
                           GVariant      *parameter,
                           gpointer       user_data){
+    GLFWwindow *glfw_win = (GLFWwindow *) g_object_get_data(G_OBJECT(user_data), "glfw_window");
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent_win"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     struct preference_view *pref_vws
             = (struct preference_view *) g_object_get_data(G_OBJECT(user_data), "pref_view");
     
-    init_preference_window(kemo_gl, pref_vws, main_window);
+    init_preference_window(kemo_gl, pref_vws, main_window, glfw_win);
 //    gtk_widget_set_sensitive(main_window, FALSE);
 }
 
@@ -70,7 +71,7 @@ static void startup(GApplication *app,
 }
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
-                                GtkWidget *main_window,
+                                GtkWidget *main_window, GLFWwindow *glfw_win,
                                 struct preference_view *pref_vws){
     GMenu *menu_model = g_menu_new();
     g_menu_append(menu_model, "Preferences...", "win.pref");
@@ -86,7 +87,8 @@ GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "parent_win",  (gpointer) main_window);
-    g_object_set_data(G_OBJECT(entry_buf), "pref_view",     (gpointer) pref_vws);
+    g_object_set_data(G_OBJECT(entry_buf), "pref_view",   (gpointer) pref_vws);
+    g_object_set_data(G_OBJECT(entry_buf), "glfw_window", (gpointer) glfw_win);
     
     GSimpleAction *pref_action = g_simple_action_new("pref", NULL);
     g_signal_connect(pref_action, "activate", 

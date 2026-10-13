@@ -72,7 +72,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
                                struct main_buttons *mbot,
                                GtkWidget *main_window);
 
-GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
+GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot, GLFWwindow *glfw_win,
                                     GtkWidget *quitButton, GtkWidget *main_window,
                                     struct kemoviewer_gl_type *kemo_gl);
 

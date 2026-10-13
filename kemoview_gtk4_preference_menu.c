@@ -13,6 +13,7 @@ static void set_background_CB(GObject    *object,
                               GParamSpec *pspec,
                               gpointer    user_data){
     GtkColorDialogButton *color_button = GTK_COLOR_DIALOG_BUTTON(object);
+    GLFWwindow *glfw_win = (GLFWwindow *) g_object_get_data(G_OBJECT(user_data), "glfw_window");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     struct GtkWidget *pref_win
@@ -21,20 +22,21 @@ static void set_background_CB(GObject    *object,
     GdkRGBA *rgba = gtk_color_dialog_button_get_rgba(color_button);
     float color[4];
     set_RGB_from_GTK(rgba, color);
-    printf("updated %f %f %f %f\n", color[0], color[1], color[2], color[3]);
-    
-    printf("updated background %p %p\n", kemo_gl, kemo_gl->kemoview_data);
     kemoview_set_background_color(color, kemo_gl->kemoview_data);
-    kemoview_gl_background_color(kemo_gl->kemoview_data);
+//    printf("updated %f %f %f %f\n", color[0], color[1], color[2], color[3]);
     
+    kemoview_gl_background_color(kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
-//    draw_full_gl(kemo_gl);
-//    gtk_widget_set_visible(pref_win, TRUE);
+    
+    kemoview_gl_background_color(kemo_gl->kemoview_data);
+    draw_full_gl(kemo_gl);
+    
     return;
 };
 
 static GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl,
-                                        struct GtkWidget *pref_win){
+                                        struct GtkWidget *pref_win,
+                                        GLFWwindow *glfw_win){
     GtkWidget *hbox_bg_hbox;
     
     GdkRGBA bg_rgba;
@@ -42,23 +44,19 @@ static GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl,
     kemoview_get_background_color(kemo_gl->kemoview_data, color);
     set_RGB_to_GTK(color, &bg_rgba);
     
-//    float color2[4] = {0.0, 0.0, 0.0, 1.0};
-//    kemoview_set_background_color(color2, kemo_gl->kemoview_data);
-//    kemoview_gl_background_color(kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-    
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "pref_window", (gpointer) pref_win);
+    g_object_set_data(G_OBJECT(entry_buf), "glfw_window", (gpointer) glfw_win);
     
     GtkColorDialog *color_dialog = gtk_color_dialog_new();
     gtk_color_dialog_set_title(color_dialog, "Choose a color");
     gtk_color_dialog_set_with_alpha (color_dialog, TRUE); // Allow transparency adjustments
     
     GtkWidget *color_button = gtk_color_dialog_button_new(color_dialog);
+    gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(color_button), &bg_rgba);
     g_signal_connect (color_button, "notify::rgba", 
                       G_CALLBACK(set_background_CB), G_OBJECT(entry_buf));
-    gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(color_button), &bg_rgba);
     
     
     hbox_bg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
@@ -70,12 +68,13 @@ static GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl,
 
 GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
                                  struct lightparams_view *lightparams_vws,
-                                 GtkWidget *window, GtkWidget *pref_win){
+                                 GtkWidget *window, GtkWidget *pref_win,
+                                 GLFWwindow *glfw_win){
     GtkWidget *pref_vbox;
     
     float color[4];
     
-    GtkWidget *background_box = init_background_hbox(kemo_gl, pref_win);
+    GtkWidget *background_box = init_background_hbox(kemo_gl, pref_win, glfw_win);
 //    GtkWidget *lighting_frame =  init_lighting_frame(kemo_gl,
 //                                                     lightparams_vws);
 //    GtkWidget *Shading_frame =   shading_mode_menu_frame(kemo_gl);
@@ -102,30 +101,33 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
 
 GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
                                   struct lightparams_view *lightparams_vws,
-                                  GtkWidget *window, GtkWidget *pref_win){
+                                  GtkWidget *window, GtkWidget *pref_win,
+                                  GLFWwindow *glfw_win){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
     GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws, 
-                                                window, pref_win);
+                                                window, pref_win, glfw_win);
 	gtk_frame_set_child(GTK_FRAME(frame_pref), pref_vbox);
     return frame_pref;
 }
 
 GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
-                                     struct lightparams_view *lightparams_vws,
-                                     GtkWidget *window, GtkWidget *pref_win){
+                                      struct lightparams_view *lightparams_vws,
+                                      GtkWidget *window, GtkWidget *pref_win,
+                                      GLFWwindow *glfw_win){
     GtkWidget *scroll_pref;
     GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws,
-                                                window, pref_win);
+                                                window, pref_win, glfw_win);
     scroll_pref = wrap_into_scrollbox_gtk4(400, 400, pref_vbox);
     return scroll_pref;
 }
 
 GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
                                      struct lightparams_view *lightparams_vws,
-                                     GtkWidget *window, GtkWidget *pref_win){
+                                     GtkWidget *window, GtkWidget *pref_win,
+                                     GLFWwindow *glfw_win){
     GtkWidget *expander_pref;
     GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws,
-                                                window, pref_win);
+                                                window, pref_win, glfw_win);
     expander_pref = wrap_into_scroll_expansion_gtk4("Preferences", 400, 400,
                                                     window, pref_vbox);
     return expander_pref;

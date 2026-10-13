@@ -27,7 +27,7 @@
 /*  prototypes */
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
-                                GtkWidget *pref_window,
+                                GtkWidget *main_window, GLFWwindow *glfw_win,
                                 struct preference_view *pref_vws);
 
 #endif /* KEMOVIEW_GTK_MENU_BUTTON_ */
