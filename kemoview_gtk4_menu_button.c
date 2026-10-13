@@ -38,22 +38,11 @@ static void preference_CB(GSimpleAction *simple,
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parent_win"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    struct lightparams_view *lightparams_vws
-            = (struct lightparams_view *) g_object_get_data(G_OBJECT(user_data), "lights");
+    struct preference_view *pref_vws
+            = (struct preference_view *) g_object_get_data(G_OBJECT(user_data), "pref_view");
     
-    lightparams_vws->pref_window = gtk_window_new();
-    gtk_window_set_title(GTK_WINDOW(lightparams_vws->pref_window), "Preferences");
-    gtk_widget_set_size_request(lightparams_vws->pref_window, 150, -1);
-    g_signal_connect(G_OBJECT(lightparams_vws->pref_window), "destroy",
-                     G_CALLBACK(prefWindowclose_CB), NULL);
-    g_signal_connect(G_OBJECT(lightparams_vws->pref_window), "notify::is-active", 
-                     G_CALLBACK(prefWindowfocus_CB), NULL);
-    
-    GtkWidget *frame_pref = init_preference_scrollbox(kemo_gl, lightparams_vws, 
-                                                      lightparams_vws->pref_window);
-    gtk_window_set_child(GTK_WINDOW(lightparams_vws->pref_window), frame_pref);
-    gtk_widget_set_visible(lightparams_vws->pref_window, TRUE);
-    gtk_widget_set_sensitive(main_window, FALSE);
+    init_preference_window(kemo_gl, pref_vws, main_window);
+//    gtk_widget_set_sensitive(main_window, FALSE);
 }
 
 static void new_callback (GSimpleAction *simple,
@@ -82,8 +71,7 @@ static void startup(GApplication *app,
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
                                 GtkWidget *main_window,
-                                struct lightparams_view *lightparams_vws,
-                                struct evolution_gtk_menu *evo_gmenu){
+                                struct preference_view *pref_vws){
     GMenu *menu_model = g_menu_new();
     g_menu_append(menu_model, "Preferences...", "win.pref");
 //    g_menu_append(menu_model, "Open",           "app.open");
@@ -98,7 +86,7 @@ GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "parent_win",  (gpointer) main_window);
-    g_object_set_data(G_OBJECT(entry_buf), "lights",     (gpointer) lightparams_vws);
+    g_object_set_data(G_OBJECT(entry_buf), "pref_view",     (gpointer) pref_vws);
     
     GSimpleAction *pref_action = g_simple_action_new("pref", NULL);
     g_signal_connect(pref_action, "activate", 

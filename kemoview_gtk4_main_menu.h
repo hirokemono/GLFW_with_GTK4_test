@@ -29,11 +29,12 @@
 // #include "kemoview_gtk_axis_menu.h"
 // #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk4_PSF_menu.h"
-#include "kemoview_gtk4_PSF_window.h"
 // #include "kemoview_gtk_Fline_window.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 #include "kemoview_gtk4_viewmode_menu.h"
 #include "kemoview_gtk4_menu_button.h"
+#include "kemoview_gtk4_PSF_window.h"
+#include "kemoview_gtk4_pref_window.h"
 
 #include "view_modifier_glfw.h"
 
@@ -53,9 +54,7 @@ struct main_buttons{
     GtkWidget *expander_view;
     struct view_widgets *view_menu;
     
-    GtkWidget *pref_window;
-    GtkWidget *expander_pref;
-    struct lightparams_view *lightparams_vws;
+    struct preference_view *pref_vws;
     
     struct rotation_gtk_menu *rot_gmenu;
     

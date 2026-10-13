@@ -27,7 +27,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
     mbot->rot_gmenu = init_rotation_menu_box();
 //    mbot->quilt_gmenu = init_quilt_menu_box();
-    mbot->lightparams_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
+    mbot->pref_vws = init_preference_view(kemoviewer_data);
 	return mbot;
 };
 
@@ -38,7 +38,7 @@ void dealloc_main_buttons(struct main_buttons *mbot){
 //    free(mbot->mesh_vws);
     free(mbot->evo_gmenu);
     
-    dealloc_light_views_4_viewer(mbot->lightparams_vws);
+    dealloc_preference_view(mbot->pref_vws);
     
     free(mbot->rot_gmenu);
     free(mbot->view_menu);
@@ -112,8 +112,7 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
 
     GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
-                                               mbot->lightparams_vws,
-                                               mbot->evo_gmenu);
+                                               mbot->pref_vws);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");
     g_signal_connect(G_OBJECT(open_Button), "clicked",

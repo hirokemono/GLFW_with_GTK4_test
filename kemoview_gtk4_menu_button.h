@@ -22,12 +22,12 @@
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_preference_menu.h"
 #include "kemoview_gtk4_evolution_menu.h"
+#include "kemoview_gtk4_pref_window.h"
 
 /*  prototypes */
 
 GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
                                 GtkWidget *pref_window,
-                                struct lightparams_view *lightparams_vws,
-                                struct evolution_gtk_menu *evo_gmenu);
+                                struct preference_view *pref_vws);
 
 #endif /* KEMOVIEW_GTK_MENU_BUTTON_ */

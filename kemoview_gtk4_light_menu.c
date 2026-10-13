@@ -9,7 +9,13 @@
 
 
 struct lightparams_view * init_light_views_4_ctl(struct real3_clist *light_list){
-    struct lightparams_view *light_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    struct lightparams_view *light_vws
+            = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    if (light_vws == NULL) {
+        printf("malloc error for init_light_views_4_ctl\n");
+        exit(0);
+    }
+    
     
     light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
     init_r3_clist_views(light_list, light_vws->light_rtp_vws);
@@ -20,8 +26,18 @@ struct lightparams_view * init_light_views_4_viewer(struct phong_lights *lights)
     int i, num;
     float r,t, p;
     
-    struct lightparams_view *light_vws = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    struct lightparams_view *light_vws
+            = (struct lightparams_view *) malloc(sizeof(struct lightparams_view));
+    if (light_vws == NULL) {
+        printf("malloc error for lightparams_view\n");
+        exit(0);
+    }
+    
     light_vws->light_rtp_vws = (struct r3_clist_view *) malloc(sizeof(struct r3_clist_view));
+    if (light_vws->light_rtp_vws == NULL) {
+        printf("malloc error for light_vws->light_rtp_vws\n");
+        exit(0);
+    }
     light_vws->light_rtp_vws->r3_clist_gtk = init_real3_clist();
     
     sprintf(light_vws->light_rtp_vws->r3_clist_gtk->clist_name, "Light position");

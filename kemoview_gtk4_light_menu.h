@@ -22,8 +22,6 @@ struct lightparams_view{
     
     int id_def_format;
     
-    GtkWidget *pref_window;
-    
     GtkWidget *scrolled_window;
     GtkWidget *light_vbox;
 };

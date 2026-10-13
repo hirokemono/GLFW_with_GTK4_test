@@ -57,6 +57,7 @@ kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
 kemoview_gtk4_light_menu.c            \
 kemoview_gtk4_preference_menu.c       \
+kemoview_gtk4_pref_window.c           \
 kemoview_gtk4_menu_button.c           \
 kemoview_gtk4_main_menu.c             \
 kemo_glfw_gtk4_test.c
