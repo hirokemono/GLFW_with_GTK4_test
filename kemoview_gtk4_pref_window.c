@@ -40,11 +40,6 @@ static gboolean dummy_close_CB(GtkWidget *widget, GdkEvent *event, gpointer data
 void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
                             struct preference_view *pref_vws,
                             GtkWidget *main_window){
-//    if(psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(psf_gmenu->psfWin);};
-//    psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
-//                                                             NUM_LOADED);
-//    if(psf_gmenu->iflag_psfBox == 0){return;}
-    
     pref_vws->pref_window = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(pref_vws->pref_window), "Preferences");
     gtk_widget_set_size_request(pref_vws->pref_window, 450, -1);
@@ -52,7 +47,8 @@ void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(pref_vws->pref_window, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
     
-    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, pref_vws->light_vws, main_window);
+    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, pref_vws->light_vws, 
+                                                      main_window, pref_vws->pref_window);
     gtk_window_set_child(GTK_WINDOW(pref_vws->pref_window), pref_frame);
     gtk_widget_set_visible(pref_vws->pref_window, TRUE);
     return;
