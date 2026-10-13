@@ -161,7 +161,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot, GLFWwindow *glfw_
     GtkWidget *savebox = make_gtk4_save_file_box(quitButton, main_window, kemo_gl);
     
     GtkWidget *hbox_viewtype = make_gtk4_viewmode_menu_box(kemo_gl, mbot->view_menu);
-//    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
+    GtkWidget *hbox_axis = make_axis_menu_box(kemo_gl, main_window);
     GtkWidget *expander_rot = init_rotation_menu_expander(kemo_gl, mbot->rot_gmenu,
                                                           main_window);
     mbot->itemTEvo = init_evolution_menu_expander(kemo_gl, mbot->evo_gmenu, main_window);
@@ -180,7 +180,7 @@ GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot, GLFWwindow *glfw_
     gtk_box_append(GTK_BOX(vbox_menu), hbox_open);
     gtk_box_append(GTK_BOX(vbox_menu), savebox);
     gtk_box_append(GTK_BOX(vbox_menu), hbox_viewtype);
-//    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
+    gtk_box_append(GTK_BOX(vbox_menu), hbox_axis);
     gtk_box_append(GTK_BOX(vbox_menu), expander_rot);
     gtk_box_append(GTK_BOX(vbox_menu), mbot->itemTEvo);
 //    gtk_box_append(GTK_BOX(vbox_menu), mbot->expander_quilt);
