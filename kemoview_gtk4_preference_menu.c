@@ -34,9 +34,9 @@ static void set_background_CB(GObject    *object,
     return;
 };
 
-static GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl,
-                                        struct GtkWidget *pref_win,
-                                        GLFWwindow *glfw_win){
+static GtkWidget * init_background_frame(struct kemoviewer_gl_type *kemo_gl,
+                                         struct GtkWidget *pref_win,
+                                         GLFWwindow *glfw_win){
     GtkWidget *hbox_bg_hbox;
     
     GdkRGBA bg_rgba;
@@ -60,11 +60,19 @@ static GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     
     hbox_bg_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_bg_hbox), gtk_label_new("Background: "));
+    gtk_box_append(GTK_BOX(hbox_bg_hbox), gtk_label_new("Background color: "));
     gtk_box_append(GTK_BOX(hbox_bg_hbox), color_button);
-    return hbox_bg_hbox;
+    
+    return wrap_into_frame_gtk4("Background", hbox_bg_hbox);
 }
 
+GtkWidget * init_image_format_frame(struct kemoviewer_gl_type *kemo_gl,
+                                    struct lightparams_view *lightparams_vws){
+    GtkWidget *image_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    GtkWidget *ImgFormat_hbox = init_image_format_hbox(kemo_gl, &lightparams_vws->id_def_format);
+    gtk_box_append(GTK_BOX(image_vbox), ImgFormat_hbox);
+    return wrap_into_frame_gtk4("Image format", image_vbox);
+}
 
 GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
                                  struct lightparams_view *lightparams_vws,
@@ -74,28 +82,28 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
     
     float color[4];
     
-    GtkWidget *background_box = init_background_hbox(kemo_gl, pref_win, glfw_win);
+    GtkWidget *background_box = init_background_frame(kemo_gl, pref_win, glfw_win);
 //    GtkWidget *lighting_frame =  init_lighting_frame(kemo_gl,
 //                                                     lightparams_vws);
 //    GtkWidget *Shading_frame =   shading_mode_menu_frame(kemo_gl);
 //    GtkWidget *Tube_frame =      init_tube_pref_frame(kemo_gl);
 //    GtkWidget *coastline_frame = init_coastline_pref_menu(kemo_gl);
 //    GtkWidget *Axis_frame =      init_axis_position_menu(kemo_gl);
-//    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemo_gl, window);
-//    GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemo_gl);
-    GtkWidget *ImgFormat_frame = init_image_format_hbox(kemo_gl, &lightparams_vws->id_def_format);
+    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemo_gl, window);
+    GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemo_gl);
+    GtkWidget *ImgFormat_frame = init_image_format_frame(kemo_gl, &lightparams_vws);
 
     
     pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(pref_vbox), background_box);
-//    gtk_box_append(GTK_BOX(pref_vbox), NumThread_frame);
+    gtk_box_append(GTK_BOX(pref_vbox), NumThread_frame);
     gtk_box_append(GTK_BOX(pref_vbox), ImgFormat_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), lighting_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), Tube_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), Shading_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), coastline_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), Axis_frame);
-//    gtk_box_append(GTK_BOX(pref_vbox), FPS_frame);
+    gtk_box_append(GTK_BOX(pref_vbox), FPS_frame);
     return pref_vbox;
 }
 
