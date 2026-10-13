@@ -92,12 +92,12 @@ static GtkWidget * init_image_format_button(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(image_format_button), "notify::selected-item", 
                      G_CALLBACK (selected_movie_format_CB), G_OBJECT(entry_buf));
     
-    GtkListItemFactory *rot_file_fmt_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(image_format_button), rot_file_fmt_factory);
+    GtkListItemFactory *file_format_factory = gtk_signal_list_item_factory_new ();
+    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(image_format_button), file_format_factory);
     init_image_format_dropdown(*id_image_format, image_format_button);
     
 //    g_object_unref(image_format_expression);       Do not release GtkExpression!!
-//    g_object_unref(rot_file_fmt_factory);          Do not release GtkListItemFactory!!
+//    g_object_unref(file_format_factory);          Do not release GtkListItemFactory!!
 //    g_object_unref(image_format_flat);             Do not release GtkFlattenListModel!!
     
     return image_format_button;
