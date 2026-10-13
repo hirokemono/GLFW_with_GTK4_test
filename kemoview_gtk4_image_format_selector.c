@@ -47,6 +47,8 @@ static int find_selected_movie_format(const char *text){
     else if(kemoview_compare_string((int) strlen(text), text, hd_PNGimage) > 0){index_mode = SAVE_PNG;}
     else if(kemoview_compare_string((int) strlen(text), text, hd_BMPimage) > 0){index_mode = SAVE_BMP;}
     else {index_mode = NO_SAVE_FILE;};
+    
+    printf("Selected format %d %s\n", index_mode, text);
     return index_mode;
 }
 

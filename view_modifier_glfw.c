@@ -386,3 +386,4 @@ struct gl_texure_image * sel_draw_GLFW_anaglyph_to_rgb(struct kemoviewer_gl_type
     glfwMakeContextCurrent(NULL);
     return render_image;
 };
+

@@ -112,7 +112,7 @@ static GtkWidget * make_gtk4_open_file_box(struct kemoviewer_gl_type *kemo_gl,
     g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) main_window);
 
     GtkWidget *menuGrid = make_gtk_menu_button(kemo_gl, main_window,
-//                                               mbot->lightparams_vws,
+                                               mbot->lightparams_vws,
                                                mbot->evo_gmenu);
     
     GtkWidget *open_Button = gtk_button_new_with_label("Open...");

@@ -53,6 +53,7 @@ struct main_buttons{
     GtkWidget *expander_view;
     struct view_widgets *view_menu;
     
+    GtkWidget *pref_window;
     GtkWidget *expander_pref;
     struct lightparams_view *lightparams_vws;
     

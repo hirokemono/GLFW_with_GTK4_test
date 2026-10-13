@@ -20,6 +20,10 @@ struct lightparams_view{
     struct r3_clist_view *light_rtp_vws;
     struct phong_lights *lights_gtk;
     
+    int id_def_format;
+    
+    GtkWidget *pref_window;
+    
     GtkWidget *scrolled_window;
     GtkWidget *light_vbox;
 };

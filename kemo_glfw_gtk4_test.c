@@ -96,13 +96,13 @@ static void mainloop_4_glfw(){
 
 /* Callback functions for GTK */
 
-static void gtkWindowclose_CB(GtkButton *button, gpointer user_data){
+static void gtkWindowclose_CB(GtkWidget *widget, gpointer user_data){
     printf("Destroy GTK\n");
 	gtk_window_destroy(GTK_WINDOW(gtk_win));
 	glfwSetWindowShouldClose(glfw_win, GLFW_TRUE);
 }
 
-static void gtkWindowfocus_CB(GtkButton *button, gpointer user_data){
+static void gtkWindowfocus_CB(GtkWidget *widget, gpointer user_data){
     if (gtk_window_is_active(GTK_WINDOW(gtk_win))) {
         glfwMakeContextCurrent(NULL);
         g_print("GTK window gets active focus.\n");

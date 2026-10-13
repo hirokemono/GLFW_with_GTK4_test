@@ -21,7 +21,7 @@ static void set_background_CB(GObject    *object,
     set_RGB_from_GTK(rgba, color);
     printf("updated %f %f %f %f\n", color[0], color[1], color[2], color[3]);
     
-    printf("updated background %p\n", kemo_gl->kemoview_data);
+    printf("updated background %p\n", kemo_gl);
     kemoview_set_background_color(color, kemo_gl->kemoview_data);
     kemoview_gl_background_color(kemo_gl->kemoview_data);
     
@@ -35,8 +35,13 @@ GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl){
     GdkRGBA bg_rgba;
     float color[4];
     kemoview_get_background_color(kemo_gl->kemoview_data, color);
-    
     set_RGB_to_GTK(color, &bg_rgba);
+    
+    float color2[4] = {0.0, 0.0, 0.0, 1.0};
+    kemoview_set_background_color(color2, kemo_gl->kemoview_data);
+    kemoview_gl_background_color(kemo_gl->kemoview_data);
+    printf("draw_full_gl %p\n", kemo_gl);
+    draw_full_gl(kemo_gl);
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
@@ -61,7 +66,6 @@ GtkWidget * init_background_hbox(struct kemoviewer_gl_type *kemo_gl){
 GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
                                  struct lightparams_view *lightparams_vws,
                                  GtkWidget *window){
-    int id_def_format[1];
     GtkWidget *pref_vbox;
     
     float color[4];
@@ -75,7 +79,7 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
 //    GtkWidget *Axis_frame =      init_axis_position_menu(kemo_gl);
 //    GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemo_gl, window);
 //    GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemo_gl);
-    GtkWidget *ImgFormat_frame = init_image_format_hbox(kemo_gl, id_def_format);
+    GtkWidget *ImgFormat_frame = init_image_format_hbox(kemo_gl, &lightparams_vws->id_def_format);
 
     
     pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
