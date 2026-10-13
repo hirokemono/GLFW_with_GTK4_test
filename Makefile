@@ -56,6 +56,7 @@ kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
 kemoview_gtk4_light_menu.c            \
+kemoview_gtk4_axis_prefs_menu.c       \
 kemoview_gtk4_performance_menu.c      \
 kemoview_gtk4_preference_menu.c       \
 kemoview_gtk4_pref_window.c           \
