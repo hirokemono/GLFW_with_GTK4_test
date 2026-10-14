@@ -61,6 +61,7 @@ kemoview_gtk4_shading_selector.c      \
 kemoview_gtk4_shading_mode_menu.c     \
 kemoview_gtk4_tube_pref_menu.c        \
 kemoview_gtk4_axis_posi_sel.c         \
+kemoview_gtk4_coast_prefs_menu.c      \
 kemoview_gtk4_axis_prefs_menu.c       \
 kemoview_gtk4_performance_menu.c      \
 kemoview_gtk4_preference_menu.c       \
