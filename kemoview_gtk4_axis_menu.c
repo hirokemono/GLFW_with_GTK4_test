@@ -14,7 +14,7 @@ static void draw_axis_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer
     kemoview_set_object_property_flags(AXIS_TOGGLE, iflag,
                                        kemo_gl->kemoview_data);
 	
-	draw_full_gl(kemo_gl);
+	draw_triple_gl(kemo_gl);
 	return;
 };
 static void draw_coastline_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpointer data){

@@ -166,46 +166,7 @@ static GtkWidget * init_axis_position_button(struct kemoviewer_gl_type *kemo_gl,
 }
 
 
-/*
-static void set_coasttube_CB(GtkComboBox *combobox_coasttube, gpointer data)
-{
-    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
-    int index_mode = gtk_selected_combobox_index(combobox_coasttube);
-    
-    kemoview_set_view_integer(COASTLINE_TUBE, index_mode,
-                              kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-    return;
-};
-*/
-
 GtkWidget * init_coastline_pref_menu(struct kemoviewer_gl_type *kemo_gl){
-    /*
-    GtkWidget * label_tree_coasttube = create_fixed_label_w_index_tree();
-    GtkTreeModel * model_coasttube = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_coasttube));
-    GtkTreeModel * child_model_coasttube = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_coasttube));
-    int index = 0;
-    index = append_ci_item_to_tree(index, "Tube",
-                                   ON, child_model_coasttube);
-    index = append_ci_item_to_tree(index, "Line",
-                                   OFF, child_model_coasttube);
-
-    GtkWidget *combobox_coasttube = gtk_combo_box_new_with_model(child_model_coasttube);
-    GtkCellRenderer *renderer_coasttube = gtk_cell_renderer_text_new();
-    if(kemoview_get_view_integer(kemo_gl->kemoview_data, COASTLINE_TUBE) == ON){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_coasttube), 0);
-    } else {
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_coasttube), 1);
-    };
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_coasttube),
-                               renderer_coasttube, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_coasttube),
-                                   renderer_coasttube, "text",
-                                   COLUMN_FIELD_NAME, NULL);
-    g_signal_connect(G_OBJECT(combobox_coasttube), "changed",
-                G_CALLBACK(set_coasttube_CB), (gpointer) kemo_gl);
-    */
-    
     int iflag_tube = kemoview_get_view_integer(kemo_gl->kemoview_data, COASTLINE_TUBE);
     GtkWidget *combobox_coasttube = init_coastline_tube_button(kemo_gl,
                                                                &iflag_tube);
@@ -215,19 +176,6 @@ GtkWidget * init_coastline_pref_menu(struct kemoviewer_gl_type *kemo_gl){
     gtk_box_append(GTK_BOX(hbox_coasttube), combobox_coasttube);
     return wrap_into_frame_gtk4("Coastline type", hbox_coasttube);
 }
-
-/*
-static void set_axisposition_CB(GtkComboBox *combobox_axispos, gpointer data)
-{
-    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
-    int index_mode = gtk_selected_combobox_index(combobox_axispos);
-    
-    kemoview_set_object_property_flags(AXIS_POSITION, index_mode,
-                                       kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-    return;
-};
-*/
 
 static void axis_thickness_CB(GtkWidget *entry, gpointer user_data)
 {
@@ -259,49 +207,21 @@ static void axis_digit_CB(GtkWidget *entry, gpointer user_data)
 }
 
 GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_gl){
-/*
-    GtkWidget * label_tree_axispos = create_fixed_label_w_index_tree();
-    GtkTreeModel * model_axispos
-            = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_axispos));
-    GtkTreeModel * child_model_axispos
-            = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_axispos));
-    int index = 0;
-    index = append_ci_item_to_tree(index, "Center",
-                                   OFF, child_model_axispos);
-    index = append_ci_item_to_tree(index, "Lower left",
-                                   ON, child_model_axispos);
-
-    GtkWidget *combobox_axispos
-            = gtk_combo_box_new_with_model(child_model_axispos);
-    GtkCellRenderer *renderer_axisposition = gtk_cell_renderer_text_new();
-    if(kemoview_get_object_property_flags(kemo_gl->kemoview_data,
-                                          AXIS_POSITION) == ON){
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_axispos), 1);
-    } else {
-        gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_axispos), 0);
-    };
-    gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_axispos),
-                               renderer_axisposition, TRUE);
-    gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_axispos),
-                                   renderer_axisposition, "text",
-                                   COLUMN_FIELD_NAME, NULL);
-    g_signal_connect(G_OBJECT(combobox_axispos), "changed",
-                G_CALLBACK(set_axisposition_CB), (gpointer) kemo_gl);
-    */
-    
     int iflag_lowerleft = kemoview_get_object_property_flags(kemo_gl->kemoview_data, AXIS_POSITION);
     GtkWidget *combobox_axispos = init_axis_position_button(kemo_gl, 
                                                             &iflag_lowerleft);
     
-    
     int int_thick, current_digit;
     double current_thick;
     GtkAdjustment *adj_thick = gtk_adjustment_new(1, 0, 9, 1, 1, 0);
-    GtkAdjustment *adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
     GtkWidget *spin_axis_thick = gtk_spin_button_new(GTK_ADJUSTMENT(adj_thick), 0, 0);
-    GtkWidget *spin_axis_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+    gtk_editable_set_width_chars(GTK_EDITABLE(spin_axis_thick), 1);
     g_signal_connect(spin_axis_thick, "value-changed",
                      G_CALLBACK(axis_thickness_CB), (gpointer) kemo_gl);
+    
+    GtkAdjustment *adj_digit = gtk_adjustment_new(-3, -30, 30, 1, 1, 0.0);
+    GtkWidget *spin_axis_digit = gtk_spin_button_new(GTK_ADJUSTMENT(adj_digit), 0, 0);
+    gtk_editable_set_width_chars(GTK_EDITABLE(spin_axis_digit), 3);
     g_signal_connect(spin_axis_digit, "value-changed",
                      G_CALLBACK(axis_digit_CB), (gpointer) kemo_gl);
  

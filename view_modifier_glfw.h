@@ -34,6 +34,8 @@ void glfw_callbacks_init(struct kemoviewer_type *kemo_sgl,
 void set_GLFWindowSize(int width, int height,
                        struct kemoviewer_type *kemo_sgl);
 
+void draw_triple_gl(struct kemoviewer_gl_type *kemo_gl);
+void draw_double_gl(struct kemoviewer_gl_type *kemo_gl);
 void draw_full_gl(struct kemoviewer_gl_type *kemo_gl);
 void draw_fast_gl(struct kemoviewer_gl_type *kemo_gl);
 

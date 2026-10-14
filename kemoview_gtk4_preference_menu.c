@@ -26,8 +26,7 @@ static void set_background_CB(GObject    *object,
 //    printf("updated %f %f %f %f\n", color[0], color[1], color[2], color[3]);
     
     kemoview_gl_background_color(kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-    
+    draw_fast_gl(kemo_gl);
     kemoview_gl_background_color(kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
     
