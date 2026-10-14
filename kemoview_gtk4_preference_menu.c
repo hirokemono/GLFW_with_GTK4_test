@@ -84,7 +84,7 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *background_box = init_background_frame(kemo_gl, pref_win, glfw_win);
 //    GtkWidget *lighting_frame =  init_lighting_frame(kemo_gl,
 //                                                     lightparams_vws);
-//    GtkWidget *Shading_frame =   shading_mode_menu_frame(kemo_gl);
+    GtkWidget *Shading_frame =   shading_mode_menu_frame(kemo_gl);
     GtkWidget *Tube_frame =      init_tube_pref_frame(kemo_gl);
     GtkWidget *coastline_frame = init_coastline_pref_menu(kemo_gl);
     GtkWidget *Axis_frame =      init_axis_position_menu(kemo_gl);
@@ -99,7 +99,7 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
     gtk_box_append(GTK_BOX(pref_vbox), ImgFormat_frame);
 //    gtk_box_append(GTK_BOX(pref_vbox), lighting_frame);
     gtk_box_append(GTK_BOX(pref_vbox), Tube_frame);
-//    gtk_box_append(GTK_BOX(pref_vbox), Shading_frame);
+    gtk_box_append(GTK_BOX(pref_vbox), Shading_frame);
     gtk_box_append(GTK_BOX(pref_vbox), coastline_frame);
     gtk_box_append(GTK_BOX(pref_vbox), Axis_frame);
     gtk_box_append(GTK_BOX(pref_vbox), FPS_frame);
