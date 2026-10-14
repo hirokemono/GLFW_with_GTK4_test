@@ -115,46 +115,32 @@ GtkWidget * make_axis_menu_box(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(switch_tangent_cyl), "notify::active",
                 G_CALLBACK(draw_tangent_cyl_switch_CB), (gpointer) kemo_gl);
     
-
+    
     GtkAdjustment *adj_ICB_radius
         = gtk_adjustment_new(kemoview_get_inner_core_radius(kemo_gl->kemoview_data),
                              0.0, 10.0, 0.02, 0.02, 0.0);
     GtkWidget *spin_ICB_radius = gtk_spin_button_new(GTK_ADJUSTMENT(adj_ICB_radius), 0, 3);
     g_signal_connect(spin_ICB_radius, "value-changed",
                      G_CALLBACK(ICB_radius_CB), (gpointer) kemo_gl);
-
-	GtkWidget *hbox_axis = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_axis), gtk_label_new("Draw axis: "));
-	gtk_box_append(GTK_BOX(hbox_axis), switch_axis);
-	
-	GtkWidget *hbox_coastline = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_coastline), gtk_label_new("Draw coastline: "));
-	gtk_box_append(GTK_BOX(hbox_coastline), switch_coastline);
-	
-	GtkWidget *hbox_sph_grid = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_sph_grid), gtk_label_new("Draw sphere grid: "));
-	gtk_box_append(GTK_BOX(hbox_sph_grid), switch_sph_grid);
-	
-	GtkWidget *hbox_coast_radius = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-	gtk_box_append(GTK_BOX(hbox_coast_radius), gtk_label_new("Radius: "));
-	gtk_box_append(GTK_BOX(hbox_coast_radius), spin_coast_radius);
-	
-    GtkWidget *hbox_tangent_cyl = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_tangent_cyl), gtk_label_new("Draw tangent cylinder: "));
-    gtk_box_append(GTK_BOX(hbox_tangent_cyl), switch_tangent_cyl);
     
-    GtkWidget *hbox_ICB_radius = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_ICB_radius), gtk_label_new("ICB Radius: "));
-    gtk_box_append(GTK_BOX(hbox_ICB_radius), spin_ICB_radius);
+    GtkWidget *grid_axis = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("Draw axis: "),        0, 0, 4, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), switch_axis,                         4, 0, 1, 1);
+
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("Draw coastline: "),   0, 1, 4, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), switch_coastline,                    4, 1, 1, 1);
     
-
-	GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_append(GTK_BOX(vbox), hbox_axis);
-	gtk_box_append(GTK_BOX(vbox), hbox_coastline);
-	gtk_box_append(GTK_BOX(vbox), hbox_sph_grid);
-	gtk_box_append(GTK_BOX(vbox), hbox_coast_radius);
-    gtk_box_append(GTK_BOX(vbox), hbox_tangent_cyl);
-    gtk_box_append(GTK_BOX(vbox), hbox_ICB_radius);
-
-    return wrap_into_scroll_expansion_gtk4("Axis and grids", 200, 240, window, vbox);
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("Draw sphere grid: "), 0, 2, 4, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), switch_sph_grid,                     4, 2, 1, 1);
+    
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("Radius: "),           0, 3, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), spin_coast_radius,                   1, 3, 4, 1);
+    
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("Tangent cylinder: "), 0, 4, 4, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), switch_tangent_cyl,                  4, 4, 1, 1);
+    
+    gtk_grid_attach(GTK_GRID(grid_axis), gtk_label_new("ICB Radius: "),       0, 5, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis), spin_ICB_radius,                     1, 5, 4, 1);
+    
+    return wrap_into_scroll_expansion_gtk4("Axis and grids", 240, 200, window, grid_axis);
 }
