@@ -22,7 +22,7 @@
 #include "kemoview_gtk4_colorsel.h"
 //#include "kemoview_gtk_routines.h"
 //#include "kemoview_gtk_rotation_menu.h"
-//#include "kemoview_gtk_shading_mode_menu.h"
+#include "kemoview_gtk4_shading_mode_menu.h"
 #include "kemoview_gtk4_tube_pref_menu.h"
 #include "kemoview_gtk4_axis_prefs_menu.h"
 #include "kemoview_gtk4_performance_menu.h"

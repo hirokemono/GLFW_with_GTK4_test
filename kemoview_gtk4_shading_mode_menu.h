@@ -20,6 +20,7 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_shading_selector.h"
+#include "kemoview_gtk4_side_selector.h"
 
 GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl);
 

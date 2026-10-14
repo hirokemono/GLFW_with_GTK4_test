@@ -19,7 +19,6 @@ static void set_shading_mode_CB(GtkComboBox *combobox_shading, gpointer data)
     draw_full_gl(kemo_gl);
     return;
 };
-*/
 
 static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer data)
 {
@@ -31,6 +30,7 @@ static void set_surface_direction_CB(GtkComboBox *combobox_surfdir, gpointer dat
     draw_full_gl(kemo_gl);
     return;
 };
+*/
 
 GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl){
 /* Shading mode chooser */
@@ -55,14 +55,8 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl){
     g_signal_connect(G_OBJECT(combobox_shading), "changed",
                      G_CALLBACK(set_shading_mode_CB), (gpointer) kemo_gl);
     */
-    GtkWidget *combobox_shading = init_shading_mode_button(kemo_gl, &iflag_shading);
     
-    GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_pack_start(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_shading), combobox_shading, FALSE, FALSE, 0);
-    
-    
-/* Surface direction chooser */
+/* Surface direction chooser
     
     GtkWidget *label_tree_surf_dir = create_fixed_label_w_index_tree();
     GtkTreeModel *model_surf_dir = gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_surf_dir));
@@ -83,15 +77,26 @@ GtkWidget * shading_mode_menu_frame(struct kemoviewer_gl_type *kemo_gl){
                 "text", COLUMN_FIELD_NAME, NULL);
     g_signal_connect(G_OBJECT(combobox_surf_dir), "changed",
                 G_CALLBACK(set_surface_direction_CB), (gpointer) kemo_gl);
+    */
+    
+    int iflag_shading = kemoview_get_object_property_flags(kemo_gl->kemoview_data, SHADING_SWITCH);
+    GtkWidget *combobox_shading = init_shading_mode_button(kemo_gl, &iflag_shading);
+    
+    GtkWidget *hbox_shading = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_shading), gtk_label_new("Shading mode: "));
+    gtk_box_append(GTK_BOX(hbox_shading), combobox_shading);
+    
+    int iflag_surf_mode = kemoview_get_object_property_flags(kemo_gl->kemoview_data, POLYGON_SWITCH);
+    GtkWidget *combobox_surf_dir = init_surface_mode_button(kemo_gl, &iflag_surf_mode);
     
     GtkWidget *hbox_surf_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_pack_start(GTK_BOX(hbox_surf_dir), gtk_label_new("Surface direction: "), FALSE, FALSE, 0);
-    gtk_box_pack_start(GTK_BOX(hbox_surf_dir), combobox_surf_dir, FALSE, FALSE, 0);
+    gtk_box_append(GTK_BOX(hbox_surf_dir), gtk_label_new("Surface direction: "));
+    gtk_box_append(GTK_BOX(hbox_surf_dir), combobox_surf_dir);
     
     
     GtkWidget *vbox_shading = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_shading), hbox_shading, TRUE, TRUE, 0);
-    gtk_box_pack_start(GTK_BOX(vbox_shading), hbox_surf_dir, TRUE, TRUE, 0);
+    gtk_box_append(GTK_BOX(vbox_shading), hbox_shading);
+    gtk_box_append(GTK_BOX(vbox_shading), hbox_surf_dir);
     
-    return wrap_into_frame_gtk("Shading parameters", vbox_shading);
+    return wrap_into_frame_gtk4("Shading parameters", vbox_shading);
 };

@@ -14,16 +14,6 @@ const char * const line_fmt_list[] = {hd_Tube,
                                        hd_Line,
                                        NULL};
 
-
-const char * const hd_Centre =  "Center";       //  IFLAG_OFF
-const char * const hd_Lower =   "Lower left";  //   IFLAG_ON
-
-const char * const axis_position_list[] = {hd_Centre,
-                                           hd_Lower,
-                                           NULL};
-
-
-
 /*    Buttons to set line format  */
 static void init_tube_switch_dropdown(int iflag_tube,
                                       GtkWidget *line_format_button){
