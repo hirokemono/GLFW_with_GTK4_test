@@ -232,7 +232,7 @@ GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_gl){
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_axis_digit), (double) current_digit);
     
     GtkWidget *grid_axis_pref = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("Axis position: "), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("Axis position: "), 0, 0, 2, 1);
     gtk_grid_attach(GTK_GRID(grid_axis_pref), combobox_axispos,                 3, 0, 1, 1);
     
     gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("Thickness: "), 0, 1, 1, 1);
