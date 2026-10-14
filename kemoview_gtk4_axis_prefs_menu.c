@@ -230,22 +230,16 @@ GtkWidget * init_axis_position_menu(struct kemoviewer_gl_type *kemo_gl){
     int_thick = (int) current_thick;
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_axis_thick), (double) int_thick);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_axis_digit), (double) current_digit);
-
     
-    GtkWidget *hbox_axispos = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_axispos), gtk_label_new("Axis position: "));
-    gtk_box_append(GTK_BOX(hbox_axispos), combobox_axispos);
+    GtkWidget *grid_axis_pref = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("Axis position: "), 0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), combobox_axispos,                 3, 0, 1, 1);
     
-    GtkWidget *hbox_axiswidth = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_axiswidth), gtk_label_new("Thickness: "));
-    gtk_box_append(GTK_BOX(hbox_axiswidth), spin_axis_thick);
-    gtk_box_append(GTK_BOX(hbox_axiswidth), gtk_label_new("X 10^"));
-    gtk_box_append(GTK_BOX(hbox_axiswidth), spin_axis_digit);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("Thickness: "), 0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), spin_axis_thick,              1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), gtk_label_new("X 10^"),       2, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_axis_pref), spin_axis_digit,              3, 1, 1, 1);
     
-    GtkWidget *axis_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_append(GTK_BOX(axis_vbox), hbox_axispos);
-    gtk_box_append(GTK_BOX(axis_vbox), hbox_axiswidth);
-
-    return wrap_into_frame_gtk4("Axis parameters", axis_vbox);
+    return wrap_into_frame_gtk4("Axis parameters", grid_axis_pref);
 }
 
