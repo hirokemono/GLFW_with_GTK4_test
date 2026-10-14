@@ -19,7 +19,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-//#include "tree_view_4_pvr_colormap.h"
 #include "kemoview_gtk4_colorsel.h"
 #include "kemoview_gtk4_shading_mode_menu.h"
 #include "kemoview_gtk4_tube_pref_menu.h"

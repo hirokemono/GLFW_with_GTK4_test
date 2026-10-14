@@ -56,6 +56,7 @@ kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
 kemoview_gtk4_light_menu.c            \
+kemoview_gtk4_lighting_menu.c         \
 kemoview_gtk4_side_selector.c         \
 kemoview_gtk4_shading_selector.c      \
 kemoview_gtk4_shading_mode_menu.c     \
