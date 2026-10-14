@@ -92,6 +92,14 @@ color_dialog_test: color_dialog/color_dialog_test.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
+columnview_test_1: columnview/columnview_test_1.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+columnview_test_2: columnview/columnview_test_2.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
 %.o: %.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -c $<
 
@@ -99,6 +107,8 @@ clean:
 	rm -rf *.o *.mod *~
 	rm -rf menu_test*
 	rm -rf color_dialog_test*
+	rm -rf columnview_test_1*
+	rm -rf columnview_test_2*
 	for target in $(TARGET); do \
 		(rm -fr $${target}*) \
 	done; \
