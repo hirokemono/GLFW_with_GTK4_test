@@ -1,11 +1,11 @@
-/*
+/***********************************************************************
  *  kemoview_gtk4_PSF_window.c
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on 12/03/04.
  *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
  *
- */
+ ***********************************************************************/
 
 #include "kemoview_gtk4_PSF_window.h"
 
