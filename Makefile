@@ -73,6 +73,13 @@ kemoview_gtk4_axis_menu.c             \
 kemoview_gtk4_main_menu.c             \
 kemo_glfw_gtk4_test.c
 
+SRC_CV3 = \
+calypso_GTK4.c \
+tree_view_real3_GTK.c \
+kemoview_gtk4_light_menu.c \
+columnview/columnview_test_3.c
+
+
 OBJS = \
 $(MAKEDIR)/kemoviewer_gl.o
 
@@ -101,6 +108,10 @@ columnview_test_2: columnview/columnview_test_2.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
+columnview_test_3: $(SRC_CV3)
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV3) \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
 %.o: %.c
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -c $<
 
@@ -110,6 +121,7 @@ clean:
 	rm -rf color_dialog_test*
 	rm -rf columnview_test_1*
 	rm -rf columnview_test_2*
+	rm -rf columnview_test_3*
 	for target in $(TARGET); do \
 		(rm -fr $${target}*) \
 	done; \

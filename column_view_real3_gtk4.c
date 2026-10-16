@@ -125,7 +125,7 @@ GListModel * real3_column_model_init(struct real3_clist *r3_clist_gtk){
 
 static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
 
-static void real3_column_item_init(Real3ColumnItem *item){
+void real3_column_item_init(Real3ColumnItem *item){
     printf("real3_column_item_init %p/n", item);
     item->id = 0;
     item->real1 = 0.;
@@ -134,7 +134,7 @@ static void real3_column_item_init(Real3ColumnItem *item){
     return;
 }
 
-static void real3_column_item_class_init(Real3ColumnItemClass *class){
+void real3_column_item_class_init(Real3ColumnItemClass *class){
     printf("real3_column_item_class_init %p/n", class);
     
     GObjectClass *gobject_class = G_OBJECT_CLASS(class);
