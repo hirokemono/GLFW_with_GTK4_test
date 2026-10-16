@@ -201,11 +201,11 @@ static void activate (GtkApplication* app, gpointer user_data)
     gtk_column_view_set_show_column_separators (GTK_COLUMN_VIEW (cv),TRUE);
      
     // Setup sort model then overlay with with columnview
-    GtkSorter *sorter = g_object_ref (gtk_column_view_get_sorter (GTK_COLUMN_VIEW (cv)));
+    GtkSorter *sorter = g_object_ref(gtk_column_view_get_sorter (GTK_COLUMN_VIEW (cv)));
     GtkSortListModel *model = gtk_sort_list_model_new (G_LIST_MODEL (store), sorter);
-    GtkSingleSelection *selection = gtk_single_selection_new (G_LIST_MODEL (model));
+    GtkSingleSelection *selection = gtk_single_selection_new(G_LIST_MODEL (model));
     gtk_single_selection_set_autoselect (selection, TRUE);
-    gtk_column_view_set_model (GTK_COLUMN_VIEW (cv), GTK_SELECTION_MODEL (selection));
+    gtk_column_view_set_model(GTK_COLUMN_VIEW (cv), GTK_SELECTION_MODEL (selection));
 
     // Factory setup and bind for column 1 
     GtkListItemFactory *factory1 = gtk_signal_list_item_factory_new();
@@ -230,7 +230,7 @@ static void activate (GtkApplication* app, gpointer user_data)
     g_signal_connect(factory3, "setup", G_CALLBACK(setup_cb),NULL);
     g_signal_connect(factory3, "bind", G_CALLBACK(bind_real3_cb),NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Real3", factory3);
-    sorter = GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column3);
 
