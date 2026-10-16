@@ -173,6 +173,7 @@ static void activate (GtkApplication* app, gpointer user_data)
     gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column);
 
     // Factory setup and bind for column 2
+    GtkListItemFactory *factory = gtk_signal_list_item_factory_new();
     factory = gtk_signal_list_item_factory_new();
     g_signal_connect(factory, "setup", G_CALLBACK(setup_cb),NULL);
     g_signal_connect(factory, "bind", G_CALLBACK(bind_col2_cb),NULL);

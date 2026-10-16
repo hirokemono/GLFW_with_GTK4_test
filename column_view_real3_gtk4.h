@@ -46,4 +46,7 @@ enum{
 
 /*  prototypes */
 
+GtkWidget * real3_columnview_init(struct real3_clist *r3_clist_gtk);
+
+
 #endif  /* COLUMN_VIEW_REAL3_GTK4_ */ 
