@@ -80,10 +80,13 @@ kemoview_gtk4_light_menu.c \
 columnview/columnview_test_3.c
 
 SRC_CV4 = \
+columnview/columnview_test_4.c
+
+SRC_CV5 = \
 calypso_GTK4.c \
 tree_view_real3_GTK.c \
 kemoview_gtk4_light_menu.c \
-columnview/columnview_test_4.c
+columnview/columnview_test_5.c
 
 
 OBJS = \
@@ -118,8 +121,12 @@ columnview_test_3: $(SRC_CV3)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV3) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
-columnview_test_4: $(SRC_CV3)
+columnview_test_4: $(SRC_CV4)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV4) \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+columnview_test_5: $(SRC_CV5)
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV5) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 %.o: %.c
@@ -129,10 +136,7 @@ clean:
 	rm -rf *.o *.mod *~
 	rm -rf menu_test*
 	rm -rf color_dialog_test*
-	rm -rf columnview_test_1*
-	rm -rf columnview_test_2*
-	rm -rf columnview_test_3*
-	rm -rf columnview_test_4*
+	rm -rf columnview_test_*
 	for target in $(TARGET); do \
 		(rm -fr $${target}*) \
 	done; \
