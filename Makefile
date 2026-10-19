@@ -94,6 +94,12 @@ tree_view_real3_GTK.c \
 kemoview_gtk4_light_menu.c \
 columnview/columnview_test_6.c
 
+SRC_CV7 = \
+calypso_GTK4.c \
+tree_view_real3_GTK.c \
+kemoview_gtk4_light_menu.c \
+columnview/columnview_test_7.c
+
 
 OBJS = \
 $(MAKEDIR)/kemoviewer_gl.o
@@ -137,6 +143,10 @@ columnview_test_5: $(SRC_CV5)
 
 columnview_test_6: $(SRC_CV6)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV6) \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+columnview_test_7: $(SRC_CV7)
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV7) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 %.o: %.c
