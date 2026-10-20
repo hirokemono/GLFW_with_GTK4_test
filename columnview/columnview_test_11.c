@@ -385,15 +385,27 @@ static void show_all_button_CB(GtkButton *button, gpointer user_data){
 static void show_each_button_CB(GtkButton *button, gpointer user_data){
     GtkWidget *column_view = GTK_WIDGET(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
-    GtkSelectionModel *model = gtk_column_view_get_model(GTK_COLUMN_VIEW(column_view));
-    guint selected_index = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
-    TestColItem *item;
+    GtkSelectionModel *selected = gtk_column_view_get_model(GTK_COLUMN_VIEW(column_view));
+    guint selected_index = gtk_single_selection_get_selected(GTK_SINGLE_SELECTION (selected));
+    TestColItem *item = TESTCOL_ITEM(gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(selected)));
+    if (item == NULL) {
+        g_print ("No item selected.\n");
+        return;
+    }
+    printf("Data at %d: %s %s %f %d\n", selected_index, 
+           item->str1, item->str2, item->real3, item->int4);
     
+    GtkSortListModel *sort_model
+            = GTK_SORT_LIST_MODEL(gtk_single_selection_get_model(GTK_SINGLE_SELECTION(selected)));
+    GListModel *child_model = gtk_sort_list_model_get_model(sort_model);
+    GListStore *original_store = GTK_LIST_STORE (child_model);
+    
+    guint original_index;
+    g_list_store_find(original_store, item, &original_index);
     guint num = g_list_model_get_n_items(G_LIST_MODEL(store));
-    printf("selected of items: %d of %d\n", selected_index, num);
-    if(selected_index < num){
-        item = TESTCOL_ITEM(g_list_model_get_object(G_LIST_MODEL(store), selected_index));
-        printf("Data at %d: %s %s %f %d\n", selected_index, 
+    if(original_index < num){
+        item = TESTCOL_ITEM(g_list_model_get_object(G_LIST_MODEL(store), original_index));
+        printf("Data at %d: %s %s %f %d\n", original_index, 
                item->str1, item->str2, item->real3, item->int4);
     }
     return;
