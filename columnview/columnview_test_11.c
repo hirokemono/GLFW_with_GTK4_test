@@ -367,7 +367,8 @@ static void unbind_int4_spin_CB(GtkSignalListItemFactory *factory,
 }
 
 
-static void show_button_CB(GtkButton *button, gpointer user_data){
+
+static void show_all_button_CB(GtkButton *button, gpointer user_data){
     TestColItem *item;
     GListStore *store = G_LIST_STORE(user_data);
     guint num = g_list_model_get_n_items(G_LIST_MODEL(store));
@@ -376,6 +377,23 @@ static void show_button_CB(GtkButton *button, gpointer user_data){
     for(i=0;i<num;i++){
         item = TESTCOL_ITEM(g_list_model_get_object(G_LIST_MODEL(store), i));
         printf("Data at %d: %s %s %f %d\n", i, 
+               item->str1, item->str2, item->real3, item->int4);
+    }
+    return;
+};
+
+static void show_each_button_CB(GtkButton *button, gpointer user_data){
+    GtkWidget *column_view = GTK_WIDGET(user_data);
+	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
+    GtkSelectionModel *model = gtk_column_view_get_model(GTK_COLUMN_VIEW(column_view));
+    guint selected_index = gtk_single_selection_get_selected (GTK_SINGLE_SELECTION (model));
+    TestColItem *item;
+    
+    guint num = g_list_model_get_n_items(G_LIST_MODEL(store));
+    printf("selected of items: %d of %d\n", selected_index, num);
+    if(selected_index < num){
+        item = TESTCOL_ITEM(g_list_model_get_object(G_LIST_MODEL(store), selected_index));
+        printf("Data at %d: %s %s %f %d\n", selected_index, 
                item->str1, item->str2, item->real3, item->int4);
     }
     return;
@@ -413,11 +431,11 @@ GtkWidget * columnview_init(GListStore *store){
     GtkWidget *cv = gtk_column_view_new(NULL);
 
     // Setup sort model then overlay with with columnview
-    GtkSorter *sorter = g_object_ref(gtk_column_view_get_sorter (GTK_COLUMN_VIEW (cv)));
+    GtkSorter *sorter = g_object_ref(gtk_column_view_get_sorter (GTK_COLUMN_VIEW(cv)));
     GtkSortListModel *model = gtk_sort_list_model_new(G_LIST_MODEL(store), sorter);
     GtkSingleSelection *selection = gtk_single_selection_new(G_LIST_MODEL (model));
     gtk_single_selection_set_autoselect (selection, TRUE);
-    gtk_column_view_set_model(GTK_COLUMN_VIEW (cv), GTK_SELECTION_MODEL (selection));
+    gtk_column_view_set_model(GTK_COLUMN_VIEW(cv), GTK_SELECTION_MODEL (selection));
 
     // Factory setup and bind for column 1 
     GtkListItemFactory *factory1 = gtk_signal_list_item_factory_new();
@@ -427,7 +445,7 @@ GtkWidget * columnview_init(GListStore *store){
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Col1", factory1);
     sorter = GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"str1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column1);
+    gtk_column_view_append_column (GTK_COLUMN_VIEW(cv), column1);
 
     // Factory setup and bind for column 2
     GtkListItemFactory *factory2 = gtk_signal_list_item_factory_new();
@@ -437,7 +455,7 @@ GtkWidget * columnview_init(GListStore *store){
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Col2", factory2);
     sorter = GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "str2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column2);
+    gtk_column_view_append_column (GTK_COLUMN_VIEW(cv), column2);
 
     // Factory setup and bind for column 3
     GtkListItemFactory *factory3 = gtk_signal_list_item_factory_new();
@@ -447,7 +465,7 @@ GtkWidget * columnview_init(GListStore *store){
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Real3", factory3);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column3);
+    gtk_column_view_append_column (GTK_COLUMN_VIEW(cv), column3);
 
     // Factory setup and bind for column 4
     GtkListItemFactory *factory4 = gtk_signal_list_item_factory_new();
@@ -457,7 +475,7 @@ GtkWidget * columnview_init(GListStore *store){
     GtkColumnViewColumn *column4 = gtk_column_view_column_new("Int4", factory4);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "int4")));
     gtk_column_view_column_set_sorter (column4, GTK_SORTER (sorter));
-    gtk_column_view_append_column (GTK_COLUMN_VIEW (cv), column4);
+    gtk_column_view_append_column (GTK_COLUMN_VIEW(cv), column4);
     
     return cv;
 }
@@ -473,8 +491,9 @@ static void activate (GtkApplication* app, gpointer user_data)
     // Add column view.  Put in scrolled window.  
     GListStore *store = init_test_list_store(); 
     GtkWidget *cv = columnview_init(store);
-    gtk_column_view_set_show_column_separators (GTK_COLUMN_VIEW (cv),TRUE);
-     
+    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (cv),TRUE);
+    g_object_set_data(G_OBJECT(cv), "list_store", G_OBJECT(store));
+    
     // Set Windows in child scrolled window
     GtkWidget *window = gtk_application_window_new (app);
     gtk_window_set_title (GTK_WINDOW (window), "Test");
@@ -485,12 +504,17 @@ static void activate (GtkApplication* app, gpointer user_data)
     
     
     
-    GtkWidget *show_button = gtk_button_new_with_label("Show data");
-    g_signal_connect(G_OBJECT(show_button), "clicked",
-                     G_CALLBACK(show_button_CB), G_OBJECT(store));
+    GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
+    g_signal_connect(G_OBJECT(show_all_button), "clicked",
+                     G_CALLBACK(show_all_button_CB), G_OBJECT(store));
+    
+    GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
+    g_signal_connect(G_OBJECT(show_each_button), "clicked",
+                     G_CALLBACK(show_each_button_CB), G_OBJECT(cv));
     
     GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
-    gtk_box_append(GTK_BOX(vbox), show_button);
+    gtk_box_append(GTK_BOX(vbox), show_all_button);
+    gtk_box_append(GTK_BOX(vbox), show_each_button);
     gtk_box_append(GTK_BOX(vbox), scrolled_window);
     gtk_window_set_child (GTK_WINDOW(window), vbox);
     
