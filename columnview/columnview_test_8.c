@@ -30,10 +30,11 @@ static MyItem *my_item_new(const char *text) {
 }
 
 // Callback when GtkEntry text changes
-static void on_entry_changed(GtkEditable *editable, GParamSpec *pspec, gpointer user_data) {
+static void on_entry_changed(GObject *object, gpointer user_data) {
+    GtkEntry *entry = GTK_ENTRY(object);
     MyItem *item = MY_ITEM(user_data);
-    const char *new_text = gtk_editable_get_text(editable);
-//    g_free(item->text);
+    const char *new_text = gtk_editable_get_text(GTK_EDITABLE(entry));
+    g_free(item->text);
     item->text = g_strdup(new_text);
     printf("edited: %s\n", item->text);
 }
@@ -53,16 +54,19 @@ static void bind_cb(GtkSignalListItemFactory *factory, GtkListItem *list_item, g
     gtk_editable_set_text(GTK_EDITABLE(entry), item->text ? item->text : "");
 
     // Disconnect old handler if stored, or connect new change listener
-    g_signal_handlers_disconnect_by_func(entry, on_entry_changed, item);
-    g_signal_connect(entry, "notify::text", G_CALLBACK(on_entry_changed), item);
-//    g_signal_connect(entry, "activate", G_CALLBACK(on_entry_changed), item);
+    g_signal_handlers_block_by_func(entry, on_entry_changed, list_item);
+    gtk_editable_set_text(GTK_EDITABLE(entry), item->text);
+    g_signal_handlers_unblock_by_func(entry, on_entry_changed, list_item);
+    
+    /* Connect the activate signal to catch when editing finishes */
+    g_signal_connect(entry, "activate", G_CALLBACK(on_entry_changed), list_item);
 }
 
 static void unbind_cb(GtkSignalListItemFactory *factory,
-                                 GtkListItem *listitem,
+                                 GtkListItem *list_item,
                                  gpointer user_data){
-    GtkWidget *entry = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(entry, on_entry_changed, listitem);
+    GtkWidget *entry = gtk_list_item_get_child(list_item);
+    g_signal_handlers_disconnect_by_func(entry, on_entry_changed, list_item);
 }
 
 

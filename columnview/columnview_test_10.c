@@ -203,19 +203,16 @@ static void unbind_str1_label_CB(GtkSignalListItemFactory *factory,
  * ========================================================================= */
 
 /*  string editable button callbacks */
-static void str2_editing_CB(GtkEditableLabel *editable, gpointer user_data) {
+static void str2_activate_CB(GObject *object, gpointer user_data) {
+    GtkEntry *entry = GTK_ENTRY(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("str2_editing_CB %p %p \n", listitem, item);
+    printf("str2_activate_CB %p %p \n", listitem, item);
     
-    if (item) {
-        const char *new_text = gtk_editable_get_text(GTK_EDITABLE(editable));
-        GValue *gtmp;
-        g_value_set_string(gtmp, new_text);
-        g_free(item->str2);
-        item->str2 = g_value_get_string(gtmp);
-        g_print("str2 data updated to: %s\n", item->str2);
-    }
+    const char *new_text = gtk_editable_get_text(GTK_EDITABLE(entry));
+    g_free(item->str2);
+    item->str2 = g_strdup(new_text);
+    g_print("str2 data updated to: %s\n", item->str2);
 }
 
 /* Setup: Allocate and configure the float-capable GtkSpinButton */
@@ -240,8 +237,13 @@ static void bind_str2_label_CB(GtkSignalListItemFactory *factory,
     gtk_editable_set_text(GTK_EDITABLE(entry), item->str2 ? item->str2 : "");
     
     /* Disconnect old handler if stored, or connect new change listener */
-    g_signal_handlers_disconnect_by_func(entry, str2_editing_CB, listitem);
-    g_signal_connect(entry, "changed", G_CALLBACK(str2_editing_CB), listitem);
+    g_signal_handlers_block_by_func(entry, str2_activate_CB, listitem);
+    gtk_editable_set_text(GTK_EDITABLE(entry), item->str2);
+    g_signal_handlers_unblock_by_func(entry, str2_activate_CB, listitem);
+    
+    /* Connect the activate signal to catch when editing finishes */
+    g_signal_connect(entry, "activate", 
+                     G_CALLBACK(str2_activate_CB), listitem);
 }
 
 // Unbind: Clean up connection when cell is ready for recycling
@@ -249,7 +251,7 @@ static void unbind_str2_label_CB(GtkSignalListItemFactory *factory,
                                  GtkListItem *listitem,
                                  gpointer user_data){
     GtkWidget *entry = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(entry, str2_editing_CB, listitem);
+    g_signal_handlers_disconnect_by_func(entry, str2_activate_CB, listitem);
 }
 
 
