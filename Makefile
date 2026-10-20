@@ -79,9 +79,6 @@ tree_view_real3_GTK.c \
 kemoview_gtk4_light_menu.c \
 columnview/columnview_test_3.c
 
-SRC_CV4 = \
-columnview/columnview_test_4.c
-
 SRC_CV5 = \
 calypso_GTK4.c \
 tree_view_real3_GTK.c \
@@ -100,11 +97,11 @@ tree_view_real3_GTK.c \
 kemoview_gtk4_light_menu.c \
 columnview/columnview_test_7.c
 
-SRC_CV8 = \
+SRC_CV10 = \
 calypso_GTK4.c \
 tree_view_real3_GTK.c \
 kemoview_gtk4_light_menu.c \
-columnview/columnview_test_8.c
+columnview/columnview_test_10.c
 
 
 OBJS = \
@@ -139,8 +136,8 @@ columnview_test_3: $(SRC_CV3)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV3) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
-columnview_test_4: $(SRC_CV4)
-	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV4) \
+columnview_test_4: columnview/columnview_test_4.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 columnview_test_5: $(SRC_CV5)
@@ -155,8 +152,16 @@ columnview_test_7: $(SRC_CV7)
 	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV7) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
-columnview_test_8: $(SRC_CV8)
-	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV8) \
+columnview_test_8: columnview/columnview_test_8.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+columnview_test_9: columnview/columnview_test_9.c
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $< \
+	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
+
+columnview_test_10: $(SRC_CV10)
+	$(CC) $(OPTFLAGS) $(GTK4_CFLAGS) $(KEMO_INCLUDE) -o $@ $(SRC_CV10) \
 	$(OBJS) $(KEMO_LIBS)  $(GTK4_LIBS) $(FRAMEWORKS)
 
 %.o: %.c
