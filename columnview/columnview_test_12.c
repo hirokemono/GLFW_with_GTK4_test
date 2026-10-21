@@ -233,7 +233,6 @@ static void str2_activate_CB(GObject *object, gpointer user_data) {
 static void setup_str2_label_CB(GtkSignalListItemFactory *factory,
                                 GtkListItem *listitem,
                                 gpointer user_data){
-    TestColItem *item = gtk_list_item_get_item(listitem);
     GtkWidget *entry = gtk_entry_new();
     
     gtk_list_item_set_child(listitem, entry);
@@ -413,7 +412,7 @@ static void show_each_button_CB(GtkButton *button, gpointer user_data){
     GtkSortListModel *sort_model
             = GTK_SORT_LIST_MODEL(gtk_single_selection_get_model(GTK_SINGLE_SELECTION(selected)));
     GListModel *child_model = gtk_sort_list_model_get_model(sort_model);
-    GListStore *original_store = GTK_LIST_STORE (child_model);
+    GListStore *original_store = G_LIST_STORE(child_model);
     
     guint original_index;
     g_list_store_find(original_store, item, &original_index);
@@ -430,7 +429,7 @@ static void add_item_button_CB(GtkButton *button, gpointer user_data){
     GtkWidget *column_view = GTK_WIDGET(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
     GtkSelectionModel *selected = gtk_column_view_get_model(GTK_COLUMN_VIEW(column_view));
-    guint selected_index = gtk_single_selection_get_selected(GTK_SINGLE_SELECTION (selected));
+//    guint selected_index = gtk_single_selection_get_selected(GTK_SINGLE_SELECTION (selected));
     TestColItem *item = TESTCOL_ITEM(gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(selected)));
     if(item == NULL) {
         g_print ("No item selected.\n");
@@ -440,7 +439,7 @@ static void add_item_button_CB(GtkButton *button, gpointer user_data){
     GtkSortListModel *sort_model
             = GTK_SORT_LIST_MODEL(gtk_single_selection_get_model(GTK_SINGLE_SELECTION(selected)));
     GListModel *child_model = gtk_sort_list_model_get_model(sort_model);
-    GListStore *original_store = GTK_LIST_STORE (child_model);
+    GListStore *original_store = G_LIST_STORE(child_model);
     
     guint original_index;
     g_list_store_find(original_store, item, &original_index);
@@ -456,7 +455,7 @@ static void delete_item_button_CB(GtkButton *button, gpointer user_data){
     GtkWidget *column_view = GTK_WIDGET(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
     GtkSelectionModel *selected = gtk_column_view_get_model(GTK_COLUMN_VIEW(column_view));
-    guint selected_index = gtk_single_selection_get_selected(GTK_SINGLE_SELECTION (selected));
+//    guint selected_index = gtk_single_selection_get_selected(GTK_SINGLE_SELECTION (selected));
     TestColItem *item = TESTCOL_ITEM(gtk_single_selection_get_selected_item(GTK_SINGLE_SELECTION(selected)));
     if (item == NULL) {
         g_print ("No item selected.\n");
@@ -466,7 +465,7 @@ static void delete_item_button_CB(GtkButton *button, gpointer user_data){
     GtkSortListModel *sort_model
             = GTK_SORT_LIST_MODEL(gtk_single_selection_get_model(GTK_SINGLE_SELECTION(selected)));
     GListModel *child_model = gtk_sort_list_model_get_model(sort_model);
-    GListStore *original_store = GTK_LIST_STORE (child_model);
+    GListStore *original_store = G_LIST_STORE(child_model);
     
     guint original_index;
     g_list_store_find(original_store, item, &original_index);
