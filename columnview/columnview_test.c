@@ -146,7 +146,7 @@ static void str1_editing_CB(GObject *object, GParamSpec *pspec, gpointer user_da
     GtkEditable *editable = GTK_EDITABLE(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("str1_editing_CB %p %p \n", listitem, item);
+//    printf("str1_editing_CB %p %p \n", listitem, item);
     
     gboolean is_editing;
     g_object_get(G_OBJECT(editable), "editing", &is_editing, NULL);
@@ -173,7 +173,7 @@ static void bind_str1_label_CB(GtkSignalListItemFactory *factory,
                                gpointer user_data){
     GtkWidget *editable_label = gtk_list_item_get_child(listitem);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("bind_str1_label_CB %p %p \n", listitem, item);
+//    printf("bind_str1_label_CB %p %p \n", listitem, item);
     
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(editable_label, str1_editing_CB, listitem);
@@ -202,7 +202,7 @@ static void str2_activate_CB(GObject *object, gpointer user_data) {
     GtkEntry *entry = GTK_ENTRY(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("str2_activate_CB %p %p \n", listitem, item);
+//    printf("str2_activate_CB %p %p \n", listitem, item);
     
     const char *new_text = gtk_editable_get_text(GTK_EDITABLE(entry));
     g_free(item->str2);
@@ -225,7 +225,7 @@ static void bind_str2_label_CB(GtkSignalListItemFactory *factory,
                                gpointer user_data){
     GtkWidget *entry = gtk_list_item_get_child(listitem);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("bind_str2_label_CB %p %p \n", listitem, item);
+//    printf("bind_str2_label_CB %p %p \n", listitem, item);
     
     /* Block previous signal handler if recycled, or set text */
     gtk_editable_set_text(GTK_EDITABLE(entry), item->str2 ? item->str2 : "");
@@ -257,7 +257,7 @@ static void unbind_str2_label_CB(GtkSignalListItemFactory *factory,
 static void real_spin_value_change_CB(GtkSpinButton *spin, gpointer user_data) {
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("real_spin_value_change_CB %p %p \n", listitem, item);
+//    printf("real_spin_value_change_CB %p %p \n", listitem, item);
     
     if(item){
         item->real3 = gtk_spin_button_get_value(spin);
@@ -285,7 +285,7 @@ static void bind_real3_spin_CB(GtkSignalListItemFactory *factory,
                                gpointer user_data){
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("bind_real3_spin_CB %p %p \n", listitem, item);
+//    printf("bind_real3_spin_CB %p %p \n", listitem, item);
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_spin_value_change_CB, listitem);
@@ -312,11 +312,11 @@ static void unbind_real3_spin_CB(GtkSignalListItemFactory *factory,
 static void int_spin_value_change_CB(GtkSpinButton *spin, gpointer user_data) {
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("int_spin_value_change_CB %p %p \n", listitem, item);
+//    printf("int_spin_value_change_CB %p %p \n", listitem, item);
     
     if(item){
         item->int4 = gtk_spin_button_get_value_as_int(spin);
-        g_print("Real value updated! New integer value: %d\n", item->int4);
+        g_print("Integer updated! New integer: %d\n", item->int4);
     }
 }
 
@@ -340,7 +340,7 @@ static void bind_int4_spin_CB(GtkSignalListItemFactory *factory,
                                gpointer user_data){
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     TestColItem *item = gtk_list_item_get_item(listitem);
-    printf("bind_int4_spin_CB %p %p \n", listitem, item);
+//    printf("bind_int4_spin_CB %p %p \n", listitem, item);
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, int_spin_value_change_CB, listitem);
