@@ -42,9 +42,6 @@ movie_from_GLFW_by_FFMPEG.c \
 view_modifier_glfw.c \
 \
 calypso_GTK4.c \
-column_view_real3_gtk4.c \
-tree_view_real3_GTK.c \
-tree_views_4_fixed_lists_GTK.c        \
 columnview_light_positions.c          \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_colorsel.c              \
@@ -57,7 +54,6 @@ kemoview_gtk4_fileselector.c          \
 kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
-kemoview_gtk4_light_menu.c            \
 kemoview_gtk4_lighting_menu.c         \
 kemoview_gtk4_side_selector.c         \
 kemoview_gtk4_shading_selector.c      \
@@ -76,44 +72,30 @@ kemo_glfw_gtk4_test.c
 
 SRC_CV3 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_3.c
 
 SRC_CV5 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_5.c
 
 SRC_CV6 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_6.c
 
 SRC_CV7 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_7.c
 
 SRC_CV10 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_10.c
 
 SRC_CV11 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_11.c
 
 SRC_CV12 = \
 calypso_GTK4.c \
-tree_view_real3_GTK.c \
-kemoview_gtk4_light_menu.c \
 columnview/columnview_test_12.c
 
 SRC_CV13 = \

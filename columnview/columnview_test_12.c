@@ -6,14 +6,14 @@
 // Use for testing columnview
 
 #include <gtk/gtk.h>
-
+/*
 #include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
 #include "kemoview_gtk4_light_menu.h"
 
-
 struct kemoviewer_type *kemoviewer_data;
 struct lightparams_view *light_vws;
+*/
 
 // Setup custom type - each item has two strings which will be displayed in two columns
 
@@ -543,10 +543,11 @@ GtkWidget * columnview_init(GListStore *store){
 // Activate
 static void activate (GtkApplication* app, gpointer user_data)
 {
+    /*
     kemoviewer_data = kemoview_allocate_single_viwewer_struct();
 	kemoview_init_phong_light_list(kemoviewer_data);
     light_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
-    
+    */
     
     // Add column view.  Put in scrolled window.  
     GListStore *store = init_test_list_store(); 

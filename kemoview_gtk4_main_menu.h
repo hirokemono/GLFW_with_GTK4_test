@@ -20,7 +20,6 @@
 #include "calypso_GTK4.h"
 // #include "tree_views_4_fixed_lists_GTK.h"
 // #include "tree_view_viewer_colormap.h"
-#include "kemoview_gtk4_light_menu.h"
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_evolution_menu.h"
 #include "kemoview_gtk4_rotation_menu.h"

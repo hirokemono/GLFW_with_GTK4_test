@@ -65,32 +65,31 @@ static GtkWidget * init_background_frame(struct kemoviewer_gl_type *kemo_gl,
     return wrap_into_frame_gtk4("Background", hbox_bg_hbox);
 }
 
-GtkWidget * init_image_format_frame(struct kemoviewer_gl_type *kemo_gl,
-                                    struct lightparams_view *lightparams_vws){
+static GtkWidget * init_image_format_frame(struct kemoviewer_gl_type *kemo_gl,
+                                           int *id_def_format){
     GtkWidget *image_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    GtkWidget *ImgFormat_hbox = init_image_format_hbox(kemo_gl, &lightparams_vws->id_def_format);
+    GtkWidget *ImgFormat_hbox = init_image_format_hbox(kemo_gl, id_def_format);
     gtk_box_append(GTK_BOX(image_vbox), ImgFormat_hbox);
     return wrap_into_frame_gtk4("Image format", image_vbox);
 }
 
-GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
-                                 struct lightparams_view *lightparams_vws,
-                                 GtkWidget *window, GtkWidget *pref_win,
-                                 GLFWwindow *glfw_win){
+static GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
+                                        int *id_def_format,
+                                        GtkWidget *window, GtkWidget *pref_win,
+                                        GLFWwindow *glfw_win){
     GtkWidget *pref_vbox;
     
     float color[4];
     
-    GtkWidget *background_box = init_background_frame(kemo_gl, pref_win, glfw_win);
-    GtkWidget *lighting_frame =  init_lighting_frame(kemo_gl,
-                                                     lightparams_vws);
+    GtkWidget *lighting_frame =  init_lighting_frame(kemo_gl);
+    GtkWidget *background_box =  init_background_frame(kemo_gl, pref_win, glfw_win);
     GtkWidget *Shading_frame =   shading_mode_menu_frame(kemo_gl);
     GtkWidget *Tube_frame =      init_tube_pref_frame(kemo_gl);
     GtkWidget *coastline_frame = init_coastline_pref_menu(kemo_gl);
     GtkWidget *Axis_frame =      init_axis_position_menu(kemo_gl);
     GtkWidget *FPS_frame =       init_FPS_test_menu_frame(kemo_gl, window);
     GtkWidget *NumThread_frame = init_num_threads_menu_frame(kemo_gl);
-    GtkWidget *ImgFormat_frame = init_image_format_frame(kemo_gl, &lightparams_vws);
+    GtkWidget *ImgFormat_frame = init_image_format_frame(kemo_gl, id_def_format);
 
     
     pref_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
@@ -107,33 +106,33 @@ GtkWidget * init_preference_vbox(struct kemoviewer_gl_type *kemo_gl,
 }
 
 GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
-                                  struct lightparams_view *lightparams_vws,
+                                  int *id_def_format,
                                   GtkWidget *window, GtkWidget *pref_win,
                                   GLFWwindow *glfw_win){
     GtkWidget *frame_pref  = gtk_frame_new("Preferences");
-    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws, 
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, id_def_format, 
                                                 window, pref_win, glfw_win);
 	gtk_frame_set_child(GTK_FRAME(frame_pref), pref_vbox);
     return frame_pref;
 }
 
 GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
-                                      struct lightparams_view *lightparams_vws,
+                                      int *id_def_format,
                                       GtkWidget *window, GtkWidget *pref_win,
                                       GLFWwindow *glfw_win){
     GtkWidget *scroll_pref;
-    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws,
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, id_def_format,
                                                 window, pref_win, glfw_win);
     scroll_pref = wrap_into_scrollbox_gtk4(400, 400, pref_vbox);
     return scroll_pref;
 }
 
 GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
-                                     struct lightparams_view *lightparams_vws,
+                                     int *id_def_format,
                                      GtkWidget *window, GtkWidget *pref_win,
                                      GLFWwindow *glfw_win){
     GtkWidget *expander_pref;
-    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, lightparams_vws,
+    GtkWidget *pref_vbox = init_preference_vbox(kemo_gl, id_def_format,
                                                 window, pref_win, glfw_win);
     expander_pref = wrap_into_scroll_expansion_gtk4("Preferences", 400, 400,
                                                     window, pref_vbox);

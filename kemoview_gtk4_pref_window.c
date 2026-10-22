@@ -17,13 +17,12 @@ struct preference_view * init_preference_view(struct kemoviewer_type *kemoviewer
         exit(0);
     }
     
-    pref_vws->light_vws = init_light_views_4_viewer(kemoviewer_data->kemo_buffers->kemo_lights);
+    pref_vws->id_def_format = SAVE_PNG;
     return pref_vws;
 };
 
 
 void dealloc_preference_view(struct preference_view *pref_vws){
-    dealloc_light_views_4_viewer(pref_vws->light_vws);
     free(pref_vws);
     return;
 };
@@ -47,7 +46,7 @@ void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(pref_vws->pref_window, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
     
-    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, pref_vws->light_vws, 
+    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, &pref_vws->id_def_format, 
                                                       main_window, pref_vws->pref_window,
                                                       glfw_win);
     gtk_window_set_child(GTK_WINDOW(pref_vws->pref_window), pref_frame);

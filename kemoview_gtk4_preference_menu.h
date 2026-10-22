@@ -32,15 +32,15 @@
 
 /*  prototypes */
 GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
-                                  struct lightparams_view *lightparams_vws,
+                                  int *id_def_format,
                                   GtkWidget *window, GtkWidget *pref_win,
                                   GLFWwindow *glfw_win);
 GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
-                                      struct lightparams_view *lightparams_vws,
+                                      int *id_def_format,
                                       GtkWidget *window, GtkWidget *pref_win,
                                       GLFWwindow *glfw_win);
 GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
-                                     struct lightparams_view *lightparams_vws,
+                                     int *id_def_format,
                                      GtkWidget *window, GtkWidget *pref_win,
                                      GLFWwindow *glfw_win);
 

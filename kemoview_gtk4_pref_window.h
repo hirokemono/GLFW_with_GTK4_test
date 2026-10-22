@@ -18,13 +18,13 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
-#include "kemoview_gtk4_light_menu.h"
 #include "kemoview_gtk4_preference_menu.h"
 
 #include "view_modifier_glfw.h"
 
 struct preference_view{
-    struct lightparams_view *light_vws;
+    
+    int id_def_format;
     
     GtkWidget *pref_window;
 };
