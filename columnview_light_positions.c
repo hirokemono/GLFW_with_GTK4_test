@@ -143,11 +143,11 @@ static void sync_kemoview_light_position_from_list(GListStore *store,
 /*  Float spin button callbacks */
 static void real_spin1_value_change_CB(GObject *object, gpointer user_data) {
     GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+    GtkListItem *listitem = GTK_LIST_ITEM(user_data);
+    TestColItem *item = gtk_list_item_get_item(listitem);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
-    GtkListItem *listitem = GTK_LIST_ITEM(user_data);
-    TestColItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
         item->real1 = gtk_spin_button_get_value(spin);
@@ -422,7 +422,7 @@ static void delete_item_button_CB(GtkButton *button, gpointer user_data){
 
 
 /* Construct columnview */
-GListStore *init_test_list_store(struct kemoviewer_type *kemo_sgl){
+static GListStore *init_lightposition_list_store(struct kemoviewer_type *kemo_sgl){
     float rtp[3];
     int i;
     // Create and populate custom list model
@@ -484,7 +484,7 @@ GtkWidget * init_light_position_list_box(struct kemoviewer_gl_type *kemo_gl){
     GtkWidget *grid;
     
     // Add column view.  Put in scrolled window.  
-    GListStore *store = init_test_list_store(kemo_gl->kemoview_data); 
+    GListStore *store = init_lightposition_list_store(kemo_gl->kemoview_data); 
     GtkWidget *cview = columnview_init(kemo_gl, store);
     gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (cview),TRUE);
     g_object_set_data(G_OBJECT(cview), "list_store",  G_OBJECT(store));

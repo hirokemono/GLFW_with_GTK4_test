@@ -42,6 +42,7 @@ movie_from_GLFW_by_FFMPEG.c \
 view_modifier_glfw.c \
 \
 calypso_GTK4.c \
+columnview_real3_gtk4.c               \
 columnview_light_positions.c          \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_colorsel.c              \
