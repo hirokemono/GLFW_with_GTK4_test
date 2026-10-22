@@ -31,7 +31,7 @@ testcol_item_get_property(GObject *object, guint prop_id, GValue *value, GParamS
     TestColItem *self = (TestColItem *)object;
 
     switch (prop_id) {
-    case PROP_STR1:
+    case PROP_REAL1:
         g_value_set_float(value, (gfloat) self->real1);
         break;
     case PROP_REAL2:
@@ -51,7 +51,7 @@ testcol_item_set_property(GObject *object, guint prop_id, const GValue *value, G
     TestColItem *self = (TestColItem *)object;
 
     switch (prop_id) {
-    case PROP_STR1:
+    case PROP_REAL1:
         self->real1 = (float) g_value_get_float(value);
         break;
     case PROP_REAL2:
@@ -82,13 +82,13 @@ static void testcol_item_class_init(TestColItemClass *class)
     gobject_class->get_property = testcol_item_get_property;
     gobject_class->set_property = testcol_item_set_property;
 
-    obj_properties[PROP_STR1] = g_param_spec_string("radius",
-                                                    "Radius".,
-                                                    "first column",
+    obj_properties[PROP_REAL1] = g_param_spec_string("radius",
+                                                     "Radius".,
+                                                     "first column",
                                                        0.0,
                                                      180.0,
                                                        0.0,
-                                                    G_PARAM_READWRITE);
+                                                     G_PARAM_READWRITE);
 
     obj_properties[PROP_REAL2] = g_param_spec_float("elevation",
                                                     "Elevation",
