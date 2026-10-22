@@ -448,7 +448,7 @@ GtkWidget * columnview_init(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(factory1, "bind",   G_CALLBACK(bind_real1_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_real1_spin_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Radius", factory1);
-    sorter = GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"Radius")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"radius")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
@@ -458,7 +458,7 @@ GtkWidget * columnview_init(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(factory2, "bind",   G_CALLBACK(bind_real2_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_real2_spin_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Elevation", factory2);
-    sorter = GTK_SORTER (gtk_string_sorter_new (gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "Elevation")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "elevation")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
@@ -468,7 +468,7 @@ GtkWidget * columnview_init(struct kemoviewer_type *kemo_sgl,
     g_signal_connect(factory3, "bind",   G_CALLBACK(bind_real3_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_real3_spin_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Azimuth", factory3);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "Azimuth")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "azimuth")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
     
