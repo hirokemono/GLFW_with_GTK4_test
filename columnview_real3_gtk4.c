@@ -388,7 +388,7 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_real1_spin_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Radius", factory1);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"real1")));
-    gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
+    gtk_column_view_column_set_sorter (column1, GTK_SORTER(sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
     // Factory setup and bind for column 2
@@ -398,7 +398,7 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_real2_spin_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Elevation", factory2);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "real2")));
-    gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
+    gtk_column_view_column_set_sorter (column2, GTK_SORTER(sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
     // Factory setup and bind for column 3
@@ -408,7 +408,7 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_real3_spin_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Azimuth", factory3);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
-    gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
+    gtk_column_view_column_set_sorter (column3, GTK_SORTER(sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
     
     return cview;
@@ -435,7 +435,7 @@ struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real
     // Add column view.  Put in scrolled window.  
     real3_vws->real3_store = init_real3_list_store(num, real3); 
     real3_vws->real3_cview = real3_columnview_init(real3_vws->real3_store);
-    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (real3_vws->real3_cview),TRUE);
+    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW(real3_vws->real3_cview),TRUE);
     g_object_set_data(G_OBJECT(real3_vws->real3_cview), "list_store",
                       G_OBJECT(real3_vws->real3_store));
     
