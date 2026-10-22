@@ -1,5 +1,11 @@
-
-/* view_modifier_glfw.h */
+/***********************************************************************
+ *  view_modifier_glfw.h
+ *
+ *  Updated by Hiroaki Matsui on Oct, 20, 2026
+ *  Copyright 2026 Dept. of Earth and Planetary Sciences,
+ *  Inst. of Science Tokyo. All rights reserved.
+ *
+ ************************************************************************/
 
 #ifndef VIEW_MODIFIER_GLFW_
 #define VIEW_MODIFIER_GLFW_

@@ -9,9 +9,11 @@
 #ifndef COLUMNVIEW_LIGHT_POSITIONS_
 #define COLUMNVIEW_LIGHT_POSITIONS_
 
+#include "kemoviewer_gl.h"
 #include "kemoviewer.h"
 
 #include "calypso_GTK4.h"
+#include "view_modifier_glfw.h"
 
 /*
  Setup custom type - each item has two strings, one real, and one integer
@@ -43,7 +45,7 @@ G_DECLARE_FINAL_TYPE(TestColItem, testcol_item, TESTCOL, ITEM, GObject)
 
 
 /* prototypes */
-GtkWidget *init_light_position_list_box(struct kemoviewer_type *kemo_sgl);
+GtkWidget *init_light_position_list_box(struct kemoviewer_gl_type *kemo_gl);
 
 G_END_DECLS
 
