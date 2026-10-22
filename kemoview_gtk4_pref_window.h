@@ -22,17 +22,7 @@
 
 #include "view_modifier_glfw.h"
 
-struct preference_view{
-    
-    int id_def_format;
-    
-    GtkWidget *pref_window;
-};
-
 /*  prototypes */
-
-struct preference_view * init_preference_view(struct kemoviewer_type *kemoviewer_data);
-void dealloc_preference_view(struct preference_view *pref_vws);
 
 void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
                             struct preference_view *pref_vws,

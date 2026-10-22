@@ -29,6 +29,7 @@
 // #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk4_PSF_menu.h"
 // #include "kemoview_gtk_Fline_window.h"
+#include "kemoview_gtk4_preference_menu.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 #include "kemoview_gtk4_viewmode_menu.h"
 #include "kemoview_gtk4_menu_button.h"

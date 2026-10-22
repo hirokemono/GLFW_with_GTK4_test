@@ -18,6 +18,7 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
+#include "columnview_real3_gtk4.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_colorsel.h"
 #include "kemoview_gtk4_shading_mode_menu.h"
@@ -30,18 +31,25 @@
 
 #include "view_modifier_glfw.h"
 
+struct preference_view{
+    struct kemo_real3_columnview *light_vws;
+    int id_def_format;
+    
+    GtkWidget *pref_window;
+};
+
 /*  prototypes */
+struct preference_view * init_preference_view(struct kemoviewer_type *kemoviewer_data);
+void dealloc_preference_view(struct preference_view *pref_vws);
+
 GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
-                                  int *id_def_format,
-                                  GtkWidget *window, GtkWidget *pref_win,
-                                  GLFWwindow *glfw_win);
+                                  struct preference_view *pref_vws,
+                                  GtkWidget *window, GLFWwindow *glfw_win);
 GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
-                                      int *id_def_format,
-                                      GtkWidget *window, GtkWidget *pref_win,
-                                      GLFWwindow *glfw_win);
+                                      struct preference_view *pref_vws,
+                                      GtkWidget *window, GLFWwindow *glfw_win);
 GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
-                                     int *id_def_format,
-                                     GtkWidget *window, GtkWidget *pref_win,
-                                     GLFWwindow *glfw_win);
+                                     struct preference_view *pref_vws,
+                                     GtkWidget *window, GLFWwindow *glfw_win);
 
 #endif   /*  KEMOVIEW_GTK4_PREFERENCE_MENU_  */

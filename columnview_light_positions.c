@@ -224,7 +224,7 @@ static void unbind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
 /* =========================================================================
  *   Callbacks for buttuns to control list model data
  * ========================================================================= */
-static void add_item_button_CB(GtkButton *button, gpointer user_data){
+static void add_light_button_CB(GtkButton *button, gpointer user_data){
     Real3ColumnItem *item;
     GtkColumnView *column_view = GTK_COLUMN_VIEW(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
@@ -247,7 +247,7 @@ static void add_item_button_CB(GtkButton *button, gpointer user_data){
 };
 
 
-static void delete_item_button_CB(GtkButton *button, gpointer user_data){
+static void delete_light_button_CB(GtkButton *button, gpointer user_data){
     GtkColumnView *column_view = GTK_COLUMN_VIEW(user_data);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
@@ -280,8 +280,8 @@ static GListStore *init_lightposition_list_store(struct kemoviewer_type *kemo_sg
     return store;
 };
 
-static GtkWidget * columnview_init(struct kemoviewer_gl_type *kemo_gl,
-                                   GListStore *store){
+static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kemo_gl,
+                                                  GListStore *store){
     GtkWidget *cview = gtk_column_view_new(NULL);
     g_object_set_data(G_OBJECT(store), "kemoview_gl",   G_OBJECT(kemo_gl));
     
@@ -325,46 +325,51 @@ static GtkWidget * columnview_init(struct kemoviewer_gl_type *kemo_gl,
     return cview;
 }
 
-GtkWidget * init_light_position_list_box(struct kemoviewer_gl_type *kemo_gl){
-    GtkWidget *grid;
+
+struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer_gl_type *kemo_gl){
+    struct kemo_real3_columnview *light_vws = alloc_kemo_real3_columnview();
     
     // Add column view.  Put in scrolled window.  
-    GListStore *store = init_lightposition_list_store(kemo_gl->kemoview_data); 
-    GtkWidget *cview = columnview_init(kemo_gl, store);
-    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (cview),TRUE);
-    g_object_set_data(G_OBJECT(cview), "list_store",  G_OBJECT(store));
-    g_object_set_data(G_OBJECT(cview), "kemoview_gl", G_OBJECT(kemo_gl));
-    
-    // scrolled window
-    GtkWidget *scrolled_window = gtk_scrolled_window_new(); 
-    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(scrolled_window),  400);
-    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrolled_window), 240);
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled_window), cview);
+    light_vws->real3_store = init_lightposition_list_store(kemo_gl->kemoview_data); 
+    light_vws->real3_cview = light_position_columnview_init(kemo_gl, light_vws->real3_store);
+    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (light_vws->real3_cview),TRUE);
+    g_object_set_data(G_OBJECT(light_vws->real3_cview), "list_store",
+                      G_OBJECT(light_vws->real3_store));
+    g_object_set_data(G_OBJECT(light_vws->real3_cview), "kemoview_gl",
+                      G_OBJECT(kemo_gl));
     
     GtkWidget *add_item_button = gtk_button_new_with_label("Add");
     g_signal_connect(G_OBJECT(add_item_button), "clicked",
-                     G_CALLBACK(add_item_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(add_light_button_CB), G_OBJECT(light_vws->real3_cview));
     
     GtkWidget *del_item_button = gtk_button_new_with_label("Delete");
     g_signal_connect(G_OBJECT(del_item_button), "clicked",
-                     G_CALLBACK(delete_item_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(delete_light_button_CB), G_OBJECT(light_vws->real3_cview));
     
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
-                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(store));
+                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(light_vws->real3_store));
     
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
-                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(light_vws->real3_cview));
     
-    grid = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid), scrolled_window,  0, 0, 4, 1);
+    GtkWidget *grid = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(grid), light_vws->real3_cview, 0, 0, 4, 1);
     
-    gtk_grid_attach(GTK_GRID(grid), add_item_button,  0, 1, 2, 1);
-    gtk_grid_attach(GTK_GRID(grid), del_item_button,  2, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), add_item_button,         0, 1, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), del_item_button,         2, 1, 2, 1);
     
-    gtk_grid_attach(GTK_GRID(grid), show_all_button,  0, 2, 2, 1);
-    gtk_grid_attach(GTK_GRID(grid), show_each_button, 2, 2, 2, 1);
-    return grid;
+    gtk_grid_attach(GTK_GRID(grid), show_all_button,         0, 2, 2, 1);
+    gtk_grid_attach(GTK_GRID(grid), show_each_button,        2, 2, 2, 1);
+    
+    // scrolled window
+    light_vws->real3_cview_scroll = gtk_scrolled_window_new(); 
+    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll),  400);
+    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll), 240);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll), grid);
+    
+    return light_vws;
 };
+

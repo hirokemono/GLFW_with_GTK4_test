@@ -9,25 +9,6 @@
 
 #include "kemoview_gtk4_pref_window.h"
 
-struct preference_view * init_preference_view(struct kemoviewer_type *kemoviewer_data){
-    struct preference_view *pref_vws
-            = (struct preference_view *) malloc(sizeof(struct preference_view));
-    if (pref_vws == NULL) {
-        printf("malloc error for preference_view\n");
-        exit(0);
-    }
-    
-    pref_vws->id_def_format = SAVE_PNG;
-    return pref_vws;
-};
-
-
-void dealloc_preference_view(struct preference_view *pref_vws){
-    free(pref_vws);
-    return;
-};
-
-
 static gboolean dummy_close_CB(GtkWidget *widget, GdkEvent *event, gpointer data){
         gtk_window_destroy(GTK_WINDOW(widget));
 //    gtk_window_close(GTK_WINDOW(widget));
@@ -46,9 +27,8 @@ void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(pref_vws->pref_window, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
     
-    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, &pref_vws->id_def_format, 
-                                                      main_window, pref_vws->pref_window,
-                                                      glfw_win);
+    GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, pref_vws,
+                                                      main_window, glfw_win);
     gtk_window_set_child(GTK_WINDOW(pref_vws->pref_window), pref_frame);
     gtk_widget_set_visible(pref_vws->pref_window, TRUE);
     return;

@@ -58,6 +58,7 @@ void show_each_real3_button_CB(GtkButton *button, gpointer user_data);
 GListStore *init_real3_list_store(int num, float **real3);
 GtkWidget * real3_columnview_init(GListStore *store);
 
+struct kemo_real3_columnview * alloc_kemo_real3_columnview();
 struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real3);
 void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws);
 

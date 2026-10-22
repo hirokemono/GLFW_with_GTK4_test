@@ -425,6 +425,8 @@ struct kemo_real3_columnview * alloc_kemo_real3_columnview(){
 };
 
 void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws){
+    g_object_unref(G_OBJECT(real3_vws->real3_cview));
+    g_object_unref(G_OBJECT(real3_vws->real3_store));
     free(real3_vws);
     return;
 }

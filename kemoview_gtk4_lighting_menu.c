@@ -56,7 +56,8 @@ static void light_chack_switch_CB(GObject *switch_bar, GParamSpec *pspec, gpoint
     return;
 };
 
-GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl){
+GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl,
+                                struct kemo_real3_columnview *light_vws){
     GtkWidget * light_vbox;
     
     float color[4];
@@ -128,10 +129,10 @@ GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl){
     gtk_box_append(GTK_BOX(hbox_check), gtk_label_new("Check light directions: "));
     gtk_box_append(GTK_BOX(hbox_check), lighting_switch);
     
-    GtkWidget *expander_lights = init_light_position_list_box(kemo_gl);
+    light_vws = init_light_position_list_scroll(kemo_gl);
     
     light_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(light_vbox), expander_lights);
+    gtk_box_append(GTK_BOX(light_vbox), light_vws->real3_cview_scroll);
     gtk_box_append(GTK_BOX(light_vbox), hbox_ambient);
     gtk_box_append(GTK_BOX(light_vbox), hbox_diffuse);
     gtk_box_append(GTK_BOX(light_vbox), hbox_specular);

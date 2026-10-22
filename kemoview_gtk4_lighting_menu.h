@@ -17,11 +17,13 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
+#include "columnview_real3_gtk4.h"
 #include "columnview_light_positions.h"
 #include "kemoview_gtk4_routines.h"
 
 #include "view_modifier_glfw.h"
 
-GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl);
+GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl,
+                                struct kemo_real3_columnview *light_vws);
 
 #endif /* KEMOVIEW_GTK4_LIGHTING_MENU_ */

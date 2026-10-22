@@ -18,7 +18,7 @@
 #include "view_modifier_glfw.h"
 
 /* prototypes */
-GtkWidget *init_light_position_list_box(struct kemoviewer_gl_type *kemo_gl);
+struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer_gl_type *kemo_gl);
 
 #endif /* COLUMNVIEW_LIGHT_POSITIONS_ */
 
