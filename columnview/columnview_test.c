@@ -144,7 +144,7 @@ static TestColItem * testcol_item_new(const char *str1,
 /*  string editable button callbacks */
 static void str1_editing_CB(GObject *object, GParamSpec *pspec, gpointer user_data) {
     GtkEditable *editable = GTK_EDITABLE(object);
-	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
+//	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
 //    printf("str1_editing_CB %p %p \n", listitem, item);
@@ -163,7 +163,7 @@ static void str1_editing_CB(GObject *object, GParamSpec *pspec, gpointer user_da
 static void setup_str1_label_CB(GtkSignalListItemFactory *factory,
                                 GtkListItem *listitem,
                                 gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *editable_label = gtk_editable_label_new("");
     
     gtk_list_item_set_child(listitem, editable_label);
@@ -193,7 +193,7 @@ static void bind_str1_label_CB(GtkSignalListItemFactory *factory,
 static void unbind_str1_label_CB(GtkSignalListItemFactory *factory,
                                  GtkListItem *listitem,
                                  gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *editable_label = gtk_list_item_get_child(listitem);
     g_signal_handlers_disconnect_by_func(editable_label, str1_editing_CB, listitem);
 }
@@ -205,7 +205,7 @@ static void unbind_str1_label_CB(GtkSignalListItemFactory *factory,
 /*  string editable button callbacks */
 static void str2_activate_CB(GObject *object, gpointer user_data) {
     GtkEntry *entry = GTK_ENTRY(object);
-	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
+//	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
 //    printf("str2_activate_CB %p %p \n", listitem, item);
@@ -220,7 +220,7 @@ static void str2_activate_CB(GObject *object, gpointer user_data) {
 static void setup_str2_label_CB(GtkSignalListItemFactory *factory,
                                 GtkListItem *listitem,
                                 gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *entry = gtk_entry_new();
     
     gtk_list_item_set_child(listitem, entry);
@@ -253,7 +253,7 @@ static void bind_str2_label_CB(GtkSignalListItemFactory *factory,
 static void unbind_str2_label_CB(GtkSignalListItemFactory *factory,
                                  GtkListItem *listitem,
                                  gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *entry = gtk_list_item_get_child(listitem);
     g_signal_handlers_disconnect_by_func(entry, str2_activate_CB, listitem);
 }
@@ -266,7 +266,7 @@ static void unbind_str2_label_CB(GtkSignalListItemFactory *factory,
 /*  Float spin button callbacks */
 static void real_spin_value_change_CB(GObject *object, gpointer user_data) {
     GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
-    GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
+//    GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
 //    printf("real_spin_value_change_CB %p %p \n", listitem, item);
@@ -281,7 +281,7 @@ static void real_spin_value_change_CB(GObject *object, gpointer user_data) {
 static void setup_real3_spin_CB(GtkSignalListItemFactory *factory,
                                 GtkListItem *listitem,
                                 gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
     GtkAdjustment *adjustment = gtk_adjustment_new(0.0, 0.0, 360.0, 0.25, 1.0, 0.0);
     
@@ -315,7 +315,7 @@ static void bind_real3_spin_CB(GtkSignalListItemFactory *factory,
 static void unbind_real3_spin_CB(GtkSignalListItemFactory *factory,
                                  GtkListItem *listitem,
                                  gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_signal_handlers_disconnect_by_func(spin, real_spin_value_change_CB, listitem);
 }
@@ -327,7 +327,7 @@ static void unbind_real3_spin_CB(GtkSignalListItemFactory *factory,
 /*  Float spin button callbacks */
 static void int_spin_value_change_CB(GObject *object, gpointer user_data) {
     GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
-    GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
+//    GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     TestColItem *item = gtk_list_item_get_item(listitem);
 //    printf("int_spin_value_change_CB %p %p \n", listitem, item);
@@ -342,7 +342,7 @@ static void int_spin_value_change_CB(GObject *object, gpointer user_data) {
 static void setup_int4_spin_CB(GtkSignalListItemFactory *factory,
                                 GtkListItem *listitem,
                                 gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
     GtkAdjustment *adjustment = gtk_adjustment_new(0, -64, 64, 1, 1, 0);
     
@@ -377,7 +377,7 @@ static void bind_int4_spin_CB(GtkSignalListItemFactory *factory,
 static void unbind_int4_spin_CB(GtkSignalListItemFactory *factory,
                                  GtkListItem *listitem,
                                  gpointer user_data){
-    GListStore *store = G_LIST_STORE(user_data);
+//    GListStore *store = G_LIST_STORE(user_data);
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_signal_handlers_disconnect_by_func(spin, int_spin_value_change_CB, listitem);
 }
