@@ -45,6 +45,7 @@ calypso_GTK4.c \
 column_view_real3_gtk4.c \
 tree_view_real3_GTK.c \
 tree_views_4_fixed_lists_GTK.c        \
+columnview_light_positions.c          \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_colorsel.c              \
 kemoview_gtk4_image_format_selector.c \

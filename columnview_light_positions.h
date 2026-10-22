@@ -6,12 +6,12 @@
  *  Inst. of Science Tokyo. All rights reserved.
  *
  ************************************************************************/
-#ifndef COLUMNVIEW_LIGHT_POSITION_
-#define COLUMNVIEW_LIGHT_POSITION_
+#ifndef COLUMNVIEW_LIGHT_POSITIONS_
+#define COLUMNVIEW_LIGHT_POSITIONS_
 
-#include <gtk/gtk.h>
+#include "kemoviewer.h"
 
-
+#include "calypso_GTK4.h"
 
 /*
  Setup custom type - each item has two strings, one real, and one integer
@@ -43,9 +43,9 @@ G_DECLARE_FINAL_TYPE(TestColItem, testcol_item, TESTCOL, ITEM, GObject)
 
 
 /* prototypes */
-GtkWidget * init_list_store_test_grid();
+GtkWidget *init_light_position_list_box(struct kemoviewer_type *kemo_sgl);
 
 G_END_DECLS
 
-#endif /* COLUMNVIEW_LIGHT_POSITION_ */
+#endif /* COLUMNVIEW_LIGHT_POSITIONS_ */
 

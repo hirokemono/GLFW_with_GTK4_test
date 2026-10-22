@@ -130,11 +130,12 @@ GtkWidget * init_lighting_frame(struct kemoviewer_gl_type *kemo_gl,
     gtk_box_append(GTK_BOX(hbox_check), lighting_switch);
 
     
-    GtkWidget * Frame_lights = init_lightposition_expander(kemo_gl->kemoview_data,
-                                                           lightparams_vws);
+//    GtkWidget * Frame_lights = init_lightposition_expander(kemo_gl->kemoview_data,
+    //                                                           lightparams_vws);
+    GtkWidget *expander_lights = init_light_position_list_box(kemo_gl->kemoview_data);
 
     light_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(light_vbox), Frame_lights);
+    gtk_box_append(GTK_BOX(light_vbox), expander_lights);
     gtk_box_append(GTK_BOX(light_vbox), hbox_ambient);
     gtk_box_append(GTK_BOX(light_vbox), hbox_diffuse);
     gtk_box_append(GTK_BOX(light_vbox), hbox_specular);

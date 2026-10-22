@@ -17,6 +17,7 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
+#include "columnview_light_positions.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_light_menu.h"
 
