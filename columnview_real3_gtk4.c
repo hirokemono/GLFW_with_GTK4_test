@@ -414,45 +414,64 @@ GtkWidget * real3_columnview_init(GListStore *store){
     return cview;
 }
 
-GtkWidget * init_real_column_scroll(int num, float **real3){
-    GtkWidget *grid;
+struct kemo_real3_columnview * alloc_kemo_real3_columnview(){
+    struct kemo_real3_columnview *real3_vws;
+    real3_vws = (struct kemo_real3_columnview *) malloc(sizeof(struct kemo_real3_columnview *));
+    if (real3_vws == NULL){
+        printf("malloc error for kemo_real3_columnview \n");
+        exit(1);
+    };
+    return real3_vws;
+};
+
+void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws){
+    free(real3_vws);
+    return;
+}
+
+struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real3){
+    struct kemo_real3_columnview *real3_vws = alloc_kemo_real3_columnview();
     
     // Add column view.  Put in scrolled window.  
-    GListStore *store = init_real3_list_store(num, real3); 
-    GtkWidget *cview = real3_columnview_init(store);
-    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (cview),TRUE);
-    g_object_set_data(G_OBJECT(cview), "list_store",  G_OBJECT(store));
+    real3_vws->real3_store = init_real3_list_store(num, real3); 
+    real3_vws->real3_cview = real3_columnview_init(real3_vws->real3_store);
+    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (real3_vws->real3_cview),TRUE);
+    g_object_set_data(G_OBJECT(real3_vws->real3_cview), "list_store",
+                      G_OBJECT(real3_vws->real3_store));
     
-    // scrolled window
-    GtkWidget *scrolled_window = gtk_scrolled_window_new(); 
-    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(scrolled_window),  400);
-    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrolled_window), 240);
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrolled_window), cview);
     
     GtkWidget *add_item_button = gtk_button_new_with_label("Add");
     g_signal_connect(G_OBJECT(add_item_button), "clicked",
-                     G_CALLBACK(add_item_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(add_item_button_CB), G_OBJECT(real3_vws->real3_cview));
     
     GtkWidget *del_item_button = gtk_button_new_with_label("Delete");
     g_signal_connect(G_OBJECT(del_item_button), "clicked",
-                     G_CALLBACK(delete_item_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(delete_item_button_CB), G_OBJECT(real3_vws->real3_cview));
     
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
-                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(store));
+                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(real3_vws->real3_store));
     
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
-                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(cview));
+                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(real3_vws->real3_cview));
     
-    grid = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid), scrolled_window,  0, 0, 4, 1);
+    GtkWidget *grid = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(grid), real3_vws->real3_cview, 0, 0, 4, 1);
     
     gtk_grid_attach(GTK_GRID(grid), add_item_button,  0, 1, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), del_item_button,  2, 1, 2, 1);
     
     gtk_grid_attach(GTK_GRID(grid), show_all_button,  0, 2, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), show_each_button, 2, 2, 2, 1);
-    return grid;
+    
+    // scrolled window
+    real3_vws->real3_cview_scroll = gtk_scrolled_window_new(); 
+    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(real3_vws->real3_cview_scroll),  480);
+    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(real3_vws->real3_cview_scroll), 240);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(real3_vws->real3_cview_scroll), grid);
+    
+    return real3_vws;
 };
+

@@ -29,6 +29,12 @@ struct _Real3ColumnItem
     float real3;
 };
 
+struct kemo_real3_columnview{
+    GtkWidget  *real3_cview_scroll;
+    
+    GListStore *real3_store; 
+    GtkWidget  *real3_cview;
+};
 
 /*
  * Type declaration for G_OBJECTS
@@ -51,7 +57,9 @@ void show_each_real3_button_CB(GtkButton *button, gpointer user_data);
 
 GListStore *init_real3_list_store(int num, float **real3);
 GtkWidget * real3_columnview_init(GListStore *store);
-GtkWidget * init_real_column_scroll(int num, float **real3);
+
+struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real3);
+void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws);
 
 G_END_DECLS
 
