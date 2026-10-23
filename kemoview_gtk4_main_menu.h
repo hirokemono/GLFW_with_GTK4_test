@@ -24,7 +24,7 @@
 #include "kemoview_gtk4_evolution_menu.h"
 #include "kemoview_gtk4_rotation_menu.h"
 #include "kemoview_gtk4_rotation_expander.h"
-// #include "kemoview_gtk_quilt_menu.h"
+#include "kemoview_gtk4_quilt_menu.h"
 #include "kemoview_gtk4_axis_menu.h"
 // #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk4_PSF_menu.h"

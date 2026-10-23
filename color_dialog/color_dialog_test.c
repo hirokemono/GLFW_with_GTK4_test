@@ -88,10 +88,10 @@ activate (GtkApplication *app,
     gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON (color_button), &initial_color);
 
     /* 3. Connect to the 'notify::rgba' signal to listen for value changes */
-    g_signal_connect (color_button, "notify::rgba", G_CALLBACK (on_color_changed), window);
+    g_signal_connect(color_button, "notify::rgba", G_CALLBACK (on_color_changed), window);
     
     /* Append the button to our box and present the window */
-    gtk_box_append (GTK_BOX (box), color_button);
+    gtk_box_append(GTK_BOX(box), color_button);
     gtk_window_present (GTK_WINDOW (window));
 }
 

@@ -53,6 +53,7 @@ kemoview_gtk4_viewmatrix_menu.c       \
 kemoview_gtk4_viewmode_menu.c         \
 kemoview_gtk4_fileselector.c          \
 kemoview_gtk4_evolution_menu.c        \
+kemoview_gtk4_quilt_menu.c            \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_window.c            \
 kemoview_gtk4_lighting_menu.c         \
