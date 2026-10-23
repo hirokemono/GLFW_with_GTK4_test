@@ -216,16 +216,16 @@ GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int i
 
 GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl,
                                     int *index_current){
-    GtkStringList * psf_list_model = gtk_string_list_new(NULL);
-    
 	struct kv_string *stripped_filehead;
 	char label_tmp[512];
 	int id_current = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
                                                     SET_CURRENT);
-    
-    int ipsf;
-    *index_current = 0;
     int nmax_loaded = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, MAX_LOADED);
+    
+    char *strings;
+    int length;
+    int ipsf;
+    int icou = 0;
     for(ipsf=0; ipsf<nmax_loaded; ipsf++){
         if(ipsf == id_current) {*index_current = ipsf;};
         if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ipsf) > 0) {
@@ -233,11 +233,33 @@ GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl,
             stripped_filehead = kemoview_alloc_kvstring();
             kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
             sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
-            printf("%d: %s", label_tmp);
-//            gtk_string_list_append(psf_list_model, label_tmp);
+            icou = icou + strlen(label_tmp) + 1;
+            kemoview_free_kvstring(stripped_filehead);
+        };
+    };
+    printf("Total length %d\n", icou);
+    if((strings = (char *)calloc(icou+1, sizeof(char))) == NULL){
+        printf("malloc error for strings\n");
+        exit(0);
+    };
+    
+    icou = 0;
+    *index_current = 0;
+    for(ipsf=0; ipsf<nmax_loaded; ipsf++){
+        if(ipsf == id_current) {*index_current = ipsf;};
+        if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ipsf) > 0) {
+            kemoview_set_PSF_loaded_params(SET_CURRENT, ipsf, kemo_gl->kemoview_data);
+            stripped_filehead = kemoview_alloc_kvstring();
+            kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
+            sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
+            printf("%d: %s\n", strlen(label_tmp), label_tmp);
+            length = strngcopy(&strings[icou], label_tmp);
+            icou = icou + length + 1;
             kemoview_free_kvstring(stripped_filehead);
         };
         kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_gl->kemoview_data);
     };
+    strings[icou] = '\0';
+    GtkStringList * psf_list_model = gtk_string_list_new((const char* const*) strings);
     return psf_list_model;
 }

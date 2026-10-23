@@ -14,6 +14,7 @@
 #include <string.h>
 
 #include "kemoviewer_gl.h"
+#include "skip_comment_c.h"
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
