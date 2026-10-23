@@ -32,10 +32,12 @@ G_DEFINE_TYPE (CapitalItem, capital_item, G_TYPE_OBJECT)
 
 static void capital_item_init(CapitalItem *item)
 {
+    printf("capital_item_init \n");
 }
 
 static void capital_item_class_init(CapitalItemClass *class)
 {
+    printf("capital_item_class_init \n");
 }
 
 static CapitalItem * capital_item_new(const char *name,
@@ -57,10 +59,15 @@ static CapitalItem * capital_item_new(const char *name,
 GListModel * create_capital_model(void)
 {
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
+    printf("g_list_store_append 1\n");
     g_list_store_append(store, capital_item_new("Washington,D.C.","USA","1790","712,816","177"));
+    printf("g_list_store_append 2\n");
     g_list_store_append(store, capital_item_new("London","Britain","43","8,799,800","1,572.03"));
+    printf("g_list_store_append 3\n");
     g_list_store_append(store, capital_item_new("Paris","France","3rd c. BC","2,161,000","105"));
+    printf("g_list_store_append 4\n");
     g_list_store_append(store, capital_item_new("Berlin","Germany","13th century","3,850,809","891.3"));
+    printf("g_list_store_append 5\n");
     g_list_store_append(store, capital_item_new("Rome","Italy","753 BC","2,860,009","1,285"));
     return G_LIST_MODEL(store);
 }
