@@ -63,6 +63,7 @@ static void set_GLFW_viewtype(int index_mode,
     
     if(kemoview_get_view_type_flag(kemo_gl->kemoview_data) == VIEW_STEREO){
         gtk_widget_set_sensitive(view_menu->Frame_stereo, TRUE);
+        printf("Stereo turns on %p \n", view_menu->Frame_stereo);
     }else{
         gtk_widget_set_sensitive(view_menu->Frame_stereo, FALSE);
     };

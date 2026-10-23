@@ -179,6 +179,7 @@ static void focus_CB(GtkWidget *spin_focus, gpointer user_data){
     draw_fast_gl(kemo_gl);
     return;
 };
+
 static void eye_sep_dist_CB(GtkWidget *spin_eye_sep, gpointer user_data){
     struct view_widgets *view_menu =  g_object_get_data(G_OBJECT(user_data), "menu");
     struct kemoviewer_gl_type *kemo_gl= g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
@@ -200,6 +201,7 @@ static void eye_sep_dist_CB(GtkWidget *spin_eye_sep, gpointer user_data){
     view_menu->iflag_updated_eye_separation = 0;
     return;
 };
+
 static void eye_sep_angle_CB(GtkWidget *spin_sep_angle, gpointer user_data){
     struct view_widgets *view_menu =  g_object_get_data(G_OBJECT(user_data), "menu");
     struct kemoviewer_gl_type *kemo_gl= g_object_get_data(G_OBJECT(user_data), "kemoview_gl");

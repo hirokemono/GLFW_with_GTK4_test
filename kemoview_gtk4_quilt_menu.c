@@ -30,6 +30,7 @@ static void set_quilt_switch_sensitivity(int iflag_quilt,
         gtk_widget_set_sensitive(quilt_gmenu->column_hbox, TRUE);
         gtk_widget_set_sensitive(quilt_gmenu->raw_hbox, TRUE);
         gtk_widget_set_sensitive(view_menu->Frame_stereo, TRUE);
+        printf("Quilt turns on %p \n", view_menu->Frame_stereo);
     }else{
         gtk_widget_set_sensitive(quilt_gmenu->quiltView_Button, FALSE);
         gtk_widget_set_sensitive(quilt_gmenu->column_hbox, FALSE);
@@ -44,9 +45,10 @@ static void quilt_switch_CB(GObject *switch_bar,
                             gpointer user_data){
     struct quilt_gtk_menu *quilt_gmenu
             = (struct quilt_gtk_menu *) g_object_get_data(G_OBJECT(user_data),  "quilt");
+    struct view_widgets *view_menu
+            = (struct view_widgets *) g_object_get_data(G_OBJECT(user_data),  "viewmat");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    struct view_widgets *view_menu = (struct view_widgets *) user_data;
     
     
     int istate = gtk_switch_get_state(GTK_SWITCH(switch_bar));
@@ -61,9 +63,9 @@ static void quilt_switch_CB(GObject *switch_bar,
                                       kemo_gl->kemoview_data);
         kemoview_set_stereo_parameter(ISET_EYEAGL, quilt_gmenu->eyeAngle, 
                                       kemo_gl->kemoview_data);
-        
         quilt_gmenu->eyeRatio = kemoview_get_view_parameter(kemo_gl->kemoview_data, 
                                                             ISET_EYESEP, 0);
+        
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_column),
                                   quilt_gmenu->num_column);
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_raw),
@@ -126,6 +128,7 @@ GtkWidget * init_quilt_menu_expander(struct kemoviewer_gl_type *kemo_gl,
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "parent", (gpointer) window);
     g_object_set_data(G_OBJECT(entry_buf), "quilt", (gpointer) quilt_gmenu);
+    g_object_set_data(G_OBJECT(entry_buf), "viewmat", (gpointer) view_menu);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     
     GtkAdjustment *adj_num_column = gtk_adjustment_new(quilt_gmenu->num_column, 1, 30, 1, 1, 0.0);
