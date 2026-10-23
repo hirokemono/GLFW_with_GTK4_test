@@ -326,7 +326,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 }
 
 
-struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer_gl_type *kemo_gl){
+struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer_gl_type *kemo_gl,
+                                                               GtkWidget *pref_window){
     struct kemo_real3_columnview *light_vws = alloc_kemo_real3_columnview();
     
     // Add column view.  Put in scrolled window.  
@@ -346,7 +347,7 @@ struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer
     g_signal_connect(G_OBJECT(del_item_button), "clicked",
                      G_CALLBACK(delete_light_button_CB), G_OBJECT(light_vws->real3_cview));
     
-    
+    /*
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
                      G_CALLBACK(show_all_real3_button_CB), G_OBJECT(light_vws->real3_store));
@@ -354,22 +355,25 @@ struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
                      G_CALLBACK(show_each_real3_button_CB), G_OBJECT(light_vws->real3_cview));
-    
+    */
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_attach(GTK_GRID(grid), light_vws->real3_cview, 0, 0, 4, 1);
     
     gtk_grid_attach(GTK_GRID(grid), add_item_button,         0, 1, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), del_item_button,         2, 1, 2, 1);
-    
+    /*
     gtk_grid_attach(GTK_GRID(grid), show_all_button,         0, 2, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), show_each_button,        2, 2, 2, 1);
-    
+    */
     // scrolled window
-    light_vws->real3_cview_scroll = gtk_scrolled_window_new(); 
-    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll),  400);
-    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll), 240);
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(light_vws->real3_cview_scroll), grid);
+    GtkWidget *scroll_win = gtk_scrolled_window_new(); 
+    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(scroll_win),  480);
+    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll_win), 320);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll_win), grid);
     
+    
+    light_vws->real3_cview_scroll = wrap_into_scroll_expansion_gtk4("Light position", 480, 320,
+                                                                    pref_window, scroll_win);
     return light_vws;
 };
 
