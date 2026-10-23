@@ -111,19 +111,20 @@ static int count_loaded_psf(struct kemoviewer_type *kemo_sgl){
 
 static void init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
                                       struct psf_gtk_menu *psf_gmenu,
+                                       GtkWidget *main_window, 
                                       GtkWidget *itemTEvo){
 	int id_current_psf = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
                                                         SET_CURRENT);
 	int index = 0;
     psf_gmenu->num_psfs =      count_loaded_psf(kemo_gl->kemoview_data);
-/*
+
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "parents", (gpointer)  main_window);
     g_object_set_data(G_OBJECT(entry_buf), "psfmenu", (gpointer)  psf_gmenu);
     g_object_set_data(G_OBJECT(entry_buf), "evolution", (gpointer)  itemTEvo);
     
-    psf_gmenu->combobox_psfs = draw_current_psf_set_hbox(id_current_psf, kemo_gl, &index);
+//    psf_gmenu->combobox_psfs = draw_current_psf_set_hbox(id_current_psf, kemo_gl, &index);
     g_signal_connect(G_OBJECT(psf_gmenu->combobox_psfs), "changed",
                      G_CALLBACK(current_psf_select_CB), G_OBJECT(entry_buf));
     
@@ -136,7 +137,6 @@ static void init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
     }else{
         gtk_widget_set_sensitive(psf_gmenu->combobox_psfs, TRUE);
     }
-*/
     return;
 }
 
@@ -156,7 +156,7 @@ static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(psf_gmenu->closeButton), "clicked",
                      G_CALLBACK(close_psf_CB), G_OBJECT(entry_buf));
     
-    init_current_psf_set_hbox(kemo_gl, psf_gmenu, itemTEvo);
+    init_current_psf_set_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
     init_psf_draw_field_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
     
     init_psf_draw_component_hbox(kemo_gl, psf_gmenu, itemTEvo);
