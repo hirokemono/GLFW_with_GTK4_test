@@ -73,28 +73,16 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
                                          struct rotation_gtk_menu *rot_gmenu){
     GtkWidget *hbox_rotation_dir;
     
-    GtkStringList *rot_axis_model = gtk_string_list_new(axis_list);
-    GListStore *rot_axis_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(rot_axis_store, rot_axis_model);
-    g_object_unref(rot_axis_model);
-    GtkFlattenListModel *rot_axis_flat = gtk_flatten_list_model_new(G_LIST_MODEL(rot_axis_store));
-    GtkExpression *rot_axis_expression = gtk_property_expression_new (GTK_TYPE_STRING_OBJECT,
-                                                                      NULL,
-                                                                      "string");
-    
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     
-    GtkWidget *rot_axis_button = gtk_drop_down_new(G_LIST_MODEL(rot_axis_flat), rot_axis_expression);
+    GtkStringList *rot_axis_model = gtk_string_list_new(axis_list);
+    GtkWidget *rot_axis_button = init_list_button_by_list_model(rot_axis_model);
+    
     g_signal_connect(G_OBJECT(rot_axis_button), "notify::selected-item", 
                      G_CALLBACK (selected_rot_axis_CB), G_OBJECT(entry_buf));
     
-    GtkListItemFactory *rot_axis_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(rot_axis_button), rot_axis_factory);
-//    g_object_unref(rot_axis_expression);     Do not release GtkExpression!!
-    g_object_unref(rot_axis_factory);
-    g_object_unref(rot_axis_flat);
     init_rotation_axis_dropdown(rot_gmenu->iaxis_rot, rot_axis_button);
     
     hbox_rotation_dir = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

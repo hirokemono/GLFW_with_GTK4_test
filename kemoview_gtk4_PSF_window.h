@@ -19,8 +19,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-// #include "tree_views_4_fixed_lists_GTK.h"
-// #include "tree_view_viewer_colormap.h"
 // #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk4_PSF_selectors.h"
 #include "kemoview_gtk4_PSF_menu.h"

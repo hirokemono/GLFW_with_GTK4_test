@@ -76,29 +76,14 @@ static GtkWidget * init_image_format_button(struct kemoviewer_gl_type *kemo_gl,
                                             int *id_image_format){
     GtkWidget *image_format_button;
     
-    GListStore *image_format_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(image_format_store, image_format_model);
-    GtkFlattenListModel *image_format_flat = gtk_flatten_list_model_new(G_LIST_MODEL(image_format_store));
-    GtkExpression *image_format_expression = gtk_property_expression_new(GTK_TYPE_STRING_OBJECT,
-                                                                         NULL,
-                                                                         "string");
-    
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "image_format", (gpointer) id_image_format);
     
-    image_format_button = gtk_drop_down_new(G_LIST_MODEL(image_format_flat),
-                                            image_format_expression);
+    image_format_button = init_list_button_by_list_model(image_format_model);
     g_signal_connect(G_OBJECT(image_format_button), "notify::selected-item", 
                      G_CALLBACK (selected_movie_format_CB), G_OBJECT(entry_buf));
-    
-    GtkListItemFactory *file_format_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(image_format_button), file_format_factory);
     init_image_format_dropdown(*id_image_format, image_format_button);
-    
-//    g_object_unref(image_format_expression);       Do not release GtkExpression!!
-//    g_object_unref(file_format_factory);          Do not release GtkListItemFactory!!
-//    g_object_unref(image_format_flat);             Do not release GtkFlattenListModel!!
     
     return image_format_button;
 }

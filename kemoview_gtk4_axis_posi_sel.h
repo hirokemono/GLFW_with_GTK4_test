@@ -18,6 +18,7 @@
 #include "view_modifier_glfw.h"
 
 #include "calypso_GTK4.h"
+#include "kemoview_gtk4_routines.h"
 
 /* protytypes */
 

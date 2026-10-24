@@ -113,32 +113,17 @@ static void selected_viewmode_CB(GtkDropDown *dropdown,
 GtkWidget * make_gtk4_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                         struct view_widgets *view_menu){
     GtkWidget *hbox_viewtype;
-    /* A dropdown using an expression to obtain strings */
-    GtkStringList *viewmode_model = gtk_string_list_new(view_modes);
-    GListStore *viewmode_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(viewmode_store, viewmode_model);
-    g_object_unref(viewmode_model);
-    GtkFlattenListModel *viewmode_flat = gtk_flatten_list_model_new(G_LIST_MODEL(viewmode_store));
-    GtkExpression *viewmode_expression = gtk_property_expression_new (GTK_TYPE_STRING_OBJECT,
-                                                             NULL,
-                                                             "string");
     
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "view_menu",  (gpointer) view_menu);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",  (gpointer) kemo_gl);
     
-    GtkWidget *viewmode_button = gtk_drop_down_new(G_LIST_MODEL(viewmode_flat), viewmode_expression);
+    /* A dropdown using an expression to obtain strings */
+    GtkStringList *viewmode_model = gtk_string_list_new(view_modes);
+    GtkWidget *viewmode_button = init_list_button_by_list_model(viewmode_model);
+    
     g_signal_connect(viewmode_button, "notify::selected-item", 
                      G_CALLBACK (selected_viewmode_CB), G_OBJECT(entry_buf));
-/*    gtk_drop_down_set_enable_search (GTK_DROP_DOWN (viewmode_button), TRUE); */
-    GtkListItemFactory *viewmode_factory = gtk_signal_list_item_factory_new ();
-//    g_signal_connect (viewmode_factory, "setup", G_CALLBACK (setup_header_CB), NULL);
-//    g_signal_connect (viewmode_factory, "bind", G_CALLBACK (bind_header_CB), NULL);
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN (viewmode_button), viewmode_factory);
-//    g_object_unref(viewmode_expression);     Do not release GtkExpression!!
-    g_object_unref(viewmode_factory);
-    g_object_unref(viewmode_flat);
-    
     init_viewmode_dropdown(kemo_gl, viewmode_button);
     
     hbox_viewtype = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);

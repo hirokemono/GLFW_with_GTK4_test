@@ -56,30 +56,16 @@ static GtkWidget * init_coastline_tube_button(struct kemoviewer_gl_type *kemo_gl
                                               int *iflag_tube){
     GtkWidget *line_format_button;
     
-    GtkStringList *line_format_model = gtk_string_list_new(line_fmt_list);
-    GListStore *line_format_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(line_format_store, line_format_model);
-    GtkFlattenListModel *line_format_flat = gtk_flatten_list_model_new(G_LIST_MODEL(line_format_store));
-    GtkExpression *line_format_expression = gtk_property_expression_new(GTK_TYPE_STRING_OBJECT,
-                                                                         NULL,
-                                                                         "string");
-    
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "line_format", (gpointer) iflag_tube);
     
-    line_format_button = gtk_drop_down_new(G_LIST_MODEL(line_format_flat),
-                                           line_format_expression);
+    GtkStringList *line_format_model = gtk_string_list_new(line_fmt_list);
+    line_format_button = init_list_button_by_list_model(line_format_model);
     g_signal_connect(G_OBJECT(line_format_button), "notify::selected-item", 
                      G_CALLBACK (selected_line_format_CB), G_OBJECT(entry_buf));
     
-    GtkListItemFactory *line_format_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(line_format_button), line_format_factory);
     init_tube_switch_dropdown(*iflag_tube, line_format_button);
-    
-//    g_object_unref(line_format_expression);       Do not release GtkExpression!!
-//    g_object_unref(line_format_factory);          Do not release GtkListItemFactory!!
-//    g_object_unref(line_format_flat);             Do not release GtkFlattenListModel!!
     
     return line_format_button;
 }

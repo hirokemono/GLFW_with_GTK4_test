@@ -57,30 +57,16 @@ GtkWidget * init_shading_mode_button(struct kemoviewer_gl_type *kemo_gl,
                                      int *iflag_shading){
     GtkWidget *shading_mode_button;
     
-    GtkStringList *shading_mode_model = gtk_string_list_new(shading_mode_list);
-    GListStore *shading_mode_store = g_list_store_new(G_TYPE_LIST_MODEL);
-    g_list_store_append(shading_mode_store, shading_mode_model);
-    GtkFlattenListModel *shading_mode_flat = gtk_flatten_list_model_new(G_LIST_MODEL(shading_mode_store));
-    GtkExpression *shading_mode_expression = gtk_property_expression_new(GTK_TYPE_STRING_OBJECT,
-                                                                         NULL,
-                                                                         "string");
-    
     GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "shading_mode", (gpointer) iflag_shading);
     
-    shading_mode_button = gtk_drop_down_new(G_LIST_MODEL(shading_mode_flat),
-                                            shading_mode_expression);
+    GtkStringList *shading_mode_model = gtk_string_list_new(shading_mode_list);
+    shading_mode_button = init_list_button_by_list_model(shading_mode_model);
+    
     g_signal_connect(G_OBJECT(shading_mode_button), "notify::selected-item", 
                      G_CALLBACK (selected_shading_mode_CB), G_OBJECT(entry_buf));
-    
-    GtkListItemFactory *shading_mode_factory = gtk_signal_list_item_factory_new ();
-    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(shading_mode_button), shading_mode_factory);
     init_shading_mode_dropdown(*iflag_shading, shading_mode_button);
-    
-//    g_object_unref(shading_mode_expression);       Do not release GtkExpression!!
-//    g_object_unref(shading_mode_factory);          Do not release GtkListItemFactory!!
-//    g_object_unref(shading_mode_flat);             Do not release GtkFlattenListModel!!
     
     return shading_mode_button;
 }

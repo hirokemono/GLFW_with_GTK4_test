@@ -89,26 +89,29 @@ GtkWidget * wrap_into_scroll_expansion_gtk4(const char *title,
     gtk_expander_set_child(GTK_EXPANDER(expander), scroll);
     return expander;
 }
-/*
-int gtk4_selected_combobox_index(GtkComboBox *combobox){
-    GtkTreeModel *model_cmap = gtk_combo_box_get_model(combobox);
-    GtkTreeIter iter;
+
+
+GtkWidget * init_list_button_by_list_model(GtkStringList *list_model){
+    GtkWidget *list_button;
     
-    gchar *row_string;
-    int index_field;
-    int index_mode;
+    GListStore *list_store = g_list_store_new(G_TYPE_LIST_MODEL);
+    g_list_store_append(list_store, list_model);
+    GtkFlattenListModel *list_flat = gtk_flatten_list_model_new(G_LIST_MODEL(list_store));
+    GtkExpression *list_expression = gtk_property_expression_new(GTK_TYPE_STRING_OBJECT,
+                                                                     NULL,
+                                                                     "string");
     
-    gint idx = gtk_combo_box_get_active(combobox);
-    if(idx < 0) return -1;
+    list_button = gtk_drop_down_new(G_LIST_MODEL(list_flat), list_expression);
     
-    GtkTreePath *path = gtk_tree_path_new_from_indices(idx, -1);
+    GtkListItemFactory *list_factory = gtk_signal_list_item_factory_new ();
+    gtk_drop_down_set_header_factory (GTK_DROP_DOWN(list_button), list_factory);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(list_button), 0);
+    gtk_widget_activate(GTK_WIDGET(list_button));
     
-    gtk_tree_model_get_iter(model_cmap, &iter, path);  
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_INDEX, &index_field, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_NAME, &row_string, -1);
-    gtk_tree_model_get(model_cmap, &iter, COLUMN_FIELD_MATH, &index_mode, -1);
+//    g_object_unref(list_expression);       Do not release GtkExpression!!
+//    g_object_unref(list_factory);          Do not release GtkListItemFactory!!
+//    g_object_unref(list_flat);             Do not release GtkFlattenListModel!!
     
-	printf("Selected mode %d, %s\n", index_mode, row_string);
-	return index_mode;
-};
-*/
+    return list_button;
+}
+

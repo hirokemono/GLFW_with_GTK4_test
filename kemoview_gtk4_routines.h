@@ -28,7 +28,7 @@ GtkWidget * wrap_into_scroll_expansion_gtk4(const char *title,
                                             GtkWidget *window, 
                                             GtkWidget *box_in);
 
-// int gtk4_selected_combobox_index(GtkComboBox *combobox);
+GtkWidget * init_list_button_by_list_model(GtkStringList *list_model);
 
 
 #endif
