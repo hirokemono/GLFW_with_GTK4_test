@@ -116,9 +116,9 @@ const char * const null_text_list[] = {NULL};
 
 GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl){
     GtkStringList * psf_list_model = gtk_string_list_new(null_text_list);
-	struct kv_string *stripped_filehead;
-	char label_tmp[512];
-	int id_current = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, SET_CURRENT);
+    struct kv_string *stripped_filehead;
+    char label_tmp[512];
+    int id_current = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, SET_CURRENT);
     int nmax_loaded = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, MAX_LOADED);
     
     int ipsf;
@@ -128,7 +128,7 @@ GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl){
             stripped_filehead = kemoview_alloc_kvstring();
             kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
             sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
-            printf("%d: %s\n", strlen(label_tmp), label_tmp);
+            printf("%lu: %s\n", strlen(label_tmp), label_tmp);
             gtk_string_list_append(psf_list_model, stripped_filehead->string);
             kemoview_free_kvstring(stripped_filehead);
         };
@@ -146,15 +146,14 @@ int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
     char *text;
     int ipsf;
     int iflag = 0;
-    int i_selected = -1;
     guint num_menu = g_list_model_get_n_items(G_LIST_MODEL(psf_list_model));
     for(ipsf=0; ipsf<num_menu; ipsf++){
-        text = gtk_string_list_get_string(psf_list_model, ipsf);
+        text = (char *) gtk_string_list_get_string(psf_list_model, ipsf);
         iflag = cmp_no_case_c(stripped_filehead->string, text);
-        if(iflag > 0) return i_selected = iflag;
+        if(iflag > 0) return ipsf;
     }
     kemoview_free_kvstring(stripped_filehead);
-    return i_selected;
+    return -1;
 }
 
 int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
@@ -171,7 +170,7 @@ int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
             stripped_filehead = kemoview_alloc_kvstring();
             kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
             sprintf(label_tmp, "%d: %s", ipsf, stripped_filehead->string);
-            printf("%d: %s\n", strlen(label_tmp), label_tmp);
+            printf("%lu: %s\n", strlen(label_tmp), label_tmp);
             
             iflag = cmp_no_case_c(stripped_filehead->string, selected_text);
             kemoview_free_kvstring(stripped_filehead);
@@ -181,3 +180,69 @@ int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
     printf("No current PSf is found: \n");
     return -1;
 }
+
+
+GtkStringList * init_psf_field_model(struct kemoviewer_gl_type *kemo_gl, int id_model){
+    GtkStringList * psf_field_model = gtk_string_list_new(null_text_list);
+    int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
+                                                 NUM_FIELD_FLAG);
+    int ifld;
+    for(ifld=0;ifld<num_field;ifld++){
+        struct kv_string *fieldname = kemoview_alloc_kvstring();
+        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
+                                    fieldname, ifld);
+        gtk_string_list_append(psf_field_model, fieldname->string);
+        kemoview_free_kvstring(fieldname);
+    };
+    return psf_field_model;
+}
+
+int set_selected_psf_field_list(struct kemoviewer_gl_type *kemo_gl,
+                                int id_model,
+                                GtkStringList *psf_field_model){
+    struct kv_string *fieldname = kemoview_alloc_kvstring();
+    int ifld = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
+                                            FIELD_SEL_FLAG);
+    kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
+                                fieldname, ifld);
+    
+    char *text;
+    int iflag = 0;
+    int id_selected = -1;
+    guint num_menu = g_list_model_get_n_items(G_LIST_MODEL(psf_field_model));
+    for(ifld=0; ifld<num_menu; ifld++){
+        text = (char *) gtk_string_list_get_string(psf_field_model, ifld);
+        iflag = cmp_no_case_c(fieldname->string, text);
+        if(iflag > 0) id_selected = ifld;
+    }
+    kemoview_free_kvstring(fieldname);
+    return id_selected;
+}
+
+int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl, 
+                           int id_model,
+                           char *selected_text){
+    int iflag = 0;
+    
+    int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
+                                                 NUM_FIELD_FLAG);
+    struct kv_string *fieldname = kemoview_alloc_kvstring();
+	char label_tmp[512];
+    int ifld;
+    for(ifld=0; ifld<num_field; ifld++){
+        if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ifld) > 0) {
+            kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
+                                        fieldname, ifld);
+            sprintf(label_tmp, "%d: %s", ifld, fieldname->string);
+            printf("%lu: %s\n", strlen(label_tmp), label_tmp);
+            
+            iflag = cmp_no_case_c(fieldname->string, selected_text);
+            kemoview_free_kvstring(fieldname);
+            if(iflag > 0) return ifld;
+        };
+    };
+    printf("No selected field is found: \n");
+    return -1;
+}
+
+

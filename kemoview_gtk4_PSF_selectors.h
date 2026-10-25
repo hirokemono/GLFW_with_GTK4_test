@@ -37,4 +37,13 @@ int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
 int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
                          char *selected_text);
 
+GtkStringList * init_psf_field_model(struct kemoviewer_gl_type *kemo_gl,
+                                     int id_model);
+int set_selected_psf_field_list(struct kemoviewer_gl_type *kemo_gl,
+                                int id_model,
+                                GtkStringList *psf_field_model);
+int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl, 
+                           int id_model,
+                           char *selected_text);
+
 #endif /* KEMOVIEW_GTK4_PSF_SELECTORS_ */
