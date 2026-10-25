@@ -32,6 +32,8 @@ GtkWidget * draw_viz_field_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_mo
 GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
 
 GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl);
+int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
+                                  GtkStringList *psf_list_model);
 int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
                          char *selected_text);
 

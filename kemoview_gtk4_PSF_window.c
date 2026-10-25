@@ -132,9 +132,7 @@ static GtkWidget * init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
                                              GtkWidget *main_window, 
                                              GtkWidget *itemTEvo){
     static GtkWidget *hbox_psfs;
-	int id_current_psf = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
-                                                        SET_CURRENT);
-    psf_gmenu->num_psfs =      count_loaded_psf(kemo_gl->kemoview_data);
+    psf_gmenu->num_psfs = count_loaded_psf(kemo_gl->kemoview_data);
 
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
@@ -146,6 +144,9 @@ static GtkWidget * init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
     psf_gmenu->combobox_psfs = init_list_button_by_list_model(psf_list_model);
     g_signal_connect(G_OBJECT(psf_gmenu->combobox_psfs), "changed",
                      G_CALLBACK(current_psf_select_CB), G_OBJECT(entry_buf));
+    
+    int id_menu = set_selected_psf_list_address(kemo_gl, psf_list_model);
+    gtk_drop_down_set_selected(psf_gmenu->combobox_psfs, id_menu);
     
     hbox_psfs = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_psfs), gtk_label_new("Current PSF: "));

@@ -138,6 +138,25 @@ GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl){
     return psf_list_model;
 }
 
+int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
+                                  GtkStringList *psf_list_model){
+    struct kv_string *stripped_filehead = kemoview_alloc_kvstring();
+    kemoview_get_PSF_file_prefix(kemo_gl, stripped_filehead);
+    
+    char *text;
+    int ipsf;
+    int iflag = 0;
+    int i_selected = -1;
+    guint num_menu = g_list_model_get_n_items(G_LIST_MODEL(psf_list_model));
+    for(ipsf=0; ipsf<num_menu; ipsf++){
+        text = gtk_string_list_get_string(psf_list_model, ipsf);
+        iflag = cmp_no_case_c(stripped_filehead->string, text);
+        if(iflag > 0) return i_selected = iflag;
+    }
+    kemoview_free_kvstring(stripped_filehead);
+    return i_selected;
+}
+
 int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
                          char *selected_text){
     int iflag = 0;
