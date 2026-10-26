@@ -222,27 +222,21 @@ int set_selected_psf_field_list(struct kemoviewer_gl_type *kemo_gl,
 int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl, 
                            int id_model,
                            char *selected_text){
+    int i_selected = -1;
     int iflag = 0;
-    
+    struct kv_string *fieldname = kemoview_alloc_kvstring();
     int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
                                                  NUM_FIELD_FLAG);
-    struct kv_string *fieldname = kemoview_alloc_kvstring();
-	char label_tmp[512];
     int ifld;
     for(ifld=0; ifld<num_field; ifld++){
-        if(kemoview_get_PSF_loaded_flag(kemo_gl->kemoview_data, ifld) > 0) {
-            kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
-                                        fieldname, ifld);
-            sprintf(label_tmp, "%d: %s", ifld, fieldname->string);
-            printf("%lu: %s\n", strlen(label_tmp), label_tmp);
-            
-            iflag = cmp_no_case_c(fieldname->string, selected_text);
-            kemoview_free_kvstring(fieldname);
-            if(iflag > 0) return ifld;
-        };
+        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
+                                    fieldname, ifld);
+        iflag = cmp_no_case_c(fieldname->string, selected_text);
+        if(iflag > 0) i_selected = ifld;
     };
-    printf("No selected field is found: \n");
-    return -1;
+    kemoview_free_kvstring(fieldname);
+    if(i_selected < 0) printf("No selected field is found: \n");
+    return i_selected;
 }
 
 

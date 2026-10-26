@@ -50,10 +50,7 @@ struct psf_gtk_menu{
 	GtkWidget *closeButton;
     
     GtkWidget *combobox_psfs;
-    GtkWidget *psf_vbox;
-
     GtkWidget *combobox_field;
-    GtkWidget *hbox_field;
 
     GtkWidget *combobox_comp;
     GtkWidget *hbox_comp;
@@ -78,11 +75,11 @@ struct psf_gtk_menu{
 
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
-
+/*
 GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
                                            GtkWidget *window,
                                            struct colormap_view *color_vws);
-
+*/
 void set_vector_plot_availablity(int iflag_current_model,
                                  struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_gtk_menu *psf_gmenu);

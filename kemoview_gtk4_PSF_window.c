@@ -16,8 +16,8 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
             = (struct psf_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "psfmenu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-
-    int num_loaded = kemoview_close_PSF_view(kemo_gl->kemoview_data);
+    
+    kemoview_close_PSF_view(kemo_gl->kemoview_data);
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D, kemo_gl->kemoview_data);
 	
@@ -39,10 +39,11 @@ static void current_psf_select_CB(GtkDropDown *dropdown,
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
     GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
+    printf("selected_item: %p \n", selected_item);
     
     if(selected_item == NULL) return;
-    const char *text = gtk_string_object_get_string(selected_item);
-    printf("selected: %s \n", text);
+    char *text = (char *) gtk_string_object_get_string(selected_item);
+    printf("PSF selected: %s \n", text);
     
     int id_current = find_selected_psf_id(kemo_gl, text);
     if(id_current < 0) return;
@@ -63,6 +64,7 @@ static void current_psf_select_CB(GtkDropDown *dropdown,
 static void psf_field_select_CB(GtkDropDown *dropdown,
                                 GParamSpec *pspec,
                                 gpointer user_data){
+    printf("psf_field_select_CB:\n");
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parents"));
     GtkWidget *itemTEvo = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "itemTEvo"));
     struct psf_gtk_menu *psf_gmenu
@@ -71,21 +73,24 @@ static void psf_field_select_CB(GtkDropDown *dropdown,
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
     GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
+    printf("field selected_item: %p \n", selected_item);
+    
     if(selected_item == NULL) return;
-    const char *text = gtk_string_object_get_string(selected_item);
+    char *text = (char *) gtk_string_object_get_string(selected_item);
     printf("selected: %s \n", text);
     
-    int id_field = find_selected_field_id(kemo_gl, text);
-    if(id_current < 0) return;
-    
+    int id_field = find_selected_field_id(kemo_gl, SURFACE_RENDERING, text);
+    if(id_field < 0) return;
     kemoview_set_VIZ_field_param(id_field,
-                                 id_model, FIELD_SEL_FLAG,
+                                 SURFACE_RENDERING,
+                                 FIELD_SEL_FLAG,
                                  kemo_gl->kemoview_data);
     kemoview_set_VIZ_field_param(IZERO,
-                                 id_model, COMPONENT_SEL_FLAG,
+                                 SURFACE_RENDERING,
+                                 COMPONENT_SEL_FLAG,
                                  kemo_gl->kemoview_data);
     
-    replace_psf_menu_frame(kemo_gl, psf_gmenu, main_window, itemTEvo);
+//    replace_psf_menu_frame(kemo_gl, psf_gmenu, main_window, itemTEvo);
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -111,10 +116,12 @@ static void init_psf_draw_component_hbox(struct kemoviewer_gl_type *kemo_gl,
     return;
 }
 
-static void init_psf_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl,
-                                     struct psf_gtk_menu *psf_gmenu,
-                                     GtkWidget *main_window,
-                                     GtkWidget *itemTEvo){
+static GtkWidget * init_psf_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                            struct psf_gtk_menu *psf_gmenu,
+                                            GtkWidget *main_window,
+                                            GtkWidget *itemTEvo){
+    GtkWidget *hbox_field;
+    
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "parents", (gpointer)  main_window);
@@ -123,17 +130,18 @@ static void init_psf_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     GtkStringList * psf_field_model = init_psf_field_model(kemo_gl, SURFACE_RENDERING);
     psf_gmenu->combobox_field = init_list_button_by_list_model(psf_field_model);
-    g_signal_connect(G_OBJECT(psf_gmenu->combobox_field), "changed",
+    g_signal_connect(G_OBJECT(psf_gmenu->combobox_field), "notify::selected-item",
                      G_CALLBACK(psf_field_select_CB), G_OBJECT(entry_buf));
+    printf("psf_field_select_CB: %p\n", psf_gmenu->combobox_field);
     
     int id_menu = set_selected_psf_field_list(kemo_gl, SURFACE_RENDERING,
                                               psf_field_model);
-    gtk_drop_down_set_selected(psf_gmenu->combobox_field, id_menu);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(psf_gmenu->combobox_field), id_menu);
     
-    psf_gmenu->hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(psf_gmenu->hbox_field), gtk_label_new("Field: "));
-    gtk_box_append(GTK_BOX(psf_gmenu->hbox_field), psf_gmenu->combobox_field);
-    return;
+    hbox_field = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
+    gtk_box_append(GTK_BOX(hbox_field), gtk_label_new("Field: "));
+    gtk_box_append(GTK_BOX(hbox_field), psf_gmenu->combobox_field);
+    return hbox_field;
 }
 
 
@@ -163,11 +171,11 @@ static GtkWidget * init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     GtkStringList * psf_list_model = init_psf_list_model(kemo_gl);
     psf_gmenu->combobox_psfs = init_list_button_by_list_model(psf_list_model);
-    g_signal_connect(G_OBJECT(psf_gmenu->combobox_psfs), "changed",
+    g_signal_connect(G_OBJECT(psf_gmenu->combobox_psfs), "notify::selected-item",
                      G_CALLBACK(current_psf_select_CB), G_OBJECT(entry_buf));
     
     int id_menu = set_selected_psf_list_address(kemo_gl, psf_list_model);
-    gtk_drop_down_set_selected(psf_gmenu->combobox_psfs, id_menu);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(psf_gmenu->combobox_psfs), id_menu);
     
     hbox_psfs = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_psfs), gtk_label_new("Current PSF: "));
@@ -198,16 +206,16 @@ static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(psf_gmenu->closeButton), "clicked",
                      G_CALLBACK(close_psf_CB), G_OBJECT(entry_buf));
     
-    psf_gmenu->hbox_psfs = init_current_psf_set_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
-//    init_psf_draw_field_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
+    GtkWidget *hbox_psfs = init_current_psf_set_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
+    GtkWidget *hbox_field = init_psf_draw_field_hbox(kemo_gl, psf_gmenu, main_window, itemTEvo);
     
 //    init_psf_draw_component_hbox(kemo_gl, psf_gmenu, itemTEvo);
 //    init_psf_menu_hbox(kemo_gl, psf_gmenu);
     
     GtkWidget *psf_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->closeButton);
-    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_psfs);
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_field);
+    gtk_box_append(GTK_BOX(psf_vbox), hbox_psfs);
+    gtk_box_append(GTK_BOX(psf_vbox), hbox_field);
 //    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_comp);
     
 //    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_iso);
@@ -227,7 +235,7 @@ void replace_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
                             struct psf_gtk_menu *psf_gmenu,
                             GtkWidget *main_window, 
                             GtkWidget *itemTEvo){
-    gtk_window_set_child(psf_gmenu->psf_frame, NULL);
+//    gtk_window_set_child(psf_gmenu->psf_frame, NULL);
     g_object_unref(psf_gmenu->psf_frame);
     psf_gmenu->psf_frame = init_psf_menu_frame(kemo_gl, psf_gmenu, 
                                                main_window, itemTEvo);
@@ -245,7 +253,7 @@ static gboolean dummy_close_CB(GtkWidget *widget, GdkEvent *event, gpointer data
 void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
                      struct psf_gtk_menu *psf_gmenu,
                      GtkWidget *main_window, GtkWidget *itemTEvo){
-    if(psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(psf_gmenu->psfWin);};
+    if(psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(GTK_WINDOW(psf_gmenu->psfWin));};
     psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
                                                              NUM_LOADED);
     if(psf_gmenu->iflag_psfBox == 0){return;}
@@ -257,7 +265,7 @@ void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
     psf_gmenu->psfWin = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
     gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
-    gtk_window_set_deletable(psf_gmenu->psfWin, FALSE);
+    gtk_window_set_deletable(GTK_WINDOW(psf_gmenu->psfWin), FALSE);
     
     g_signal_connect(psf_gmenu->psfWin, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
