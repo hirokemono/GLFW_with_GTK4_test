@@ -28,7 +28,6 @@ void kemoview_field_select_CB(GtkComboBox *combobox_field, int id_model,
 void kemoview_component_select_CB(GtkComboBox *combobox_comp, int id_model,
                                   struct kemoviewer_gl_type *kemo_gl);
 
-GtkWidget * draw_viz_field_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
 GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
 
 GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl);
@@ -45,5 +44,15 @@ int set_selected_psf_field_list(struct kemoviewer_gl_type *kemo_gl,
 int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl, 
                            int id_model,
                            char *selected_text);
+
+
+GtkStringList * init_psf_component_model(struct kemoviewer_gl_type *kemo_gl, int id_model);
+int set_selected_psf_component_list(struct kemoviewer_gl_type *kemo_gl,
+                                    int id_model,
+                                    GtkStringList *psf_component_model);
+int find_selected_component_id(struct kemoviewer_gl_type *kemo_gl, 
+                               int id_model,
+                               char *selected_text);
+
 
 #endif /* KEMOVIEW_GTK4_PSF_SELECTORS_ */

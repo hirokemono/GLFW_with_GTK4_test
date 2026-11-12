@@ -15,6 +15,8 @@ OPTFLAGS+= $(CPPFLAGS)
 
 KEMO_INCLUDE= -I. -I$(GTK3_DIR) \
 -I$(MAKEDIR)                    \
+-I$(SRCDIR)/MHD/C_src/ZLIB_wrapper \
+-I$(SRCDIR)/MHD/C_src/PNG_wrapper  \
 -I$(SRCDIR)/MHD/C_src/CORE_C    \
 -I$(SRCDIR)/MHD/C_src/CONTROLS  \
 -I$(SRCDIR)/MHD/C_src/GLSL      \

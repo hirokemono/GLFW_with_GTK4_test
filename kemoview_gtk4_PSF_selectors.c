@@ -11,74 +11,6 @@
 
 /*
 
-void kemoview_field_select_CB(GtkComboBox *combobox_field, int id_model, 
-                              struct kemoviewer_gl_type *kemo_gl)
-{
-    int index_mode = gtk_selected_combobox_index(combobox_field);
-    int num_fld = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                               id_model, NUM_FIELD_FLAG);
-    if(index_mode >= num_fld || index_mode < 0){
-        index_mode = 0;
-    }
-    
-    kemoview_set_VIZ_field_param(index_mode,
-                                 id_model, FIELD_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    kemoview_set_VIZ_field_param(IZERO,
-                                 id_model, COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-	return;
-};
-
-void kemoview_component_select_CB(GtkComboBox *combobox_comp, int id_model, 
-                                  struct kemoviewer_gl_type *kemo_gl)
-{
-    int index_mode = gtk_selected_combobox_index(combobox_comp);
-    int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
-                                              id_model,
-                                              FIELD_SEL_FLAG);
-    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
-                                                     id_model, if_psf);
-    if(index_mode >= ncomp || index_mode < 0){
-        index_mode = 0;
-    }
-	
-    kemoview_set_VIZ_field_param(index_mode,
-                                 id_model, COMPONENT_SEL_FLAG,
-                                 kemo_gl->kemoview_data);
-    return;
-};
-
-GtkWidget * draw_viz_field_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model){
-	int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
-                                                 NUM_FIELD_FLAG);
-	int if_fline =  kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
-                                                 FIELD_SEL_FLAG);
-	int ifld;
-	
-	GtkWidget *label_tree_field = create_fixed_label_w_index_tree();
-	GtkTreeModel *model_field =       gtk_tree_view_get_model(GTK_TREE_VIEW(label_tree_field));  
-	GtkTreeModel *child_model_field = gtk_tree_model_sort_get_model(GTK_TREE_MODEL_SORT(model_field));
-	int index = 0;
-	for(ifld=0;ifld<num_field;ifld++){
-        struct kv_string *colorname = kemoview_alloc_kvstring();
-        kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
-                                    colorname, ifld);
-		index = append_ci_item_to_tree(index, colorname->string, ifld, child_model_field);
-        kemoview_free_kvstring(colorname);
-    };
-	
-    GtkCellRenderer *renderer_field = gtk_cell_renderer_text_new();
-	GtkWidget *combobox_field = gtk_combo_box_new();
-    gtk_combo_box_set_model(GTK_COMBO_BOX(combobox_field), child_model_field);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_field), if_fline);
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox_field), renderer_field, TRUE);
-	gtk_cell_layout_set_attributes(GTK_CELL_LAYOUT(combobox_field), renderer_field,
-                                   "text", COLUMN_FIELD_NAME, NULL);
-    return combobox_field;
-}
-
-
 GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model){
 	char comp_name[128];
     
@@ -239,4 +171,78 @@ int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl,
     return i_selected;
 }
 
+
+
+GtkStringList * init_psf_component_model(struct kemoviewer_gl_type *kemo_gl, int id_model){
+    GtkStringList * psf_component_model = gtk_string_list_new(null_text_list);
+	char comp_name[128];
+    
+    int ifield = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              id_model, FIELD_SEL_FLAG);
+	int npick = (int) kemoview_get_VIZ_num_pick_comps(kemo_gl->kemoview_data,
+                                                      id_model, ifield);
+    int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                id_model, COORDINATE_FLAG);
+    
+    int ipick;
+    for(ipick=0;ipick<npick;ipick++){
+        set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
+        gtk_string_list_append(psf_component_model, comp_name);
+    };
+    return psf_component_model;
+}
+
+int set_selected_psf_component_list(struct kemoviewer_gl_type *kemo_gl,
+                                    int id_model,
+                                    GtkStringList *psf_component_model){
+	char comp_name[128];
+    struct kv_string *fieldname = kemoview_alloc_kvstring();
+    
+    int ifield = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              id_model, FIELD_SEL_FLAG);
+	int npick = (int) kemoview_get_VIZ_num_pick_comps(kemo_gl->kemoview_data,
+                                                      id_model, ifield);
+    int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                id_model, COORDINATE_FLAG);
+    int ipick = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
+                                             COMPONENT_SEL_FLAG);
+    set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
+    
+    char *text;
+    int i;
+    int iflag = 0;
+    int id_selected = -1;
+    guint num_menu = g_list_model_get_n_items(G_LIST_MODEL(psf_component_model));
+    for(i=0; i<num_menu; i++){
+        text = (char *) gtk_string_list_get_string(psf_component_model, i);
+        iflag = cmp_no_case_c(comp_name, text);
+        if(iflag > 0) id_selected = i;
+    }
+    kemoview_free_kvstring(fieldname);
+    return id_selected;
+}
+
+int find_selected_component_id(struct kemoviewer_gl_type *kemo_gl, 
+                               int id_model,
+                               char *selected_text){
+	char comp_name[128];
+    
+    int ifield = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              id_model, FIELD_SEL_FLAG);
+	int npick = (int) kemoview_get_VIZ_num_pick_comps(kemo_gl->kemoview_data,
+                                                      id_model, ifield);
+    int id_coord = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                                id_model, COORDINATE_FLAG);
+    
+    int i_selected = -1;
+    int iflag = 0;
+    int ipick;
+    for(ipick=0;ipick<npick;ipick++){
+        set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
+        iflag = cmp_no_case_c(comp_name, selected_text);
+        if(iflag > 0) i_selected = ipick;
+    };
+    if(i_selected < 0) printf("No selected field is found: \n");
+    return i_selected;
+}
 
