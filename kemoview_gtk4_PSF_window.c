@@ -281,3 +281,41 @@ static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     gtk_widget_set_margin_end(psf_menu_frame,    5);
     return psf_menu_frame;
 }
+
+
+static gboolean dummy_close_CB(GtkWidget *widget, GdkEvent *event, gpointer data){
+    printf("Prevent close button!!\n");
+    return TRUE;
+}
+
+void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
+                     struct psf_gtk_menu *psf_gmenu,
+                     GtkWidget *main_window, GtkWidget *itemTEvo){
+    if(psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(GTK_WINDOW(psf_gmenu->psfWin));};
+    psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
+                                                             NUM_LOADED);
+    if(psf_gmenu->iflag_psfBox == 0){return;}
+    
+    gint size_xy[2];
+    size_xy[0] = gtk_widget_get_width (main_window);
+    size_xy[1] = gtk_widget_get_height(main_window);
+    
+    psf_gmenu->psfWin = gtk_window_new();
+    gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
+    gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
+    gtk_window_set_deletable(GTK_WINDOW(psf_gmenu->psfWin), FALSE);
+    
+    g_signal_connect(psf_gmenu->psfWin, "close-request",
+                     G_CALLBACK(dummy_close_CB), NULL);
+    
+    g_object_set_data(G_OBJECT(itemTEvo), "psfmenu", (gpointer) psf_gmenu);
+    g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(itemTEvo), "parents", (gpointer) main_window);
+    psf_gmenu->psf_frame = init_psf_menu_frame(kemo_gl, psf_gmenu, 
+                                               main_window, itemTEvo);
+    gtk_window_set_child(GTK_WINDOW(psf_gmenu->psfWin), psf_gmenu->psf_frame);
+    
+    gtk_widget_set_visible(psf_gmenu->psfWin, TRUE);
+    return;
+}
+
