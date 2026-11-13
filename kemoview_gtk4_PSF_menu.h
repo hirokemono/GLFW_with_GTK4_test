@@ -47,16 +47,20 @@ struct psf_gtk_menu{
 
     GtkWidget *psf_frame;
 
-	GtkWidget *closeButton;
+    GtkWidget *closeButton;
     
-    GtkWidget *combobox_psfs;
+    GtkWidget *hbox_field;
     GtkWidget *combobox_field;
-
+    GtkStringList *psf_field_model;
+    
+    GtkWidget *hbox_component;
     GtkWidget *combobox_comp;
-    GtkWidget *hbox_comp;
-
+    GtkStringList *psf_component_model;
+    
     int num_psfs;
     GtkWidget *hbox_psfs;
+    GtkWidget *combobox_psfs;
+    GtkStringList *psf_list_model;
 
 //    struct psf_isoline_gtk_menu *psf_isoline_menu;
     GtkWidget *expander_iso;

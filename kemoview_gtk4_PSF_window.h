@@ -28,11 +28,6 @@
 
 
 /*  prototypes */
-void replace_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
-                            struct psf_gtk_menu *psf_gmenu,
-                            GtkWidget *main_window, 
-                            GtkWidget *itemTEvo);
-
 void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
                      struct psf_gtk_menu *psf_gmenu,
                      GtkWidget *main_window, GtkWidget *itemTEvo);

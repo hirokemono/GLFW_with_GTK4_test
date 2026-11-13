@@ -44,10 +44,8 @@ GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int i
 
 */
 
-const char * const null_text_list[] = {NULL};
-
-GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl){
-    GtkStringList * psf_list_model = gtk_string_list_new(null_text_list);
+void reset_psf_list_model(struct kemoviewer_gl_type *kemo_gl,
+                          GtkStringList * psf_list_model){
     struct kv_string *stripped_filehead;
     char label_tmp[512];
     int id_current = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data, SET_CURRENT);
@@ -67,7 +65,7 @@ GtkStringList * init_psf_list_model(struct kemoviewer_gl_type *kemo_gl){
         printf("kemoview_set_PSF_loaded_params \n");
     };
     kemoview_set_PSF_loaded_params(SET_CURRENT, id_current, kemo_gl->kemoview_data);
-    return psf_list_model;
+    return;
 }
 
 int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
@@ -114,11 +112,16 @@ int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
 }
 
 
-GtkStringList * init_psf_field_model(struct kemoviewer_gl_type *kemo_gl, int id_model){
-    GtkStringList * psf_field_model = gtk_string_list_new(null_text_list);
+void reset_psf_field_model(struct kemoviewer_gl_type *kemo_gl, int id_model,
+                           GtkStringList * psf_field_model){
     int num_field = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
                                                  NUM_FIELD_FLAG);
     int ifld;
+    int n_old = g_list_model_get_n_items(G_LIST_MODEL(psf_field_model));
+    for(ifld=0;ifld<n_old;ifld++){
+        gtk_string_list_remove(psf_field_model, IZERO);
+    };
+    
     for(ifld=0;ifld<num_field;ifld++){
         struct kv_string *fieldname = kemoview_alloc_kvstring();
         kemoview_get_VIZ_field_name(kemo_gl->kemoview_data, id_model,
@@ -126,7 +129,7 @@ GtkStringList * init_psf_field_model(struct kemoviewer_gl_type *kemo_gl, int id_
         gtk_string_list_append(psf_field_model, fieldname->string);
         kemoview_free_kvstring(fieldname);
     };
-    return psf_field_model;
+    return;
 }
 
 int set_selected_psf_field_list(struct kemoviewer_gl_type *kemo_gl,
@@ -173,8 +176,8 @@ int find_selected_field_id(struct kemoviewer_gl_type *kemo_gl,
 
 
 
-GtkStringList * init_psf_component_model(struct kemoviewer_gl_type *kemo_gl, int id_model){
-    GtkStringList * psf_component_model = gtk_string_list_new(null_text_list);
+void reset_psf_component_model(struct kemoviewer_gl_type *kemo_gl, int id_model,
+                               GtkStringList * psf_component_model){
 	char comp_name[128];
     
     int ifield = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
@@ -185,11 +188,16 @@ GtkStringList * init_psf_component_model(struct kemoviewer_gl_type *kemo_gl, int
                                                 id_model, COORDINATE_FLAG);
     
     int ipick;
+    int n_old = g_list_model_get_n_items(G_LIST_MODEL(psf_component_model));
+    for(ipick=0;ipick<n_old;ipick++){
+        gtk_string_list_remove(psf_component_model, IZERO);
+    };
+    
     for(ipick=0;ipick<npick;ipick++){
         set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
         gtk_string_list_append(psf_component_model, comp_name);
     };
-    return psf_component_model;
+    return;
 }
 
 int set_selected_psf_component_list(struct kemoviewer_gl_type *kemo_gl,
