@@ -19,7 +19,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-// #include "kemoview_gtk_fileselector.h"
 #include "kemoview_gtk4_PSF_selectors.h"
 #include "kemoview_gtk4_PSF_menu.h"
 #include "kemoview_gtk4_evolution_menu.h"

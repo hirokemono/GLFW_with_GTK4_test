@@ -261,7 +261,7 @@ static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     psf_gmenu->hbox_component =  init_psf_draw_component_hbox(kemo_gl, psf_gmenu,
                                                               main_window, itemTEvo);
     
-//    init_psf_menu_hbox(kemo_gl, psf_gmenu);
+    init_psf_menu_hbox(kemo_gl, psf_gmenu);
     
     GtkWidget *psf_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->closeButton);
@@ -269,10 +269,7 @@ static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_field);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_component);
     
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_iso);
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_surf);
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_color);
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_vect);
+    append_psf_menus_to_hbox(psf_vbox, psf_gmenu);
     
     psf_menu_frame = wrap_into_frame_gtk4("Surfaces", psf_vbox);
     gtk_widget_set_margin_top(psf_menu_frame,    5);

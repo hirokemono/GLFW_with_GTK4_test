@@ -23,7 +23,7 @@
 //#include "tree_view_kemoview_colormap.h"
 //#include "tree_view_viewer_colormap.h"
 #include "kemoview_gtk4_fileselector.h"
-//#include "kemoview_gtk_PSF_surface_menu.h"
+#include "kemoview_gtk4_PSF_surface_menu.h"
 //#include "kemoview_gtk_PSF_isoline_menu.h"
 //#include "kemoview_gtk_PSF_vector_menu.h"
 
@@ -65,7 +65,7 @@ struct psf_gtk_menu{
 //    struct psf_isoline_gtk_menu *psf_isoline_menu;
     GtkWidget *expander_iso;
     
-//    struct psf_surface_gtk_menu *psf_surface_menu;
+    struct psf_surface_gtk_menu *psf_surface_menu;
     GtkWidget *expander_surf;
 
 //  struct psf_vector_gtk_menu *psf_vector_menu;
@@ -89,5 +89,7 @@ void set_vector_plot_availablity(int iflag_current_model,
                                  struct psf_gtk_menu *psf_gmenu);
 void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu);
+void append_psf_menus_to_hbox(GtkWidget *psf_vbox,
+                              struct psf_gtk_menu *psf_gmenu);
 
 #endif   /*  KEMOVIEW_GTK4_PSF_MENU_ */
