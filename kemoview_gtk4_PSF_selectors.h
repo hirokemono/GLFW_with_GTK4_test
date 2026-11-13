@@ -23,19 +23,13 @@
 
 /*  prototypes */
 
-void kemoview_field_select_CB(GtkComboBox *combobox_field, int id_model,
-                              struct kemoviewer_gl_type *kemo_gl);
-void kemoview_component_select_CB(GtkComboBox *combobox_comp, int id_model,
-                                  struct kemoviewer_gl_type *kemo_gl);
-
-GtkWidget * draw_viz_component_gtk_box(struct kemoviewer_gl_type *kemo_gl, int id_model);
-
 void reset_psf_list_model(struct kemoviewer_gl_type *kemo_gl,
                           GtkStringList * psf_list_model);
 int set_selected_psf_list_address(struct kemoviewer_gl_type *kemo_gl,
                                   GtkStringList *psf_list_model);
 int find_selected_psf_id(struct kemoviewer_gl_type *kemo_gl,
                          char *selected_text);
+
 
 void reset_psf_field_model(struct kemoviewer_gl_type *kemo_gl, int id_model, 
                            GtkStringList *psf_field_model);
@@ -55,6 +49,5 @@ int set_selected_psf_component_list(struct kemoviewer_gl_type *kemo_gl,
 int find_selected_component_id(struct kemoviewer_gl_type *kemo_gl, 
                                int id_model,
                                char *selected_text);
-
 
 #endif /* KEMOVIEW_GTK4_PSF_SELECTORS_ */

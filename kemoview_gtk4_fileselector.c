@@ -8,11 +8,6 @@
  ************************************************************************/
 
 #include "kemoview_gtk4_fileselector.h"
-#include "kemoviewer.h"
-#include "kemoviewer_gl.h"
-//#include "tree_view_4_colormap.h"
-#include "view_modifier_glfw.h"
-//#include "kemoview_gtk_PSF_surface_menu.h"
 #include "kemoview_gtk4_main_menu.h"
 
 static const gchar *gtk_selected_filename;
@@ -35,7 +30,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(file_prefix);
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
     
-    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window,    mbot->itemTEvo);
+    init_psf_window(kemo_gl, mbot->psf_gmenu, main_window, mbot->itemTEvo);
     /*
     init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
     init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);

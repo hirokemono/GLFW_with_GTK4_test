@@ -13,10 +13,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "calypso_GTK4.h"
-
 #include "kemoviewer.h"
 #include "kemoviewer_gl.h"
+
+#include "calypso_GTK4.h"
+#include "kemoview_gtk4_PSF_window.h"
 
 /*  prototypes */
 /* Routines for inout from console */
