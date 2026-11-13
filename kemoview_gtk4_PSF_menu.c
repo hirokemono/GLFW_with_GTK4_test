@@ -80,18 +80,9 @@ struct psf_gtk_menu * alloc_psf_gtk_menu(){
         exit(0);
     }
     
-/*
-	psf_gmenu->psf_isoline_menu = (struct psf_isoline_gtk_menu *) malloc(sizeof(struct psf_isoline_gtk_menu));
-    if (psf_gmenu->psf_isoline_menu == NULL) {
-        printf("malloc error for psf_gmenu->psf_isoline_menu\n");
-        exit(0);
-    }
+    psf_gmenu->psf_surface_menu = alloc_psf_surface_gtk_menu();
     
-    psf_gmenu->psf_surface_menu = (struct psf_surface_gtk_menu *) malloc(sizeof(struct psf_surface_gtk_menu));
-    if (psf_gmenu->psf_surface_menu == NULL) {
-        printf("malloc error for psf_gmenu->psf_surface_menu\n");
-        exit(0);
-    }
+    /*
     psf_gmenu->psf_vector_menu =  (struct psf_vector_gtk_menu *) malloc(sizeof(struct psf_vector_gtk_menu));
     if (psf_gmenu->psf_vector_menu == NULL) {
         printf("malloc error for psf_gmenu->psf_vector_menu\n");
@@ -135,7 +126,7 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
 */
     psf_gmenu->expander_surf = init_gtk4_psf_surface_menu_expander(kemo_gl, psf_gmenu->psfWin,
                                                                    psf_gmenu->psf_surface_menu);
-    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
+//    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
     
 /*    
     init_colormap_params_4_viewer(SURFACE_RENDERING, kemo_gl, psf_gmenu->color_vws);
@@ -147,7 +138,7 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                                                         psf_gmenu->psf_vector_menu);
     set_gtk_psf_vector_menu(kemo_gl, psf_gmenu->psf_vector_menu);
 */
-    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu);
+//    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu);
     return;
 }
 
