@@ -29,6 +29,7 @@ struct psf_surface_gtk_menu{
 	GtkWidget *switch_draw, *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
+    GtkWidget *psf_color_button;
 	
 	GtkWidget *label_range_min, *label_range_max;
 	GtkWidget *spin_opacity1;

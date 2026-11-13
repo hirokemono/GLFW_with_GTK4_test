@@ -24,6 +24,19 @@ const char * const psf_sfcolor_list[] = {hd_contour,
 
 GtkWidget *window_csel;
 
+static void init_psf_surf_colmode_dropdown(int id_color_mode,
+                                           GtkWidget *surf_color_mode_button){
+	if       (id_color_mode == WHITE_SURFACE){
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(surf_color_mode_button), 1);
+	} else if(id_color_mode == SINGLE_COLOR){
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(surf_color_mode_button), 2);
+	} else if(id_color_mode == CHANGE_PSF_COLOR){
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(surf_color_mode_button), 3);
+	} else {
+		gtk_drop_down_set_selected(GTK_DROP_DOWN(surf_color_mode_button), 0);
+	};
+    return;
+}
 
 struct psf_surface_gtk_menu * alloc_psf_surface_gtk_menu(void){
     struct psf_surface_gtk_menu *gtk_psf_surface;
@@ -91,47 +104,27 @@ static GtkWidget * init_gtk4_psf_colorbar_switch_box(struct kemoviewer_gl_type *
 };
 
 
-static void set_PSFcolor_GTK(struct kemoviewer_gl_type *kemo_gl,
-                             GtkColorChooser *colordialog)
-{
-	GdkRGBA gcolor;
-	gdouble dcolor[4];
-	
-	dcolor[0] = gcolor.red;
-	dcolor[1] = gcolor.green;
-	dcolor[2] = gcolor.blue;
-	dcolor[3] = (gdouble) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
-                                                         SURFACE_RENDERING,
-                                                         ISET_OPACITY_MAX);
-    kemoview_set_VIZ_single_color(dcolor,
+static void set_PSFcolor_GTK(struct psf_surface_gtk_menu *psf_surface_menu,
+                             struct kemoviewer_gl_type *kemo_gl){
+    float fcolor[4];
+    GtkColorDialogButton* color_button
+            = GTK_COLOR_DIALOG_BUTTON(psf_surface_menu->psf_color_button);
+    GdkRGBA *rgba = gtk_color_dialog_button_get_rgba(color_button);
+    gtk_drop_down_set_selected(GTK_DROP_DOWN(psf_surface_menu->combobox_sfcolor), 2);
+    
+    set_RGB_from_GTK(rgba, fcolor);
+    fcolor[3] = (float) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
+                                                       SURFACE_RENDERING,
+                                                       ISET_OPACITY_MAX);
+    kemoview_set_VIZ_single_color(fcolor,
                                   SURFACE_RENDERING,
                                   kemo_gl->kemoview_data);
     kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }
+
 /*
-static void kemoview_gtk_surfcolorsel(struct kemoviewer_gl_type *kemo_gl,
-                                      GtkWidget *parent_window){
-	int response;
-	GtkColorChooser *chooser;
-	
-	window_csel = gtk_color_chooser_dialog_new("Choose surface color",
-                                               GTK_WINDOW(parent_window));
-	gtk_widget_show_all(window_csel);
-	
-	response = gtk_dialog_run(GTK_DIALOG(window_csel));
-	if (response == GTK_RESPONSE_OK){
-		chooser = GTK_COLOR_CHOOSER(window_csel);
-		set_PSFcolor_GTK(kemo_gl, chooser);
-		g_print ("color selected \n");
-	}
-	else if( response == GTK_RESPONSE_CANCEL ){
-		g_print( "Cancel button was pressed.\n" );
-		gtk_window_destroy(window_csel);
-	}
-	return;
-}
 
 static int load_texture_file_gtk3(GtkWidget *window, 
                                   struct kv_string *file_prefix){
@@ -149,7 +142,6 @@ static int load_texture_file_gtk3(GtkWidget *window,
     kemoview_free_kvstring(filename);
 	return id_img;
 }
-*/
 
 static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *window){
@@ -167,6 +159,7 @@ static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
 	
 	return;
 };
+*/
 
 static int find_surface_color_mode(const char *text){
     int index = -100;
@@ -181,19 +174,20 @@ static int find_surface_color_mode(const char *text){
 }
 
 static void set_psf_surface_color_mode(int index_mode, GtkWidget *parent_window,
+                                       struct psf_surface_gtk_menu *psf_surface_menu,
                                        struct kemoviewer_gl_type *kemo_gl){
 	if      (index_mode == WHITE_SURFACE){
         kemoview_set_PSF_patch_color_mode(WHITE_SURFACE, kemo_gl->kemoview_data);
-	}else if(index_mode == SINGLE_COLOR){
-//		kemoview_gtk_surfcolorsel(kemo_gl, parent_window);
+    }else if(index_mode == SINGLE_COLOR){
+        set_PSFcolor_GTK(psf_surface_menu, kemo_gl);
 /*
 	}else if(index_mode == CHANGE_PSF_COLOR){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox_sfcolor), 2);
+		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 2);
 */
 	}else if(index_mode == RAINBOW_PSF_SURF){
         kemoview_set_PSF_patch_color_mode(COLORED_BY_DATA, kemo_gl->kemoview_data);
 	}else if(index_mode == TEXTURE_PSF_SURF){
-		load_texture_handler(kemo_gl, parent_window);
+//		load_texture_handler(kemo_gl, parent_window);
 	};
     return;
 }
@@ -203,6 +197,8 @@ static void psf_surf_colormode_CB(GtkDropDown *dropdown,
                                   gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    struct psf_surface_gtk_menu *psf_surface_menu
+            = (struct psf_surface_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "surface_menu");
     GtkWidget *parent_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parents"));
 /* The dropdown model returns a GtkStringObject when created from strings */
     GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
@@ -210,7 +206,7 @@ static void psf_surf_colormode_CB(GtkDropDown *dropdown,
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string(selected_item);
     int index_mode = find_surface_color_mode(text);
-    set_psf_surface_color_mode(index_mode, parent_window, kemo_gl);
+    set_psf_surface_color_mode(index_mode, parent_window, psf_surface_menu, kemo_gl);
     draw_full_gl(kemo_gl);
     return;
 };
@@ -264,6 +260,17 @@ static void MinRangeDigitChange_CB(GtkWidget *entry, gpointer data)
     draw_full_gl(kemo_gl);
 }
 
+void update_psf_minimum_label(struct kemoviewer_gl_type *kemo_gl, 
+                              GtkWidget *label_range_min){
+	char min_text[30];
+    double value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                                   SURFACE_RENDERING,
+                                                   ISET_COLOR_MIN);
+	sprintf(min_text, "Min(%1.2e): ", value_min);
+	gtk_label_set_text(GTK_LABEL(label_range_min), min_text);
+    return;
+}
+
 static GtkWidget * init_gtk4_psf_set_minimum_box(struct kemoviewer_gl_type *kemo_gl,
                                                  struct psf_surface_gtk_menu *psf_surface_menu){
     GtkWidget *hbox_min_range;
@@ -278,12 +285,8 @@ static GtkWidget * init_gtk4_psf_set_minimum_box(struct kemoviewer_gl_type *kemo
     g_signal_connect(psf_surface_menu->spin_digit_min, "value-changed",
                      G_CALLBACK(MinRangeDigitChange_CB), (gpointer) kemo_gl);
     
-    double value_min = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
-                                                   SURFACE_RENDERING,
-                                                   ISET_COLOR_MIN);
-	sprintf(min_text, "Min(%1.2e): ", value_min);
     psf_surface_menu->label_range_min = gtk_label_new(" ");
-	gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_min), min_text);
+    update_psf_minimum_label(kemo_gl, psf_surface_menu->label_range_min);
     
     hbox_min_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_min_range), psf_surface_menu->label_range_min);
@@ -331,10 +334,20 @@ static void MaxRangeDigitChange_CB(GtkWidget *entry, gpointer data)
     draw_full_gl(kemo_gl);
 }
 
+void update_psf_maximum_label(struct kemoviewer_gl_type *kemo_gl, 
+                              GtkWidget *label_range_max){
+	char max_text[30];
+    double value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
+                                                   SURFACE_RENDERING,
+                                                   ISET_COLOR_MAX);
+    sprintf(max_text, "Max(%1.2e): ", value_max);
+    gtk_label_set_text(GTK_LABEL(label_range_max), max_text);
+    return;
+}
+
 static GtkWidget * init_gtk4_psf_set_maximum_box(struct kemoviewer_gl_type *kemo_gl,
                                                  struct psf_surface_gtk_menu *psf_surface_menu){
     GtkWidget *hbox_max_range;
-	char max_text[30];
     
     GtkAdjustment *adj_range_max = gtk_adjustment_new (1, -9.999, 9.999, 0.1, 0.1, 0.0);
     GtkAdjustment *adj_digit_max = gtk_adjustment_new (0, -20, 20, 1, 1, 0);
@@ -345,12 +358,8 @@ static GtkWidget * init_gtk4_psf_set_maximum_box(struct kemoviewer_gl_type *kemo
     g_signal_connect(psf_surface_menu->spin_digit_max, "value-changed",
                      G_CALLBACK(MaxRangeDigitChange_CB), (gpointer) kemo_gl);
     
-    double value_max = kemoview_get_VIZ_data_range(kemo_gl->kemoview_data,
-                                                   SURFACE_RENDERING,
-                                                   ISET_COLOR_MAX);
-    sprintf(max_text, "Max(%1.2e): ", value_max);
     psf_surface_menu->label_range_max = gtk_label_new(" ");
-    gtk_label_set_text(GTK_LABEL(psf_surface_menu->label_range_max), max_text);
+    update_psf_maximum_label(kemo_gl, psf_surface_menu->label_range_max);
     
     hbox_max_range = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_max_range), psf_surface_menu->label_range_max);
@@ -382,16 +391,8 @@ void set_gtk4_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 
 	iflag_sfcolor = kemoview_get_VIZ_patch_color_mode(kemo_gl->kemoview_data,
                                                       SURFACE_RENDERING);
-	if(iflag_sfcolor == TEXTURE_PSF_SURF){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 4);
-	} else 	if(iflag_sfcolor == SINGLE_COLOR){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 2);
-	} else 	if(iflag_sfcolor == WHITE_SURFACE){
-		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 1);
-	} else {
-		gtk_combo_box_set_active(GTK_COMBO_BOX(psf_surface_menu->combobox_sfcolor), 0);
-	};
-
+    init_psf_surf_colmode_dropdown(iflag_sfcolor, psf_surface_menu->combobox_sfcolor);
+    
 	current_value = kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
                                                    SURFACE_RENDERING,
                                                    ISET_OPACITY_MAX);
@@ -414,23 +415,17 @@ void set_gtk4_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
 static void set_PSF_colorsel_CB(GObject    *object,
                                 GParamSpec *pspec,
                                 gpointer    user_data){
-    GtkColorDialogButton *color_button = GTK_COLOR_DIALOG_BUTTON(object);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    
-    GdkRGBA *rgba = gtk_color_dialog_button_get_rgba(color_button);
-    float color[4];
-    set_RGB_from_GTK(rgba, color);
-    kemoview_set_background_color(color, kemo_gl->kemoview_data);
-//    printf("updated %f %f %f %f\n", color[0], color[1], color[2], color[3]);
-    
-    draw_full_gl(kemo_gl);
+    struct psf_surface_gtk_menu *psf_surface_menu
+            = (struct psf_surface_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "surface_menu");
+    set_PSFcolor_GTK(psf_surface_menu, kemo_gl);
     return;
 };
 
 static GtkWidget * init_gtk4_psf_surf_color_sel(struct kemoviewer_gl_type *kemo_gl,
                                                 struct GtkWidget *window,
-                                         GLFWwindow *glfw_win){
+                                                struct psf_surface_gtk_menu *psf_surface_menu){
     GtkWidget *color_hbox;
     
     GdkRGBA bg_rgba;
@@ -441,20 +436,21 @@ static GtkWidget * init_gtk4_psf_surf_color_sel(struct kemoviewer_gl_type *kemo_
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "window", (gpointer) window);
+    g_object_set_data(G_OBJECT(entry_buf), "surface_menu", (gpointer) psf_surface_menu);
     
     GtkColorDialog *color_dialog = gtk_color_dialog_new();
     gtk_color_dialog_set_title(color_dialog, "Choose a color");
     gtk_color_dialog_set_with_alpha (color_dialog, TRUE); // Allow transparency adjustments
     
-    GtkWidget *color_button = gtk_color_dialog_button_new(color_dialog);
-    gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(color_button), &bg_rgba);
-    g_signal_connect (color_button, "notify::rgba", 
+    psf_surface_menu->psf_color_button = gtk_color_dialog_button_new(color_dialog);
+    gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(psf_surface_menu->psf_color_button), &bg_rgba);
+    g_signal_connect (psf_surface_menu->psf_color_button, "notify::rgba", 
                       G_CALLBACK(set_PSF_colorsel_CB), G_OBJECT(entry_buf));
     
     
     color_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(color_hbox), gtk_label_new("Color: "));
-    gtk_box_append(GTK_BOX(color_hbox), color_button);
+    gtk_box_append(GTK_BOX(color_hbox), psf_surface_menu->psf_color_button);
     
     return color_hbox;
 }
@@ -471,22 +467,23 @@ GtkWidget * init_gtk4_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_
     GtkWidget *hbox_min_range = init_gtk4_psf_set_minimum_box(kemo_gl, psf_surface_menu);
     GtkWidget *hbox_max_range = init_gtk4_psf_set_maximum_box(kemo_gl, psf_surface_menu);
     
+    GtkWidget *hbox_colorsel = init_gtk4_psf_surf_color_sel(kemo_gl, window, psf_surface_menu);
+    
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "surface_menu", (gpointer)  psf_surface_menu);
     g_object_set_data(G_OBJECT(entry_buf), "parents", (gpointer)  window);
     
     GtkStringList *psf_sfcolor_model = gtk_string_list_new(psf_sfcolor_list);
     psf_surface_menu->combobox_sfcolor = init_list_button_by_list_model(psf_sfcolor_model);
     g_signal_connect(G_OBJECT(psf_surface_menu->combobox_sfcolor), "notify::selected-item", 
                      G_CALLBACK (psf_surf_colormode_CB), entry_buf);
-//    init_image_format_dropdown(*id_image_format, psf_surface_menu->combobox_sfcolor);
     
     GtkWidget *hbox_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
     gtk_box_append(GTK_BOX(hbox_color), gtk_label_new("Color mode: "));
     gtk_box_append(GTK_BOX(hbox_color), psf_surface_menu->combobox_sfcolor);
     
     
-    GtkWidget *hbox_colorsel = init_gtk4_psf_surf_color_sel(kemo_gl, psf_sfcolor_model);
     /*
     
     GtkAdjustment *adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);

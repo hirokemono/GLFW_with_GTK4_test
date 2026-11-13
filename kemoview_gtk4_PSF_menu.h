@@ -30,7 +30,8 @@
 #include "view_modifier_glfw.h"
 
 struct psf_color_gtk_menu{
-	GtkWidget *switch_draw, *switch_bar;
+    GtkWidget *switch_draw;
+    GtkWidget *switch_bar;
 	
 	GtkWidget *combobox_sfcolor;
 	GtkWidget *colorcell_sfcolor;
