@@ -15,21 +15,10 @@ static const gchar *gtk_selected_filename;
 /*
    Constract input windows
 */
-void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
-                               struct kv_string *filename,
-                               struct main_buttons *mbot,
-                               GtkWidget *main_window){
-    struct kv_string *file_prefix = kemoview_alloc_kvstring();
-    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
-	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
-	
-	printf("file name: %s\n", filename->string);
-	printf("file_prefix %s\n", file_prefix->string);
-	printf("stripped_ext %s\n", stripped_ext->string);
-    kemoview_free_kvstring(stripped_ext);
-    kemoview_free_kvstring(file_prefix);
-	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
-    
+
+void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
+                                 struct main_buttons *mbot,
+                                 GtkWidget *main_window){
     init_psf_window(kemo_gl, mbot->psf_gmenu, main_window, mbot->itemTEvo);
     /*
     init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
@@ -49,6 +38,23 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     */
     activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
     draw_full_gl(kemo_gl);
+    return;
+};
+
+void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
+                               struct kv_string *filename,
+                               struct main_buttons *mbot,
+                               GtkWidget *main_window){
+    struct kv_string *file_prefix = kemoview_alloc_kvstring();
+    struct kv_string *stripped_ext = kemoview_alloc_kvstring();
+	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
+	
+	printf("file name: %s\n", filename->string);
+	printf("file_prefix %s\n", file_prefix->string);
+	printf("stripped_ext %s\n", stripped_ext->string);
+    kemoview_free_kvstring(stripped_ext);
+    kemoview_free_kvstring(file_prefix);
+	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
 	return;
 };
 
@@ -263,6 +269,8 @@ static void kemoview_file_open_CB(GObject *source,
     open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
+    
+    open_window_for_opened_file(kemo_gl, mbot, main_window);
     draw_full_gl(kemo_gl);
     return;
 }
@@ -318,6 +326,8 @@ static void kemoview_file_save_CB(GObject *source,
     open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
+    
+    open_window_for_opened_file(kemo_gl, mbot, main_window);
     return;
 }
 
