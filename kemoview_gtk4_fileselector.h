@@ -18,9 +18,13 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_PSF_window.h"
+#include "kemoview_gtk4_main_menu.h"
 
 /*  prototypes */
 /* Routines for inout from console */
+void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
+                                 struct main_buttons *mbot,
+                                 GtkWidget *main_window);
 
 GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
                                         GAsyncResult *result);
