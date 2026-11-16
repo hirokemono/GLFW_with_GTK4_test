@@ -13,12 +13,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "calypso_GTK4.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 
+#include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-#include "kemoview_gtk4_fileselector.h"
+#include "kemoview_gtk4_viewmat_file_IO.h"
+#include "kemoview_gtk4_rotation_view.h"
+#include "kemoview_gtk4_stereo_view.h"
 
 #include "view_modifier_glfw.h"
 
@@ -49,37 +51,10 @@ struct view_widgets{
 	GtkWidget *spin_scale;
 	GtkWidget *hbox_scale;
 	
-    GtkAdjustment *adj_rotation_x;
-    GtkAdjustment *adj_rotation_y;
-    GtkAdjustment *adj_rotation_z;
-    GtkWidget *spin_rotation_x;
-    GtkWidget *spin_rotation_y;
-    GtkWidget *spin_rotation_z;
-    
-    GtkWidget *hbox_rotation_x;
-    GtkWidget *hbox_rotation_y;
-    GtkWidget *hbox_rotation_z;
-	
-	GtkAdjustment *adj_rotation_deg;
-	GtkWidget *spin_rotation_deg;
-	GtkWidget *hbox_rotation_deg;
-	
 	GtkAdjustment *adj_aperture;
 	GtkWidget *spin_aperture;
 	GtkWidget *hbox_aperture;
 	
-	GtkAdjustment *adj_focus;
-	GtkWidget *spin_focus;
-	GtkWidget *hbox_focus;
-	
-	int iflag_updated_eye_separation;
-    int iflag_updated_eye_sep_angle;
-	GtkAdjustment *adj_eye_sep;
-    GtkAdjustment *adj_sep_angle;
-	GtkWidget *spin_eye_sep;
-	GtkWidget *hbox_eye_sep;
-    GtkWidget *spin_sep_angle;
-    GtkWidget *hbox_sep_angle;
 	
     GtkWidget *vbox_win;
     GtkWidget *Frame_win;
@@ -89,21 +64,23 @@ struct view_widgets{
     GtkWidget *Frame_looking;
     GtkWidget *vbox_scale;
     GtkWidget *Frame_scale;
-    GtkWidget *vbox_rotation;
-    GtkWidget *Frame_rotation;
     GtkWidget *vbox_aperture;
     GtkWidget *Frame_aperture;
-    GtkWidget *vbox_streo;
+    
+    
+    struct stereo_view_widgets *stereo_menu;
     GtkWidget *Frame_stereo;
     
-    GtkWidget *vbox_viewmatrix_save;
+    struct rot_view_widgets *rot_view_menu;
+    GtkWidget *Frame_rotation;
+    
+    struct viewmat_file_IO_widgets *viewmat_IO;
     GtkWidget *hbox_viewmatrix_save;
-    GtkEntryBuffer *entry_buf_viewmat_file;
-    GtkWidget *saveView_Button;
-    GtkWidget *loadView_Button;
 };
 
 /*  prototypes */
+struct view_widgets * init_viewmat_widgets(void);
+void dealloc_viewmat_widgets(struct view_widgets *view_menu);
 
 void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
                             struct view_widgets *view_menu,

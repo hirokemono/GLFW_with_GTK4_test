@@ -71,11 +71,11 @@ static void quilt_switch_CB(GObject *switch_bar,
         gtk_spin_button_set_value(GTK_SPIN_BUTTON(quilt_gmenu->spin_num_raw),
                                   quilt_gmenu->num_raw);
         
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), 
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->stereo_menu->spin_eye_sep), 
                                   quilt_gmenu->FoculPoint);
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_eye_sep), 
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->stereo_menu->spin_eye_sep), 
                                   quilt_gmenu->eyeRatio);
-        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->spin_sep_angle), 
+        gtk_spin_button_set_value(GTK_SPIN_BUTTON(view_menu->stereo_menu->spin_sep_angle), 
                                   quilt_gmenu->eyeAngle);
     }
     set_quilt_switch_sensitivity(iflag_quilt, kemo_gl->kemoview_data, 

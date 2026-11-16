@@ -154,25 +154,6 @@ GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
 }
 
 
-void save_viewmatrix_CB(GObject *source,
-                        GAsyncResult *result,
-                        void *data){
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
-    
-    GFile *file = gfile_from_kemoview_open_dialog(GTK_FILE_DIALOG (source), result);
-    if(!file) return;
-    
-    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-	kemoview_load_modelview_file(filename, kemo_gl->kemoview_data);
-	kemoview_free_kvstring(filename);
-    g_object_unref(file);
-	
-    draw_full_gl(kemo_gl);
-    return;
-};
-
-
 /*
 static void load_colormap_file_CB(GObject *source,
                                   GAsyncResult *result,
@@ -197,24 +178,6 @@ static void load_colormap_file_CB(GObject *source,
     return;
 };
 */
-void load_viewmatrix_CB(GObject *source,
-                        GAsyncResult *result,
-                        gpointer data){
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
-    
-    GFile *file = gfile_from_kemoview_open_dialog(GTK_FILE_DIALOG (source), result);
-    
-    if(!file) return;
-    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-	kemoview_load_modelview_file(filename, kemo_gl->kemoview_data);
-	kemoview_free_kvstring(filename);
-    g_object_unref(file);
-	
-    draw_full_gl(kemo_gl);
-    return;
-};
-
 void load_texture_file_CB(GObject *source,
                           GAsyncResult *result,
                           gpointer data){
