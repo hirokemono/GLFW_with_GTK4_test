@@ -124,42 +124,6 @@ static void set_PSFcolor_GTK(GtkWidget *listbutton_sfcolor,
 	return;
 }
 
-/* 
-static int load_texture_file_gtk4(GtkWidget *window, 
-                                  struct kv_string *file_prefix){
-    struct kv_string *stripped_ext;
-	int id_img;
-	struct kv_string *filename = kemoview_read_file_panel(window);
-	
-	if(filename->string[0] == '\0') return 0;
-	
-    stripped_ext = kemoview_alloc_kvstring();
-	kemoview_get_ext_from_file_name(filename, file_prefix, stripped_ext);
-	
-	id_img = kemoview_set_image_file_format_id(stripped_ext);
-    kemoview_free_kvstring(stripped_ext);
-    kemoview_free_kvstring(filename);
-	return id_img;
-}
-*/
-
-static void load_texture_handler(struct kemoviewer_gl_type *kemo_gl,
-                                 GtkWidget *window){
-	int id_image;
-    struct kv_string *image_prefix = kemoview_alloc_kvstring();
-//	id_image = load_texture_file_gtk4(window, image_prefix);
-	
-	if(id_image == SAVE_PNG || id_image == SAVE_BMP){
-        kemoview_release_PSF_gl_texture(kemo_gl->kemoview_data, kemo_gl);
-        kemoview_update_PSF_textured_id(kemo_gl->kemoview_data);
-		kemoview_set_texture_to_PSF(id_image, image_prefix, kemo_gl->kemoview_data, kemo_gl);
-        kemoview_set_PSF_patch_color_mode(TEXTURED_SURFACE, kemo_gl->kemoview_data);
-        kemoview_free_kvstring(image_prefix);
-	};
-	
-	return;
-};
-
 static int find_surface_color_mode(const char *text){
     int index = -100;
     if     (kemoview_compare_string((int) strlen(text), text, hd_contour) > 0){index = RAINBOW_PSF_SURF;}
@@ -191,7 +155,7 @@ static void set_psf_surface_color_mode(int index_mode, GtkWidget *parent_window,
         kemoview_set_PSF_patch_color_mode(COLORED_BY_DATA, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
 	}else if(index_mode == TEXTURE_PSF_SURF){
-		load_texture_handler(kemo_gl, parent_window);
+		open_texture_load_dialog(kemo_gl, parent_window);
         draw_full_gl(kemo_gl);
 	};
     return;
