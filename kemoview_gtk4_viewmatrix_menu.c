@@ -50,6 +50,41 @@ void update_windowsize_menu(struct kemoviewer_gl_type *kemo_gl,
     return;
 };
 
+GtkWidget * init_windowsize_frame(struct kemoviewer_gl_type *kemo_gl,
+                                          struct view_widgets *view_menu,
+                                          GtkWidget *window){
+    GtkWidget *Frame_win;
+    
+    char windowsize_x_text[30];
+    char windowsize_y_text[30];
+    
+    sprintf(windowsize_x_text, "    %d    ",
+            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X));
+    sprintf(windowsize_y_text, "    %d    ",
+            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y));
+    
+    view_menu->spin_win_x = gtk_label_new(windowsize_x_text);
+    view_menu->spin_win_y = gtk_label_new(windowsize_y_text);
+    
+    update_windowsize_menu(kemo_gl, view_menu, window);
+    
+    view_menu->hbox_win_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), gtk_label_new(" X: "));
+    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), view_menu->spin_win_x);
+    
+    view_menu->hbox_win_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), gtk_label_new(" Y: "));
+    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), view_menu->spin_win_y);
+    
+    view_menu->vbox_win = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_x);
+    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_y);
+    
+    Frame_win = gtk_frame_new("Number of pixel");
+    gtk_frame_set_child(GTK_FRAME(Frame_win), view_menu->vbox_win);
+    return Frame_win;
+}
+
 void set_eye_position_value(struct kemoviewer_type *kemo_sgl,
                             struct view_widgets *view_menu){
     gtk_adjustment_set_value(view_menu->adj_eye_x,
@@ -162,7 +197,7 @@ GtkWidget * init_scale_viewmat_frame(struct kemoviewer_gl_type *kemo_gl,
     
     Frame_scale = gtk_frame_new("");
     gtk_frame_set_child(GTK_FRAME(Frame_scale), view_menu->vbox_scale);
-    return Frame_aperture;
+    return Frame_scale;
 }
 
 static void aperture_CB(GtkWidget *entry, gpointer user_data){
@@ -236,42 +271,6 @@ GtkWidget * init_lookat_viewmat_frame(struct kemoviewer_gl_type *kemo_gl,
     return Frame_looking;
 }
 
-GtkWidget * init_windowsize_frame(struct kemoviewer_gl_type *kemo_gl,
-                                          struct view_widgets *view_menu,
-                                          GtkWidget *window){
-    GtkWidget *expander_view;
-    char windowsize_x_text[30];
-    char windowsize_y_text[30];
-    
-    sprintf(windowsize_x_text, "    %d    ",
-            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X));
-    sprintf(windowsize_y_text, "    %d    ",
-            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y));
-    
-    view_menu->spin_win_x = gtk_label_new(windowsize_x_text);
-    view_menu->spin_win_y = gtk_label_new(windowsize_y_text);
-    
-    update_windowsize_menu(kemo_gl, view_menu, window);
-    
-    
-    
-    view_menu->hbox_win_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), gtk_label_new(" X: "));
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), view_menu->spin_win_x);
-    
-    view_menu->hbox_win_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), gtk_label_new(" Y: "));
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), view_menu->spin_win_y);
-    
-    view_menu->vbox_win = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_x);
-    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_y);
-    
-    view_menu->Frame_win = gtk_frame_new("Number of pixel");
-    gtk_frame_set_child(GTK_FRAME(view_menu->Frame_win), view_menu->vbox_win);
-    return;
-}
-
 
 void set_viewmatrix_value(struct kemoviewer_type *kemo_sgl,
                           struct view_widgets *view_menu,
@@ -295,37 +294,7 @@ GtkWidget * init_viewmatrix_menu_expander(struct kemoviewer_gl_type *kemo_gl,
                                           GtkWidget *window){
     GtkWidget *expander_view;
     
-    char windowsize_x_text[30];
-    char windowsize_y_text[30];
-    
-    sprintf(windowsize_x_text, "    %d    ",
-            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_X));
-    sprintf(windowsize_y_text, "    %d    ",
-            kemoview_get_view_integer(kemo_gl->kemoview_data, ISET_PIXEL_Y));
-    
-    view_menu->spin_win_x = gtk_label_new(windowsize_x_text);
-    view_menu->spin_win_y = gtk_label_new(windowsize_y_text);
-    
-    update_windowsize_menu(kemo_gl, view_menu, window);
-    
-    
-    
-    view_menu->hbox_win_x = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), gtk_label_new(" X: "));
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_x), view_menu->spin_win_x);
-    
-    view_menu->hbox_win_y = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), gtk_label_new(" Y: "));
-    gtk_box_append(GTK_BOX(view_menu->hbox_win_y), view_menu->spin_win_y);
-    
-    view_menu->vbox_win = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_x);
-    gtk_box_append(GTK_BOX(view_menu->vbox_win), view_menu->hbox_win_y);
-    
-    view_menu->Frame_win = gtk_frame_new("Number of pixel");
-    gtk_frame_set_child(GTK_FRAME(view_menu->Frame_win), view_menu->vbox_win);
-    
-    
+    view_menu->Frame_win =      init_windowsize_frame(kemo_gl, view_menu, window);
     view_menu->Frame_eye =      init_eye_position_frame(kemo_gl, view_menu);
     view_menu->Frame_looking =  init_lookat_viewmat_frame(kemo_gl, view_menu);
     view_menu->Frame_scale =    init_scale_viewmat_frame(kemo_gl, view_menu);
