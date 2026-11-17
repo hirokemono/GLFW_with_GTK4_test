@@ -20,8 +20,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_colorsel.h"
-// #include "tree_view_4_pvr_colormap.h"
-// #include "tree_view_chara_int_GTK.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_texture_file_IO.h"
 

@@ -12,11 +12,11 @@
 #include "kemoviewer_gl.h"
 #include "kemoviewer.h"
 
+#include "view_modifier_glfw.h"
+
 #include "calypso_GTK4.h"
 #include "columnview_real3_gtk4.h"
 #include "kemoview_gtk4_routines.h"
-
-#include "view_modifier_glfw.h"
 
 /* prototypes */
 struct kemo_real3_columnview * init_light_position_list_scroll(struct kemoviewer_gl_type *kemo_gl,

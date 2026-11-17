@@ -9,14 +9,6 @@
 
 #include "columnview_light_positions.h"
 
-/* 
- * 1. Define private instance data here
- */
-struct _TestColItemClass
-{
-    GObjectClass parent_class;
-};
-
 static void sync_kemoview_light_position_from_list(GListStore *store,
                                                    struct kemoviewer_type *kemo_sgl){
     Real3ColumnItem *item;
