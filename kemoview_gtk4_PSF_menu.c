@@ -8,6 +8,26 @@
  */
 
 #include "kemoview_gtk4_PSF_menu.h"
+
+
+struct colormap_view * alloc_colormap_view(void){
+    struct colormap_view *color_vws
+            = (struct colormap_view *) malloc(sizeof(struct colormap_view));
+    if(color_vws == NULL){
+        printf("malloc error for colormap_view\n");
+        exit(0);
+    };
+    color_vws->iflag_cmap_loaded = 0;
+    return color_vws;
+};
+
+void dealloc_colormap_views(struct colormap_view *color_vws){
+    free(color_vws);
+    return;
+}
+
+
+
 /*
 static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_data){
 	GtkWidget *window = GTK_WIDGET(user_data);
@@ -44,35 +64,36 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
     draw_full_gl(kemo_gl);
 	return;
 };
+*/
 
 
 GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
                                            GtkWidget *window,
+                                           struct kemo_real2_columnview *colormap_vws,
                                            struct colormap_view *color_vws){
     GtkWidget *expander_color;
-    GtkWidget *saveButton = gtk_button_new_with_label("Save colormap...");
-    
     GtkWidget *dummy_enty = gtk_entry_new();
     g_object_set_data(G_OBJECT(dummy_enty), "kemoview_gl",    (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(dummy_enty), "colormap_view",  (gpointer) color_vws);
-
-	g_signal_connect(G_OBJECT(saveButton), "clicked",
-				G_CALLBACK(save_colormap_file_panel_CB), G_OBJECT(dummy_enty));
-	
-	GtkWidget *loadButton = gtk_button_new_with_label("Load colormap...");
-	g_signal_connect(G_OBJECT(loadButton), "clicked",
-				G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(dummy_enty));
-	
-    GtkWidget *frame_box = init_kemoview_colormap_list_vbox(kemo_gl, color_vws);
-    GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_pack_start(GTK_BOX(color_box), frame_box, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(color_box), saveButton, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(color_box), loadButton, FALSE, FALSE, 0);
-
-    expander_color = wrap_into_scroll_expansion_gtk("Color map editor", 420, 450, window, color_box);
-	return expander_color;
-}
+/*
+    GtkWidget *saveButton = gtk_button_new_with_label("Save colormap...");
+    GtkWidget *loadButton = gtk_button_new_with_label("Load colormap...");
+    
+    g_signal_connect(G_OBJECT(saveButton), "clicked",
+                     G_CALLBACK(save_colormap_file_panel_CB), G_OBJECT(dummy_enty));
+    g_signal_connect(G_OBJECT(loadButton), "clicked",
+                     G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(dummy_enty));
 */
+    colormap_vws = init_colormap_list_scroll(kemo_gl, &color_vws->iflag_current_model, window);
+    GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_box_append(GTK_BOX(color_box), colormap_vws->real2_cview_scroll);
+//    gtk_box_append(GTK_BOX(color_box), saveButton);
+//    gtk_box_append(GTK_BOX(color_box), loadButton);
+
+    expander_color = wrap_into_scroll_expansion_gtk4("Color map editor", 420, 450, window, color_box);
+    return expander_color;
+}
+
 struct psf_gtk_menu * alloc_psf_gtk_menu(){
 	struct psf_gtk_menu *psf_gmenu = (struct psf_gtk_menu *) malloc(sizeof(struct psf_gtk_menu));
     if (psf_gmenu == NULL) {
@@ -88,8 +109,8 @@ struct psf_gtk_menu * alloc_psf_gtk_menu(){
         printf("malloc error for psf_gmenu->psf_vector_menu\n");
         exit(0);
     }
-    psf_gmenu->color_vws = alloc_colormap_view();
 */
+    psf_gmenu->color_vws = alloc_colormap_view();
     return psf_gmenu;
 };
 
@@ -126,12 +147,14 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
 */
     psf_gmenu->expander_surf = init_gtk4_psf_surface_menu_expander(kemo_gl, psf_gmenu->psfWin,
                                                                    psf_gmenu->psf_surface_menu);
-//    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
+    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
     
-/*    
-    init_colormap_params_4_viewer(SURFACE_RENDERING, kemo_gl, psf_gmenu->color_vws);
+//    init_colormap_params_4_viewer(SURFACE_RENDERING, kemo_gl, psf_gmenu->color_vws);
     psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_gl, psf_gmenu->psfWin,
+                                                               psf_gmenu->colormap_vws,
                                                                psf_gmenu->color_vws);
+    
+    /*    
     set_gtk_isoline_menu_values(kemo_gl, psf_gmenu->psf_isoline_menu);
 
     psf_gmenu->expander_vect = make_gtk_psf_vector_menu(kemo_gl, psf_gmenu->psfWin,
@@ -146,7 +169,7 @@ void append_psf_menus_to_hbox(GtkWidget *psf_vbox,
                               struct psf_gtk_menu *psf_gmenu){
 //    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_iso);
     gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_surf);
-//    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_color);
+    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_color);
 //    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->expander_vect);
     return;
 };

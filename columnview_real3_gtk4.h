@@ -15,10 +15,10 @@
   which will be displayed in four columns
 */
 enum {
-    PROP_REAL1 = 1,
-    PROP_REAL2 = 2,
-    PROP_REAL3 = 3,
-    N_PROPERTIES
+    PROP_REAL3_R1 = 1,
+    PROP_REAL3_R2 = 2,
+    PROP_REAL3_R3 = 3,
+    N_PROPS_REAL3
 };
 
 struct _Real3ColumnItem
@@ -41,7 +41,7 @@ struct kemo_real3_columnview{
  */
 G_BEGIN_DECLS
 
-#define TESTCOL_TYPE_ITEM (real3_column_item_get_type())
+#define REAL3_COLUMN_TYPE_ITEM (real3_column_item_get_type())
 G_DECLARE_FINAL_TYPE(Real3ColumnItem, real3_column_item, REAL3_COLUMN, ITEM, GObject)
 
 
@@ -55,11 +55,11 @@ int find_original_index_of_real3_column(GtkColumnView *column_view);
 void show_all_real3_button_CB(GtkButton *button, gpointer user_data);
 void show_each_real3_button_CB(GtkButton *button, gpointer user_data);
 
-GListStore *init_real3_list_store(int num, float **real3);
+GListStore *init_real3_list_store(int num, float **array3);
 GtkWidget * real3_columnview_init(GListStore *store);
 
 struct kemo_real3_columnview * alloc_kemo_real3_columnview();
-struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real3);
+struct kemo_real3_columnview * init_real3_columnview_scroll(int num, float **array3);
 void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws);
 
 G_END_DECLS

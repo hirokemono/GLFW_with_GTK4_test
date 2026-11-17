@@ -30,13 +30,13 @@ static void real3_column_item_get_property(GObject *object,
     Real3ColumnItem *self = (Real3ColumnItem *)object;
 
     switch (prop_id) {
-    case PROP_REAL1:
+    case PROP_REAL3_R1:
         g_value_set_float(value, (gfloat) self->real1);
         break;
-    case PROP_REAL2:
+    case PROP_REAL3_R2:
         g_value_set_float(value, (gfloat) self->real2);
         break;
-    case PROP_REAL3:
+    case PROP_REAL3_R3:
         g_value_set_float(value, (gfloat) self->real3);
         break;
     default:
@@ -51,13 +51,13 @@ static void real3_column_item_set_property(GObject *object,
     Real3ColumnItem *self = (Real3ColumnItem *)object;
 
     switch (prop_id) {
-    case PROP_REAL1:
+    case PROP_REAL3_R1:
         self->real1 = (float) g_value_get_float(value);
         break;
-    case PROP_REAL2:
+    case PROP_REAL3_R2:
         self->real2 = (float) g_value_get_float(value);
         break;
-    case PROP_REAL3:
+    case PROP_REAL3_R3:
         self->real3 = (float) g_value_get_float(value);
         break;
     default:
@@ -65,7 +65,7 @@ static void real3_column_item_set_property(GObject *object,
     }
 }
 
-static GParamSpec *obj_properties[N_PROPERTIES] = { NULL, };
+static GParamSpec *obj_properties[N_PROPS_REAL3] = { NULL, };
 
 static void real3_column_item_class_init(Real3ColumnItemClass *class){
     GObjectClass *gobject_class = G_OBJECT_CLASS(class);
@@ -73,31 +73,31 @@ static void real3_column_item_class_init(Real3ColumnItemClass *class){
     gobject_class->get_property = real3_column_item_get_property;
     gobject_class->set_property = real3_column_item_set_property;
 
-    obj_properties[PROP_REAL1] = g_param_spec_float("real1",
-                                                    "Real1",
-                                                    "first column",
-                                                    -1.0e+30,
-                                                     1.0e+30,
-                                                      0.0,
-                                                    G_PARAM_READWRITE);
-
-    obj_properties[PROP_REAL2] = g_param_spec_float("real2",
-                                                    "Real2",
-                                                    "second column",
-                                                    -1.0e+30,
-                                                     1.0e+30,
+    obj_properties[PROP_REAL3_R1] = g_param_spec_float("real1",
+                                                       "Real1",
+                                                       "first column",
+                                                       -1.0e+30,
+                                                       1.0e+30,
                                                        0.0,
-                                                    G_PARAM_READWRITE);
+                                                       G_PARAM_READWRITE);
 
-    obj_properties[PROP_REAL3] = g_param_spec_float("real3",
-                                                    "Real3",
-                                                    "third real",
-                                                    -1.0e+30,
-                                                     1.0e+30,
-                                                     0.0,
-                                                    G_PARAM_READWRITE);
+    obj_properties[PROP_REAL3_R2] = g_param_spec_float("real2",
+                                                       "Real2",
+                                                       "second column",
+                                                       -1.0e+30,
+                                                       1.0e+30,
+                                                       0.0,
+                                                       G_PARAM_READWRITE);
+
+    obj_properties[PROP_REAL3_R3] = g_param_spec_float("real3",
+                                                       "Real3",
+                                                       "third real",
+                                                       -1.0e+30,
+                                                       1.0e+30,
+                                                       0.0,
+                                                       G_PARAM_READWRITE);
     
-    g_object_class_install_properties(gobject_class, N_PROPERTIES, obj_properties);
+    g_object_class_install_properties(gobject_class, N_PROPS_REAL3, obj_properties);
 }
 
 static void real3_column_item_init(Real3ColumnItem *item){
@@ -109,7 +109,7 @@ static void real3_column_item_init(Real3ColumnItem *item){
 Real3ColumnItem * real3_column_item_new(const float real1,
                                         const float real2,
                                         const float real3){
-    Real3ColumnItem  *item = g_object_new(TESTCOL_TYPE_ITEM, NULL);
+    Real3ColumnItem  *item = g_object_new(REAL3_COLUMN_TYPE_ITEM, NULL);
     item->real1 = real1;
     item->real2 = real2;
     item->real3 = real3;
@@ -361,12 +361,12 @@ static void delete_item_button_CB(GtkButton *button, gpointer user_data){
 /* =========================================================================
  *   Construct columnview
  * ========================================================================= */
-GListStore *init_real3_list_store(int num, float **real3){
+GListStore *init_real3_list_store(int num, float **array3){
     int i;
     // Create and populate custom list model
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
     for(i=0;i<num;i++){
-        g_list_store_append(store,real3_column_item_new(real3[i][0], real3[i][1], real3[i][2]));
+        g_list_store_append(store,real3_column_item_new(array3[i][0], array3[i][1], array3[i][2]));
     };
     return store;
 };
@@ -386,8 +386,8 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory1, "setup",  G_CALLBACK(setup_real1_spin_CB),  NULL);
     g_signal_connect(factory1, "bind",   G_CALLBACK(bind_real1_spin_CB),   NULL);
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_real1_spin_CB), NULL);
-    GtkColumnViewColumn *column1 = gtk_column_view_column_new("Radius", factory1);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"real1")));
+    GtkColumnViewColumn *column1 = gtk_column_view_column_new("Data1", factory1);
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM, NULL, "real1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER(sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
@@ -396,8 +396,8 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory2, "setup",  G_CALLBACK(setup_real2_spin_CB),  NULL);
     g_signal_connect(factory2, "bind",   G_CALLBACK(bind_real2_spin_CB),   NULL);
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_real2_spin_CB), NULL);
-    GtkColumnViewColumn *column2 = gtk_column_view_column_new("Elevation", factory2);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "real2")));
+    GtkColumnViewColumn *column2 = gtk_column_view_column_new("Data2", factory2);
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM, NULL, "real2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER(sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
@@ -406,8 +406,8 @@ GtkWidget * real3_columnview_init(GListStore *store){
     g_signal_connect(factory3, "setup",  G_CALLBACK(setup_real3_spin_CB),  NULL);
     g_signal_connect(factory3, "bind",   G_CALLBACK(bind_real3_spin_CB),   NULL);
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_real3_spin_CB), NULL);
-    GtkColumnViewColumn *column3 = gtk_column_view_column_new("Azimuth", factory3);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
+    GtkColumnViewColumn *column3 = gtk_column_view_column_new("Data3", factory3);
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(REAL3_COLUMN_TYPE_ITEM, NULL, "real3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER(sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
     
@@ -431,11 +431,11 @@ void dealloc_kemo_real3_columnview(struct kemo_real3_columnview *real3_vws){
     return;
 }
 
-struct kemo_real3_columnview * init_real_columnview_scroll(int num, float **real3){
+struct kemo_real3_columnview * init_real3_columnview_scroll(int num, float **array3){
     struct kemo_real3_columnview *real3_vws = alloc_kemo_real3_columnview();
     
     // Add column view.  Put in scrolled window.  
-    real3_vws->real3_store = init_real3_list_store(num, real3); 
+    real3_vws->real3_store = init_real3_list_store(num, array3); 
     real3_vws->real3_cview = real3_columnview_init(real3_vws->real3_store);
     gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW(real3_vws->real3_cview),TRUE);
     g_object_set_data(G_OBJECT(real3_vws->real3_cview), "list_store",

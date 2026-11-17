@@ -67,6 +67,8 @@ static void bind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     GtkWidget *spin = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     Real3ColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
@@ -75,8 +77,6 @@ static void bind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
     g_signal_handlers_unblock_by_func(spin, real_light_radius_change_CB, listitem);
 
     /* Track user adjustments */
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_radius_change_CB), listitem);
 }
 
@@ -129,6 +129,8 @@ static void bind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     GtkWidget *spin = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(spin), "kemoview_gl",    G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     Real3ColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
@@ -137,8 +139,6 @@ static void bind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
     g_signal_handlers_unblock_by_func(spin, real_light_elevation_change_CB, listitem);
 
     /* Track user adjustments */
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",    G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_elevation_change_CB), listitem);
 }
 
@@ -192,6 +192,8 @@ static void bind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     GtkWidget *spin = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     Real3ColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
@@ -200,8 +202,6 @@ static void bind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
     g_signal_handlers_unblock_by_func(spin, real_light_azimuth_change_CB, listitem);
 
     /* Track user adjustments */
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_azimuth_change_CB), listitem);
 }
 
@@ -290,7 +290,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory1, "bind",   G_CALLBACK(bind_light_radius_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_light_radius_spin_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Radius", factory1);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM,NULL,"real1")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM,
+                                                                             NULL, "real1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
@@ -300,7 +301,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory2, "bind",   G_CALLBACK(bind_light_elevation_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_light_elevation_spin_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Elevation", factory2);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (TESTCOL_TYPE_ITEM, NULL, "real2")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM,
+                                                                             NULL, "real2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
@@ -310,7 +312,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory3, "bind",   G_CALLBACK(bind_light_azimuth_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_light_azimuth_spin_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Azimuth", factory3);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(TESTCOL_TYPE_ITEM, NULL, "real3")));
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(REAL3_COLUMN_TYPE_ITEM,
+                                                                            NULL, "real3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
     
