@@ -76,7 +76,7 @@ static GtkWidget * init_image_format_button(struct kemoviewer_gl_type *kemo_gl,
                                             int *id_image_format){
     GtkWidget *image_format_button;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "image_format", (gpointer) id_image_format);
     
@@ -133,7 +133,7 @@ static void movie_FPS_CB(GtkWidget *entry, gpointer user_data){
 GtkWidget * init_movie_FPS_hbox(int *i_FPS){
     GtkWidget *hbox_rot_FPS;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "movie_FPS", (gpointer) i_FPS);
     
     GtkAdjustment *adj_rot_FPS = gtk_adjustment_new(*i_FPS, 1, 180, 1, 1, 0.0);

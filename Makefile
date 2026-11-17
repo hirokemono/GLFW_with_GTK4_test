@@ -51,6 +51,7 @@ columnview_opacitymap.c               \
 columnview_light_positions.c          \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_colorsel.c              \
+kemoview_gtk4_colormode_menu.c        \
 kemoview_gtk4_image_format_selector.c \
 kemoview_gtk4_rotation_menu.c         \
 kemoview_gtk4_rotation_expander.c     \

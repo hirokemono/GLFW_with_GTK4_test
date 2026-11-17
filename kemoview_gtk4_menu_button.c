@@ -84,7 +84,7 @@ GtkWidget *make_gtk_menu_button(struct kemoviewer_gl_type *kemo_gl,
     gtk_menu_button_set_menu_model(GTK_MENU_BUTTON(menu_button), G_MENU_MODEL(menu_model));
     gtk_menu_button_set_direction(GTK_MENU_BUTTON(menu_button), GTK_ARROW_DOWN);
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "parent_win",  (gpointer) main_window);
     g_object_set_data(G_OBJECT(entry_buf), "pref_view",   (gpointer) pref_vws);

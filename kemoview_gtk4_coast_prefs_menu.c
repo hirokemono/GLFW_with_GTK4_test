@@ -56,7 +56,7 @@ static GtkWidget * init_coastline_tube_button(struct kemoviewer_gl_type *kemo_gl
                                               int *iflag_tube){
     GtkWidget *line_format_button;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "line_format", (gpointer) iflag_tube);
     

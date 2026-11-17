@@ -57,7 +57,7 @@ GtkWidget * init_shading_mode_button(struct kemoviewer_gl_type *kemo_gl,
                                      int *iflag_shading){
     GtkWidget *shading_mode_button;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "shading_mode", (gpointer) iflag_shading);
     

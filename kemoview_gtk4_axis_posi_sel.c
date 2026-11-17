@@ -56,7 +56,7 @@ GtkWidget * init_axis_position_button(struct kemoviewer_gl_type *kemo_gl,
                                       int *iflag_lowerleft){
     GtkWidget *axis_position_button;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "axis_position", (gpointer) iflag_lowerleft);
     

@@ -69,6 +69,7 @@ static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_dat
 
 GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
                                            GtkWidget *window,
+                                           GtkWidget *colormode_hbox,
                                            struct kemo_real2_columnview *colormap_vws,
                                            struct kemo_real2_columnview *opacitymap_vws,
                                            struct colormap_view *color_vws){
@@ -85,9 +86,12 @@ GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(loadButton), "clicked",
                      G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(dummy_enty));
 */
-    colormap_vws =   init_colormap_list_scroll(kemo_gl, &color_vws->iflag_current_model, window);
-    opacitymap_vws = init_opacitymap_list_scroll(kemo_gl, &color_vws->iflag_current_model, window);
+    colormode_hbox = make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model);
+    colormap_vws =   init_colormap_list_scroll   (kemo_gl, &color_vws->iflag_current_model, window);
+    opacitymap_vws = init_opacitymap_list_scroll (kemo_gl, &color_vws->iflag_current_model, window);
+    
     GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_box_append(GTK_BOX(color_box), colormode_hbox);
     gtk_box_append(GTK_BOX(color_box), colormap_vws->real2_cview_scroll);
     gtk_box_append(GTK_BOX(color_box), opacitymap_vws->real2_cview_scroll);
 //    gtk_box_append(GTK_BOX(color_box), saveButton);
@@ -154,6 +158,7 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     
 //    init_colormap_params_4_viewer(SURFACE_RENDERING, kemo_gl, psf_gmenu->color_vws);
     psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_gl, psf_gmenu->psfWin,
+                                                               psf_gmenu->colormode_hbox,
                                                                psf_gmenu->colormap_vws,
                                                                psf_gmenu->opacitymap_vws,
                                                                psf_gmenu->color_vws);

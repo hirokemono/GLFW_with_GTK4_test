@@ -51,7 +51,7 @@ static void rotation_save_CB(GtkButton *button, gpointer user_data){
     GCancellable *cancellable = g_cancellable_new();
     g_cancellable_cancel(cancellable);
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)   kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     gtk_file_dialog_save(dialog, window, cancellable, 
@@ -78,7 +78,7 @@ GtkWidget * init_rotation_image_save_hbox(struct kemoviewer_gl_type *kemo_gl,
                                           GtkWidget *window){
     GtkWidget *hbox_rotation_save;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "parent",        (gpointer) window);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",   (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);

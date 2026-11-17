@@ -1,11 +1,12 @@
-/*
+/***********************************************************************
  *  kemoview_gtk4_viewmode_menu.c
  *  Kemoview_Cocoa
  *
- *  Created by Hiroaki Matsui on 12/03/04.
- *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
+ *  Created by Hiroaki Matsui on Oct, 20, 2026
+ *  Copyright 2026 Dept. of Earth and Planetary Sciences,
+ *  Inst. of Science Tokyo. All rights reserved.
  *
- */
+ ***********************************************************************/
 
 #include "kemoview_gtk4_viewmode_menu.h"
 
@@ -70,6 +71,7 @@ static void set_GLFW_viewtype(int index_mode,
     return;
 }
 
+/*
 static void setup_header_CB(GtkSignalListItemFactory *factory,
                             GObject *list_item,
                             gpointer data){
@@ -92,6 +94,7 @@ static void bind_header_CB(GtkSignalListItemFactory *factory,
     GObject *item = gtk_list_header_get_item (self);
     printf("bind_header_CB\n");
 }
+*/
 
 static void selected_viewmode_CB(GtkDropDown *dropdown,
                                          GParamSpec *pspec,
@@ -114,7 +117,7 @@ GtkWidget * make_gtk4_viewmode_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                         struct view_widgets *view_menu){
     GtkWidget *hbox_viewtype;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "view_menu",  (gpointer) view_menu);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",  (gpointer) kemo_gl);
     

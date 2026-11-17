@@ -73,7 +73,7 @@ GtkWidget * init_rotation_direction_hbox(struct kemoviewer_gl_type *kemo_gl,
                                          struct rotation_gtk_menu *rot_gmenu){
     GtkWidget *hbox_rotation_dir;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
     
@@ -104,7 +104,7 @@ static void rotation_increment_CB(GtkWidget *entry, gpointer user_data)
 GtkWidget * init_rotation_increment_hbox(struct rotation_gtk_menu *rot_gmenu){
     GtkWidget *expander_rot;
     
-    GtkWidget *entry_buf = gtk_entry_buffer_new("", -1);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "rotation_menu", (gpointer) rot_gmenu);
     
     GtkAdjustment *adj_rot_increment = gtk_adjustment_new(rot_gmenu->inc_deg, 0.0, 180.0, 1, 1, 0.0);
