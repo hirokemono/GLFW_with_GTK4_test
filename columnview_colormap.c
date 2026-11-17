@@ -200,7 +200,7 @@ static void delete_comlormap_button_CB(GtkButton *button, gpointer user_data){
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
     
-    int num_original =   g_list_model_get_n_items(G_LIST_MODEL(store))
+    int num_original =   g_list_model_get_n_items(G_LIST_MODEL(store));
     int original_index = find_original_index_of_real2_column(column_view);
     if(original_index < 0) {
         printf("No item selected.\n");
@@ -259,7 +259,7 @@ static GtkWidget * colormap_columnview_init(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(factory1, "setup",  G_CALLBACK(setup_contour_data_spin_CB),  NULL);
     g_signal_connect(factory1, "bind",   G_CALLBACK(bind_contour_data_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_contour_data_spin_CB), NULL);
-    GtkColumnViewColumn *column1 = gtk_column_view_column_new("Radius", factory1);
+    GtkColumnViewColumn *column1 = gtk_column_view_column_new("Data", factory1);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL2_COLUMN_TYPE_ITEM,
                                                                              NULL, "real1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
@@ -270,7 +270,7 @@ static GtkWidget * colormap_columnview_init(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(factory2, "setup",  G_CALLBACK(setup_contour_color_spin_CB),  NULL);
     g_signal_connect(factory2, "bind",   G_CALLBACK(bind_contour_color_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_contour_color_spin_CB), NULL);
-    GtkColumnViewColumn *column2 = gtk_column_view_column_new("Elevation", factory2);
+    GtkColumnViewColumn *column2 = gtk_column_view_column_new("Color", factory2);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL2_COLUMN_TYPE_ITEM,
                                                                              NULL, "real2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
@@ -331,7 +331,7 @@ struct kemo_real2_columnview * init_colormap_list_scroll(struct kemoviewer_gl_ty
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll_win), grid);
     
     
-    colormap_vws->real2_cview_scroll = wrap_into_scroll_expansion_gtk4("Light position", 360, 320,
+    colormap_vws->real2_cview_scroll = wrap_into_scroll_expansion_gtk4("Color", 360, 320,
                                                                        psf_window, scroll_win);
     return colormap_vws;
 };

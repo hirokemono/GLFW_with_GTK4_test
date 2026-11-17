@@ -47,6 +47,7 @@ calypso_GTK4.c \
 columnview_real2_gtk4.c               \
 columnview_real3_gtk4.c               \
 columnview_colormap.c                 \
+columnview_opacitymap.c               \
 columnview_light_positions.c          \
 kemoview_gtk4_routines.c              \
 kemoview_gtk4_colorsel.c              \

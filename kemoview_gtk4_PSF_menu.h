@@ -22,6 +22,7 @@
 
 #include "columnview_real2_gtk4.h"
 #include "columnview_colormap.h"
+#include "columnview_opacitymap.h"
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_PSF_surface_menu.h"
 //#include "kemoview_gtk_PSF_isoline_menu.h"
@@ -96,6 +97,7 @@ struct psf_gtk_menu{
     
     struct colormap_view *color_vws;
     struct kemo_real2_columnview *colormap_vws;
+    struct kemo_real2_columnview *opacitymap_vws;
     GtkWidget *expander_color;
 };
 
