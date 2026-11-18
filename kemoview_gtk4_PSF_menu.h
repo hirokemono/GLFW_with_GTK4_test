@@ -34,28 +34,6 @@
 
 #include "view_modifier_glfw.h"
 
-struct colormap_view{
-    int iflag_current_model;
-    
-    struct chara_ctl_item *colormap_mode_gtk;
-//    struct r2_clist_view *cmap_vws;
-//    struct r2_clist_view *opacity_vws;
-    int iflag_cmap_loaded;
-    
-//    struct colormap_params *cmap_param;
-    GtkWidget *scrolled_window;
-    
-    GtkWidget *button_add;
-    GtkWidget *button_delete;
-    
-    GtkWidget *combobox_cmap;
-    GtkWidget *vbox_cmap;
-    GtkWidget *hbox_cmap;
-    
-    GtkCellRenderer *renderer_value_spin;
-    GtkCellRenderer *renderer_color_spin;
-};
-
 struct psf_color_gtk_menu{
     GtkWidget *switch_draw;
     GtkWidget *switch_bar;
@@ -99,8 +77,7 @@ struct psf_gtk_menu{
 //  struct psf_vector_gtk_menu *psf_vector_menu;
     GtkWidget *expander_vect;
     
-    struct colormap_view *color_vws;
-    
+    int iflag_current_model;
     cairo_t *cmap_cr;
     GtkWidget *colormap_area;
     struct colormode_menu *colormode_vws;
@@ -112,9 +89,6 @@ struct psf_gtk_menu{
 };
 
 /*  prototypes */
-struct colormap_view * alloc_colormap_view(void);
-void dealloc_colormap_views(struct colormap_view *color_vws);
-
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 

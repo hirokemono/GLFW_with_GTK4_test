@@ -11,7 +11,7 @@
 #include "kemoview_gtk4_colormap_file_IO.h"
 
 
-struct colormap_file_IO_widgets * init_colormap_IO_widgets(void){
+struct colormap_file_IO_widgets * alloc_colormap_IO_widgets(void){
     struct colormap_file_IO_widgets *colormap_IO;
     colormap_IO = (struct colormap_file_IO_widgets *) malloc(sizeof(struct colormap_file_IO_widgets));
     if (colormap_IO == NULL) {
@@ -20,6 +20,17 @@ struct colormap_file_IO_widgets * init_colormap_IO_widgets(void){
     }
     return colormap_IO;
 };
+
+struct colormap_views * alloc_colormap_views(void){
+    struct colormap_file_IO_widgets *colormap_IO;
+    colormap_IO = (struct colormap_file_IO_widgets *) malloc(sizeof(struct colormap_file_IO_widgets));
+    if (colormap_IO == NULL) {
+        printf("malloc error for colormap_file_IO_widgets\n");
+        exit(0);
+    }
+    return colormap_IO;
+};
+
 
 void dealloc_colormap_IO_widgets(struct colormap_file_IO_widgets *colormap_IO){
     free(colormap_IO);

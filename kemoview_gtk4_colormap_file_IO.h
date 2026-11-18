@@ -27,13 +27,35 @@
 #include "columnview_opacitymap.h"
 
 struct colormap_file_IO_widgets{
+/**    Dummy buffer to send required pointers  **/
     GtkEntryBuffer *entry_buf_colormap_file;
+/**    Save button  **/
     GtkWidget *saveColormap_Button;
+/**    Load button  **/
     GtkWidget *loadColormap_Button;
+    
+    /**  Box for IO buttons **/
+    GtkWidget *saveButton_box;
 };
 
-/*  prototypes */
-struct colormap_file_IO_widgets * init_colormap_IO_widgets(void);
+struct colormap_views{
+/**    Draw area for colorbar example  **/
+    GtkWidget *colormap_area;
+/**    Draw area for color mode menu  **/
+    struct colormode_menu *colormode_vws;
+/**    Structure for coloemap edit menu  **/
+    struct kemo_real2_columnview *colormap_vws;
+/**    Structure for opacity edit menu  **/
+    struct kemo_real2_columnview *opacitymap_vws;
+/**    Structure for colormap file IO menu  **/
+    struct colormap_file_IO_widgets *colormap_IO;
+    
+/**    Expander for colormap menu  **/
+    GtkWidget *expander_color;
+};
+
+/*  prototypes   */
+struct colormap_file_IO_widgets * alloc_colormap_IO_widgets(void);
 void dealloc_colormap_IO_widgets(struct colormap_file_IO_widgets *colormap_IO);
 
 GtkWidget * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
