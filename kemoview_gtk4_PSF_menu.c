@@ -27,75 +27,32 @@ void dealloc_colormap_views(struct colormap_view *color_vws){
 }
 
 
-
-/*
-static void save_colormap_file_panel_CB(GtkButton *saveButton, gpointer user_data){
-	GtkWidget *window = GTK_WIDGET(user_data);
-    struct colormap_view *color_vws
-            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-	struct kv_string *filename = kemoview_save_file_panel(window);
-	
-	if(filename->string[0] != '\0'){
-        kemoview_write_colormap_file(filename, color_vws->iflag_current_model,
-                                     kemo_gl->kemoview_data);
-    };
-	kemoview_free_kvstring(filename);
-    draw_full_gl(kemo_gl);
-	return;
-};
-
-static void load_colormap_file_panel_CB(GtkButton *loadButton, gpointer user_data){
-	GtkWidget *window = GTK_WIDGET(user_data);
-    struct colormap_view *color_vws
-            = (struct colormap_view *) g_object_get_data(G_OBJECT(user_data), "colormap_view");
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-	struct kv_string *filename = kemoview_read_file_panel(window);
-	
-	if(filename->string[0] != '\0'){
-        kemoview_read_colormap_file(filename, color_vws->iflag_current_model,
-                                    kemo_gl->kemoview_data);
-    };
-	kemoview_free_kvstring(filename);
-	
-	gtk_widget_queue_draw(window);
-    draw_full_gl(kemo_gl);
-	return;
-};
-*/
-
-
-GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
-                                           GtkWidget *window,
-                                           GtkWidget *colormode_hbox,
-                                           struct kemo_real2_columnview *colormap_vws,
-                                           struct kemo_real2_columnview *opacitymap_vws,
-                                           struct colormap_view *color_vws){
+static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
+                                                  GtkWidget *window,
+                                                  GtkWidget *colormode_hbox,
+                                                  struct kemo_real2_columnview *colormap_vws,
+                                                  struct kemo_real2_columnview *opacitymap_vws,
+                                                  struct colormap_file_IO_widgets *colormap_IO,
+                                                  GtkWidget *saveButton_box,
+                                                  struct colormap_view *color_vws){
     GtkWidget *expander_color;
     GtkWidget *dummy_enty = gtk_entry_new();
     g_object_set_data(G_OBJECT(dummy_enty), "kemoview_gl",    (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(dummy_enty), "colormap_view",  (gpointer) color_vws);
-/*
-    GtkWidget *saveButton = gtk_button_new_with_label("Save colormap...");
-    GtkWidget *loadButton = gtk_button_new_with_label("Load colormap...");
     
-    g_signal_connect(G_OBJECT(saveButton), "clicked",
-                     G_CALLBACK(save_colormap_file_panel_CB), G_OBJECT(dummy_enty));
-    g_signal_connect(G_OBJECT(loadButton), "clicked",
-                     G_CALLBACK(load_colormap_file_panel_CB), G_OBJECT(dummy_enty));
-*/
-    colormode_hbox = make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model);
     colormap_vws =   init_colormap_list_scroll   (kemo_gl, &color_vws->iflag_current_model, window);
     opacitymap_vws = init_opacitymap_list_scroll (kemo_gl, &color_vws->iflag_current_model, window);
+    colormode_hbox = make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model);
+    saveButton_box = init_colormap_save_box (kemo_gl,
+                                             colormap_vws, opacitymap_vws,
+                                             &color_vws->iflag_current_model,
+                                             colormap_IO, window);
     
     GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(color_box), colormode_hbox);
     gtk_box_append(GTK_BOX(color_box), colormap_vws->real2_cview_scroll);
     gtk_box_append(GTK_BOX(color_box), opacitymap_vws->real2_cview_scroll);
-//    gtk_box_append(GTK_BOX(color_box), saveButton);
-//    gtk_box_append(GTK_BOX(color_box), loadButton);
+    gtk_box_append(GTK_BOX(color_box), saveButton_box);
 
     expander_color = wrap_into_scroll_expansion_gtk4("Color map editor", 420, 450, window, color_box);
     return expander_color;
@@ -117,12 +74,14 @@ struct psf_gtk_menu * alloc_psf_gtk_menu(){
         exit(0);
     }
 */
-    psf_gmenu->color_vws = alloc_colormap_view();
+    psf_gmenu->color_vws =   alloc_colormap_view();
+    psf_gmenu->colormap_IO = init_colormap_IO_widgets();
     return psf_gmenu;
 };
 
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
-//    free(psf_gmenu->color_vws);
+    dealloc_colormap_IO_widgets(psf_gmenu->colormap_IO);
+    free(psf_gmenu->color_vws);
 //  free(psf_gmenu->psf_isoline_menu);
 //  free(psf_gmenu->psf_surface_menu);
 //  free(psf_gmenu->psf_vector_menu);
@@ -161,6 +120,8 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                                                                psf_gmenu->colormode_hbox,
                                                                psf_gmenu->colormap_vws,
                                                                psf_gmenu->opacitymap_vws,
+                                                               psf_gmenu->colormap_IO,
+                                                               psf_gmenu->saveButton_box,
                                                                psf_gmenu->color_vws);
     
     /*    

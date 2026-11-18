@@ -221,23 +221,31 @@ static void delete_comlormap_button_CB(GtkButton *button, gpointer user_data){
 
 
 /* Construct columnview */
-static GListStore *init_colormap_list_store(struct kemoviewer_gl_type *kemo_gl,
-                                            int *iflag_current_model){
+static void set_colormap_list_store(struct kemoviewer_gl_type *kemo_gl,
+                                    int *iflag_current_model,
+                                    struct kemo_real2_columnview *colormap_vws){
     double data, color;
     int i;
     // Create and populate custom list model
     int num = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data, 
                                               *iflag_current_model,
                                               ISET_NUM_COLOR);
-    GListStore *store = g_list_store_new(G_TYPE_OBJECT);
     for(i=0;i<num;i++){
         kemoview_get_VIZ_color_RGB_value(kemo_gl->kemoview_data,
                                          *iflag_current_model,
                                          i, &data, &color);
-        g_list_store_append(store,real2_column_item_new((float) data, 
-                                                        (float) color));
+        g_list_store_append(colormap_vws->real2_store, 
+                            real2_column_item_new((float) data, (float) color));
     };
-    return store;
+    return;
+};
+
+void reset_colormap_list_store(struct kemoviewer_gl_type *kemo_gl,
+                               int *iflag_current_model,
+                               struct kemo_real2_columnview *colormap_vws){
+    g_list_store_remove_all(colormap_vws->real2_store);
+    set_colormap_list_store(kemo_gl, iflag_current_model, colormap_vws);
+    return;
 };
 
 static GtkWidget * colormap_columnview_init(struct kemoviewer_gl_type *kemo_gl,
@@ -286,7 +294,8 @@ struct kemo_real2_columnview * init_colormap_list_scroll(struct kemoviewer_gl_ty
     struct kemo_real2_columnview *colormap_vws = alloc_kemo_real2_columnview();
     
     // Add column view.  Put in scrolled window.  
-    colormap_vws->real2_store = init_colormap_list_store(kemo_gl, iflag_current_model); 
+    colormap_vws->real2_store = g_list_store_new(G_TYPE_OBJECT);
+    set_colormap_list_store(kemo_gl, iflag_current_model, colormap_vws);
     colormap_vws->real2_cview = colormap_columnview_init(kemo_gl, 
                                                          iflag_current_model, 
                                                          colormap_vws->real2_store);

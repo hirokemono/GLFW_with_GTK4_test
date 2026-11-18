@@ -25,6 +25,7 @@
 #include "columnview_colormap.h"
 #include "columnview_opacitymap.h"
 #include "kemoview_gtk4_colormode_menu.h"
+#include "kemoview_gtk4_colormap_file_IO.h"
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_PSF_surface_menu.h"
 //#include "kemoview_gtk_PSF_isoline_menu.h"
@@ -98,9 +99,12 @@ struct psf_gtk_menu{
     GtkWidget *expander_vect;
     
     struct colormap_view *color_vws;
+    
     GtkWidget *colormode_hbox;
     struct kemo_real2_columnview *colormap_vws;
     struct kemo_real2_columnview *opacitymap_vws;
+    struct colormap_file_IO_widgets *colormap_IO;
+    GtkWidget *saveButton_box;
     GtkWidget *expander_color;
 };
 
@@ -110,11 +114,7 @@ void dealloc_colormap_views(struct colormap_view *color_vws);
 
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
-/*
-GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
-                                           GtkWidget *window,
-                                           struct colormap_view *color_vws);
-*/
+
 void set_vector_plot_availablity(int iflag_current_model,
                                  struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_gtk_menu *psf_gmenu);

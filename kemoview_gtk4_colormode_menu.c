@@ -65,7 +65,6 @@ static int find_selected_colormode_id(const char *text){
 
 static void set_GLFW_colormode(int index_mode, int iflag_current_model,
                                struct kemoviewer_gl_type *kemo_gl){
-    set_GLFW_viewtype_mode(index_mode);
     kemoview_set_colormap_param(iflag_current_model, ISET_COLORMAP,
                                 index_mode, kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
