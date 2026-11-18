@@ -38,14 +38,4 @@ void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,
 void kemoview_gtk4_save_image_select(struct kemoviewer_gl_type *kemo_gl, 
                                      GtkWindow *window);
 
-void kemoview_gtk4_read_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
-                                          GtkWindow *window);
-void kemoview_gtk4_save_viewmatrix_select(struct kemoviewer_gl_type *kemo_gl, 
-                                          GtkWindow *window);
-
-void kemoview_gtk4_save_file_select(GtkButton *button, gpointer data);
-
-struct kv_string * kemoview_read_file_panel(GtkWidget *window_cmap);
-struct kv_string * kemoview_save_file_panel(GtkWidget *window_cmap);
-
 #endif /* KEMOVIEW_GTK4_FILESELECTOR_ */
