@@ -23,8 +23,9 @@ void reset_colormap_list_store(struct kemoviewer_gl_type *kemo_gl,
                                int *iflag_current_model,
                                struct kemo_real2_columnview *colormap_vws);
 
-struct kemo_real2_columnview * init_opacitymap_list_scroll(struct kemoviewer_gl_type *kemo_gl,
-                                                           int *iflag_current_model,
-                                                           GtkWidget *psf_window);
+struct kemo_real2_columnview * init_colormap_list_scroll(struct kemoviewer_gl_type *kemo_gl,
+                                                         int *iflag_current_model,
+                                                         GtkDrawingArea *colormap_area,
+                                                         GtkWidget *psf_window);
 
 #endif /* COLUMNVIEW_COLORMAP_ */

@@ -67,7 +67,8 @@ static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kem
     
     colormap_vws =   init_colormap_list_scroll   (kemo_gl, &color_vws->iflag_current_model, 
                                                   colormap_area, window);
-    opacitymap_vws = init_opacitymap_list_scroll (kemo_gl, &color_vws->iflag_current_model, window);
+    opacitymap_vws = init_opacitymap_list_scroll (kemo_gl, &color_vws->iflag_current_model, 
+                                                  colormap_area, window);
     colormode_vws =  make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model,
                                                   colormap_area);
     saveButton_box = init_colormap_save_box (kemo_gl, &color_vws->iflag_current_model,
