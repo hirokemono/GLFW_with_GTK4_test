@@ -25,9 +25,18 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
 
-/* prototypes */
+struct colormode_menu{
+    GtkWidget *viewmode_button;
+    GtkWidget *hbox_colormode;
+};
 
-GtkWidget * make_gtk4_colormode_menu_box(struct kemoviewer_gl_type *kemo_gl,
-                                         int *iflag_current_model);
+/* prototypes */
+void init_colormode_dropdown(struct kemoviewer_gl_type *kemo_gl,
+                             int iflag_current_model,
+                             GtkWidget *viewmode_button);
+
+void dealloc_colormode_menu(struct colormode_menu *cmode_vws);
+struct colormode_menu * make_gtk4_colormode_menu_box(struct kemoviewer_gl_type *kemo_gl,
+                                                     int *iflag_current_model);
 
 #endif /*  KEMOVIEW_GTK4_COLORMODE_MENU_  */

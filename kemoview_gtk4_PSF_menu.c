@@ -26,10 +26,23 @@ void dealloc_colormap_views(struct colormap_view *color_vws){
     return;
 }
 
+static void kemoview_draw_colorabar_CB(GtkDrawingArea *colormap_area, cairo_t *cr, 
+                                       int width, int height, 
+                                       gpointer user_data)
+{ 
+    struct kemoviewer_gl_type *kemo_gl
+            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    
+    expose_event_CB(colormap_area, cr, kemo_gl->kemoview_data, iflag_current_model);
+    return;
+}
+
 
 static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
                                                   GtkWidget *window,
-                                                  GtkWidget *colormode_hbox,
+                                                  GtkWidget *colormap_area,
+                                                  struct colormode_menu *colormode_vws,
                                                   struct kemo_real2_columnview *colormap_vws,
                                                   struct kemo_real2_columnview *opacitymap_vws,
                                                   struct colormap_file_IO_widgets *colormap_IO,
@@ -37,19 +50,28 @@ static GtkWidget * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kem
                                                   struct colormap_view *color_vws){
     GtkWidget *expander_color;
     GtkWidget *dummy_enty = gtk_entry_new();
-    g_object_set_data(G_OBJECT(dummy_enty), "kemoview_gl",    (gpointer) kemo_gl);
-    g_object_set_data(G_OBJECT(dummy_enty), "colormap_view",  (gpointer) color_vws);
+    g_object_set_data(G_OBJECT(dummy_enty), "kemoview_gl",
+                      (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(dummy_enty), "current_model",
+                      (gpointer) &color_vws->iflag_current_model);
+    
+    colormap_area = gtk_drawing_area_new();
+    gtk_drawing_area_set_content_width (GTK_DRAWING_AREA(colormap_area), 360);
+    gtk_drawing_area_set_content_height(GTK_DRAWING_AREA(colormap_area), 320);
+    gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(colormap_area),
+                                   kemoview_draw_colorabar_CB,
+                                   dummy_enty, NULL);
     
     colormap_vws =   init_colormap_list_scroll   (kemo_gl, &color_vws->iflag_current_model, window);
     opacitymap_vws = init_opacitymap_list_scroll (kemo_gl, &color_vws->iflag_current_model, window);
-    colormode_hbox = make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model);
-    saveButton_box = init_colormap_save_box (kemo_gl,
-                                             colormap_vws, opacitymap_vws,
-                                             &color_vws->iflag_current_model,
+    colormode_vws =  make_gtk4_colormode_menu_box(kemo_gl, &color_vws->iflag_current_model);
+    saveButton_box = init_colormap_save_box (kemo_gl, &color_vws->iflag_current_model,
+                                             colormode_vws, colormap_vws, opacitymap_vws,
                                              colormap_IO, window);
     
     GtkWidget *color_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_append(GTK_BOX(color_box), colormode_hbox);
+    gtk_box_append(GTK_BOX(color_box), colormap_area);
+    gtk_box_append(GTK_BOX(color_box), colormode_vws->hbox_colormode);
     gtk_box_append(GTK_BOX(color_box), colormap_vws->real2_cview_scroll);
     gtk_box_append(GTK_BOX(color_box), opacitymap_vws->real2_cview_scroll);
     gtk_box_append(GTK_BOX(color_box), saveButton_box);
@@ -117,7 +139,8 @@ void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     
 //    init_colormap_params_4_viewer(SURFACE_RENDERING, kemo_gl, psf_gmenu->color_vws);
     psf_gmenu->expander_color = init_gtk_psf_colormap_expander(kemo_gl, psf_gmenu->psfWin,
-                                                               psf_gmenu->colormode_hbox,
+                                                               psf_gmenu->colormap_area,
+                                                               psf_gmenu->colormode_vws,
                                                                psf_gmenu->colormap_vws,
                                                                psf_gmenu->opacitymap_vws,
                                                                psf_gmenu->colormap_IO,

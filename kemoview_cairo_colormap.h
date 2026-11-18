@@ -14,12 +14,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "calypso_GTK4.h"
-#include "kemoviewer_gl.h"
+#include "kemoviewer.h"
 #include "m_kemoviewer_data.h"
-#include "m_kemoview_psf_menu.h"
+
+#include "calypso_GTK4.h"
 
 /*  prototypes */
-gboolean expose_event_CB(cairo_t *cr, struct colormap_view *color_vws);
+gboolean expose_event_CB(GtkDrawingArea *area, cairo_t *cr, 
+                         struct kemoviewer_type *kemo_sgl,
+                         int *iflag_current_model);
 
 #endif   /*  KEMOVIEW_CAIRO_COLORMAP_ */

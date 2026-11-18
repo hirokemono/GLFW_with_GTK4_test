@@ -9,8 +9,7 @@
 #include "kemoview_gtk4_viewmatrix_menu.h"
 
 struct view_widgets * init_viewmat_widgets(void){
-    struct view_widgets *view_menu;
-    view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
+    struct view_widgets *view_menu = (struct view_widgets *) malloc(sizeof(struct view_widgets));
     if (view_menu == NULL) {
         printf("malloc error for view_widgets\n");
         exit(0);
