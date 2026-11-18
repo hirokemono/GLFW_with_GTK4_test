@@ -80,14 +80,6 @@ static int find_selected_colormode_id(const char *text){
     return index_mode;
 }
 
-static void set_GLFW_colormode(int index_mode, int iflag_current_model,
-                               struct kemoviewer_gl_type *kemo_gl){
-    kemoview_set_colormap_param(iflag_current_model, ISET_COLORMAP,
-                                index_mode, kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-    return;
-}
-
 static void selected_colormode_CB(GtkDropDown *dropdown,
                                   GParamSpec *pspec,
                                   gpointer user_data)
@@ -95,22 +87,30 @@ static void selected_colormode_CB(GtkDropDown *dropdown,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
+                                                                       "cbar_area"));
 /* The dropdown model returns a GtkStringObject when created from strings */
     GtkStringObject *selected_item = GTK_STRING_OBJECT(gtk_drop_down_get_selected_item(dropdown));
     
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string (selected_item);
     int index_mode = find_selected_colormode_id(text);
-    set_GLFW_colormode(index_mode, *iflag_current_model, kemo_gl);
+    
+    kemoview_set_colormap_param(*iflag_current_model, ISET_COLORMAP,
+                                index_mode, kemo_gl->kemoview_data);
+    gtk_widget_queue_draw(colormap_area);
+    draw_full_gl(kemo_gl);
 }
 
 struct colormode_menu * make_gtk4_colormode_menu_box(struct kemoviewer_gl_type *kemo_gl,
-                                                     int *iflag_current_model){
+                                                     int *iflag_current_model,
+                                                     GtkDrawingArea *colormap_area){
     struct colormode_menu *cmode_vws = alloc_colormode_menu();
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",    (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "current_model",  (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(entry_buf), "cbar_area",      (gpointer) colormap_area);
     /* A dropdown using an expression to obtain strings */
     GtkStringList *viewmode_model = gtk_string_list_new(color_labels);
     cmode_vws->viewmode_button = init_list_button_by_list_model(viewmode_model);

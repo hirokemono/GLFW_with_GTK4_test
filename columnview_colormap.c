@@ -10,6 +10,7 @@
 #include "columnview_colormap.h"
 
 static void sync_kemoview_colormap_list(GListStore *store,
+                                        GtkDrawingArea *colormap_area,
                                         int iflag_current_model,
                                         struct kemoviewer_gl_type *kemo_gl){
     Real2ColumnItem *item;
@@ -20,7 +21,9 @@ static void sync_kemoview_colormap_list(GListStore *store,
 		kemoview_set_VIZ_color_point(i, item->real1, item->real2, 
                                      iflag_current_model,
                                      kemo_gl->kemoview_data);
-	};
+    };
+    gtk_widget_queue_draw(colormap_area);
+    draw_full_gl(kemo_gl);
 	return;
 };
 
@@ -38,12 +41,14 @@ static void contour_data_change_CB(GObject *object, gpointer user_data) {
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     int *iflag_current_model = (int *)      g_object_get_data(G_OBJECT(object), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(object), 
+                                                                       "cbar_area"));
     
     if(item){
         item->real1 = gtk_spin_button_get_value(spin);
         g_print("data value updated! New data value: %.2f\n", item->real1);
-        sync_kemoview_colormap_list(store, *iflag_current_model, kemo_gl);
-        draw_full_gl(kemo_gl);
+        sync_kemoview_colormap_list(store, colormap_area, 
+                                    *iflag_current_model, kemo_gl);
     }
 }
 
@@ -69,10 +74,13 @@ static void bind_contour_data_spin_CB(GtkSignalListItemFactory *factory,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
+                                                                       "cbar_area"));
     
     GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "current_model", G_OBJECT(iflag_current_model));
+    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(spin), "current_model", (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(spin), "cbar_area",     (gpointer) colormap_area);
     g_object_set_data(G_OBJECT(spin), "list_store",    G_OBJECT(store));
     Real2ColumnItem *item = gtk_list_item_get_item(listitem);
 
@@ -104,12 +112,14 @@ static void contour_color_change_CB(GObject *object, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(object), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(object), 
+                                                                       "cbar_area"));
     
     if(item){
         item->real2 = gtk_spin_button_get_value(spin);
         g_print("Real value updated! New float value: %.2f\n", item->real2);
-        sync_kemoview_colormap_list(store, *iflag_current_model, kemo_gl);
-        draw_full_gl(kemo_gl);
+        sync_kemoview_colormap_list(store, colormap_area, 
+                                    *iflag_current_model, kemo_gl);
     }
 }
 
@@ -135,10 +145,13 @@ static void bind_contour_color_spin_CB(GtkSignalListItemFactory *factory,
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
+                                                                       "cbar_area"));
     
     GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",    G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "current_model", G_OBJECT(iflag_current_model));
+    g_object_set_data(G_OBJECT(spin), "kemoview_gl",    (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(spin), "current_model",  (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(spin), "cbar_area",      (gpointer) colormap_area);
     g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
     Real2ColumnItem *item = gtk_list_item_get_item(listitem);
 
@@ -169,6 +182,8 @@ static void add_comlormap_button_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
+                                                                       "cbar_area"));
     
     int original_index = find_original_index_of_real2_column(column_view);
     if(original_index < 0) {
@@ -186,8 +201,8 @@ static void add_comlormap_button_CB(GtkButton *button, gpointer user_data){
         item = REAL2_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), original_index));
         g_list_store_insert(store, original_index, 
                             real2_column_item_new(item->real1, item->real2));
-        sync_kemoview_colormap_list(store, *iflag_current_model, kemo_gl);
-        draw_full_gl(kemo_gl);
+        sync_kemoview_colormap_list(store, colormap_area, 
+                                    *iflag_current_model, kemo_gl);
     }
     return;
 };
@@ -199,6 +214,8 @@ static void delete_comlormap_button_CB(GtkButton *button, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+    GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
+                                                                       "cbar_area"));
     
     int num_original =   g_list_model_get_n_items(G_LIST_MODEL(store));
     int original_index = find_original_index_of_real2_column(column_view);
@@ -213,8 +230,8 @@ static void delete_comlormap_button_CB(GtkButton *button, gpointer user_data){
         kemoview_delete_VIZ_color_list(original_index, 
                                        *iflag_current_model,
                                        kemo_gl->kemoview_data);
-        sync_kemoview_colormap_list(store, *iflag_current_model, kemo_gl);
-        draw_full_gl(kemo_gl);
+        sync_kemoview_colormap_list(store, colormap_area, 
+                                    *iflag_current_model, kemo_gl);
     }
     return;
 };
@@ -250,10 +267,12 @@ void reset_colormap_list_store(struct kemoviewer_gl_type *kemo_gl,
 
 static GtkWidget * colormap_columnview_init(struct kemoviewer_gl_type *kemo_gl,
                                             int *iflag_current_model, 
+                                            GtkDrawingArea *colormap_area,
                                             GListStore *store){
     GtkWidget *cview = gtk_column_view_new(NULL);
-    g_object_set_data(G_OBJECT(store), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(store), "current_model", G_OBJECT(iflag_current_model));
+    g_object_set_data(G_OBJECT(store), "kemoview_gl",   (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(store), "current_model", (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(store), "cbar_area",     (gpointer) colormap_area);
     
     // Setup sort model then overlay with with columnview
     GtkSorter *sorter = g_object_ref(gtk_column_view_get_sorter (GTK_COLUMN_VIEW(cview)));
@@ -290,6 +309,7 @@ static GtkWidget * colormap_columnview_init(struct kemoviewer_gl_type *kemo_gl,
 
 struct kemo_real2_columnview * init_colormap_list_scroll(struct kemoviewer_gl_type *kemo_gl,
                                                          int *iflag_current_model,
+                                                         GtkDrawingArea *colormap_area,
                                                          GtkWidget *psf_window){
     struct kemo_real2_columnview *colormap_vws = alloc_kemo_real2_columnview();
     
@@ -298,14 +318,17 @@ struct kemo_real2_columnview * init_colormap_list_scroll(struct kemoviewer_gl_ty
     set_colormap_list_store(kemo_gl, iflag_current_model, colormap_vws);
     colormap_vws->real2_cview = colormap_columnview_init(kemo_gl, 
                                                          iflag_current_model, 
+                                                         colormap_area,
                                                          colormap_vws->real2_store);
     gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (colormap_vws->real2_cview),TRUE);
     g_object_set_data(G_OBJECT(colormap_vws->real2_cview), "list_store",
                       G_OBJECT(colormap_vws->real2_store));
     g_object_set_data(G_OBJECT(colormap_vws->real2_cview), "kemoview_gl",
-                      G_OBJECT(kemo_gl));
+                      (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(colormap_vws->real2_cview), "current_model",
-                      G_OBJECT(iflag_current_model));
+                      (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(colormap_vws->real2_cview), "cbar_area",
+                      (gpointer) colormap_area);
     
     GtkWidget *add_item_button = gtk_button_new_with_label("Add");
     g_signal_connect(G_OBJECT(add_item_button), "clicked",

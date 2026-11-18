@@ -20,8 +20,8 @@
 #include "calypso_GTK4.h"
 
 /*  prototypes */
-gboolean expose_event_CB(GtkDrawingArea *area, cairo_t *cr, 
-                         struct kemoviewer_type *kemo_sgl,
-                         int *iflag_current_model);
+gboolean draw_cairo_colormap(GtkDrawingArea *area, cairo_t *cr, 
+                             struct kemoviewer_type *kemo_sgl,
+                             int iflag_current_model);
 
 #endif   /*  KEMOVIEW_CAIRO_COLORMAP_ */

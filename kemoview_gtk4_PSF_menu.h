@@ -101,6 +101,7 @@ struct psf_gtk_menu{
     
     struct colormap_view *color_vws;
     
+    cairo_t *cmap_cr;
     GtkWidget *colormap_area;
     struct colormode_menu *colormode_vws;
     struct kemo_real2_columnview *colormap_vws;
