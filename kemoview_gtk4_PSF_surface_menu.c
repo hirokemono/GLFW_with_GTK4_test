@@ -466,6 +466,8 @@ struct psf_surface_gtk_menu * init_gtk4_psf_surface_menu_expander(struct kemovie
     
     GtkWidget *hbox_colorsel = init_gtk4_psf_surf_color_sel(kemo_gl, window, psf_surface_menu);
     
+    set_gtk4_surface_menu_values(kemo_gl, psf_surface_menu);
+    
     GtkWidget *patch_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(patch_box), hbox_draw);
     gtk_box_append(GTK_BOX(patch_box), hbox_cbar);

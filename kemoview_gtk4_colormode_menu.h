@@ -33,7 +33,7 @@ struct colormode_menu{
 /* prototypes */
 void init_colormode_dropdown(struct kemoviewer_gl_type *kemo_gl,
                              int iflag_current_model,
-                             GtkWidget *viewmode_button);
+                             struct colormode_menu *cmode_vws);
 
 void dealloc_colormode_menu(struct colormode_menu *cmode_vws);
 struct colormode_menu * make_gtk4_colormode_menu_box(struct kemoviewer_gl_type *kemo_gl,

@@ -38,13 +38,15 @@ struct psf_vector_gtk_menu{
 
 /*  prototypes */
 
-void set_vector_plot_availablity(int iflag_current_model,
-                                 struct kemoviewer_gl_type *kemo_gl,
+void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
+                                 int iflag_current_model,
                                  struct psf_vector_gtk_menu *psf_vector_menu);
 void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
+                             int iflag_current_model,
                              struct psf_vector_gtk_menu *psf_vector_menu);
 
 struct psf_vector_gtk_menu * init_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
+                                                      int iflag_current_model,
                                                       GtkWidget *window);
 void deallc_psf_vector_gtk_menu(struct psf_vector_gtk_menu *psf_vector_menu);
 

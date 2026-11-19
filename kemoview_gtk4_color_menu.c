@@ -51,15 +51,11 @@ static GtkWidget * init_colormap_draw_area(struct kemoviewer_gl_type *kemo_gl,
     return colormap_area;
 }
 
-
-
-void dealloc_colormap_views(struct colormap_views *color_vws){
-    dealloc_colormode_menu(color_vws->colormode_vws);
-    dealloc_kemo_real2_columnview(color_vws->colormap_vws);
-    dealloc_kemo_real2_columnview(color_vws->opacitymap_vws);
-    dealloc_colormap_IO_widgets(color_vws->colormap_IO);
-    g_object_unref(G_OBJECT(color_vws->colormap_area));
-    free(color_vws);
+void reset_colormap_menu_views(struct kemoviewer_gl_type *kemo_gl,
+                          struct colormap_views *color_vws){
+    reset_colormap_views(kemo_gl, color_vws->iflag_current_model,
+                         color_vws->colormap_area, color_vws->colormode_vws,
+                         color_vws->colormap_vws, color_vws->opacitymap_vws);
     return;
 };
 
@@ -96,4 +92,14 @@ struct colormap_views * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type
                                                                 window, color_box);
     return color_vws;
 }
+
+void dealloc_colormap_views(struct colormap_views *color_vws){
+    dealloc_colormode_menu(color_vws->colormode_vws);
+    dealloc_kemo_real2_columnview(color_vws->colormap_vws);
+    dealloc_kemo_real2_columnview(color_vws->opacitymap_vws);
+    dealloc_colormap_IO_widgets(color_vws->colormap_IO);
+    g_object_unref(G_OBJECT(color_vws->colormap_area));
+    free(color_vws);
+    return;
+};
 

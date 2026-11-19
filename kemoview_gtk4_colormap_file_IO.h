@@ -38,6 +38,13 @@ struct colormap_file_IO_views{
 };
 
 /*  prototypes   */
+void reset_colormap_views(struct kemoviewer_gl_type *kemo_gl,
+                          int iflag_current_model,
+                          GtkDrawingArea *colormap_area,
+                          struct colormode_menu *colormode_vws,
+                          struct kemo_real2_columnview *colormap_vws,
+                          struct kemo_real2_columnview *opacitymap_vws);
+
 struct colormap_file_IO_views * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
                                                        int *iflag_current_model,
                                                        GtkDrawingArea *colormap_area,

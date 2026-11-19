@@ -19,12 +19,13 @@
 #include "kemoview_gtk4_routines.h"
 
 /* prototypes */
-void reset_opacitymap_list_store(struct kemoviewer_gl_type *kemo_gl,
-                                 int *iflag_current_model,
-                                 struct kemo_real2_columnview *opacitymap_vws);
-
 struct kemo_real2_columnview * init_opacitymap_list_scroll(struct kemoviewer_gl_type *kemo_gl,
                                                            int *iflag_current_model,
                                                            GtkDrawingArea *colormap_area,
                                                            GtkWidget *psf_window);
+
+void reset_opacitymap_list_store(struct kemoviewer_gl_type *kemo_gl,
+                                 int iflag_current_model,
+                                 GtkDrawingArea *colormap_area,
+                                 struct kemo_real2_columnview *opacitymap_vws);
 #endif /* COLUMNVIEW_OPACITYMAP_ */

@@ -36,26 +36,26 @@ void dealloc_colormode_menu(struct colormode_menu *cmode_vws){
 
 void init_colormode_dropdown(struct kemoviewer_gl_type *kemo_gl,
                              int iflag_current_model,
-                             GtkWidget *viewmode_button){
+                             struct colormode_menu *cmode_vws){
     int iflag_mode = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data,
                                                      iflag_current_model,
                                                      ISET_COLORMAP);
     if      (iflag_mode == RAINBOW_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 0);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 0);
     }else if(iflag_mode == GRAYSCALE_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 1);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 1);
     }else if(iflag_mode == RED_BLUE_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 2);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 2);
     }else if(iflag_mode == SYM_GRAY_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 3);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 3);
     }else if(iflag_mode == ORANGE_CYAN_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 4);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 4);
     }else if(iflag_mode == MOLTEN_METAL_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 5);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 5);
     }else if(iflag_mode == SPACE_COLOR_MODE){
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 6);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 6);
     } else {
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(viewmode_button), 0);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(cmode_vws->viewmode_button), 0);
     };
     return;
 }

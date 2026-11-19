@@ -48,8 +48,8 @@ static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
 }
 
 
-void set_vector_plot_availablity(int iflag_current_model,
-                                 struct kemoviewer_gl_type *kemo_gl,
+void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
+                                 int iflag_current_model,
                                  struct psf_vector_gtk_menu *psf_vector_menu){
     int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
                                               iflag_current_model,
@@ -65,7 +65,15 @@ void set_vector_plot_availablity(int iflag_current_model,
 };
 
 void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
+                             int iflag_current_model,
                              struct psf_vector_gtk_menu *psf_vector_menu){
+    int if_psf = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data,
+                                              iflag_current_model,
+                                              FIELD_SEL_FLAG);
+    int ncomp = (int) kemoview_get_VIZ_num_component(kemo_gl->kemoview_data,
+                                                     iflag_current_model, if_psf);
+    if(ncomp != 3) return;
+    
     int iflag = kemoview_get_VIZ_vector_draw_flags(kemo_gl->kemoview_data,
                                                    SURFACE_RENDERING);
     gtk_switch_set_state(GTK_SWITCH(psf_vector_menu->switch_vect), iflag);
@@ -77,6 +85,7 @@ void set_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
 };
 
 struct psf_vector_gtk_menu * init_gtk_psf_vector_menu(struct kemoviewer_gl_type *kemo_gl,
+                                                      int iflag_current_model,
                                                       GtkWidget *window){
     struct psf_vector_gtk_menu *psf_vector_menu = allc_psf_vector_gtk_menu();
     
@@ -100,7 +109,7 @@ struct psf_vector_gtk_menu * init_gtk_psf_vector_menu(struct kemoviewer_gl_type 
     gtk_box_append(GTK_BOX(vbox_vec), psf_vector_menu->psf_vec_vws->hbox_vect_width);
     gtk_box_append(GTK_BOX(vbox_vec), psf_vector_menu->psf_vec_vws->hbox_vect_inc);
     
-    set_gtk_psf_vector_menu(kemo_gl, psf_vector_menu);
+    set_gtk_psf_vector_menu(kemo_gl, iflag_current_model, psf_vector_menu);
     psf_vector_menu->expander_vect = wrap_into_scroll_expansion_gtk4("Vector", 425, 300,
                                                                      window, vbox_vec);
     return psf_vector_menu;

@@ -61,6 +61,9 @@ struct psf_gtk_menu{
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
+void reset_psf_menu_params(struct kemoviewer_gl_type *kemo_gl,
+                           struct psf_gtk_menu *psf_gmenu);
+
 void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu);
 void append_psf_menus_to_hbox(GtkWidget *psf_vbox,

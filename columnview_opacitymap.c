@@ -9,10 +9,10 @@
 
 #include "columnview_opacitymap.h"
 
-static void sync_kemoview_opacitymap_list(GListStore *store,
-                                          GtkDrawingArea *colormap_area,
-                                          int iflag_current_model,
-                                          struct kemoviewer_gl_type *kemo_gl){
+static void sync_viewer_to_opacitymap_list(struct kemoviewer_gl_type *kemo_gl,
+                                           int iflag_current_model,
+                                           GtkDrawingArea *colormap_area,
+                                           GListStore *store){
     Real2ColumnItem *item;
 	int i;
 	int num = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
@@ -26,6 +26,37 @@ static void sync_kemoview_opacitymap_list(GListStore *store,
     draw_full_gl(kemo_gl);
 	return;
 };
+
+static void sync_opacitymap_list_to_viewer(struct kemoviewer_gl_type *kemo_gl,
+                                           int iflag_current_model,
+                                           GtkDrawingArea *colormap_area,
+                                           GListStore *store){
+    double data, opacity;
+	int i;
+	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
+    int num_data = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data, 
+                                                   iflag_current_model,
+                                                   ISET_NUM_OPACITY);
+    
+    for(i=0;i<(num_list-num_data);i++){g_list_store_remove(store, IZERO);};
+    for(i=0;i<(num_data-num_list);i++){
+        g_list_store_append(store, real2_column_item_new(ZERO, ZERO));
+    };
+    
+	for(i=0;i<num_data;i++){
+        kemoview_get_PSF_opacity_items(kemo_gl->kemoview_data,
+                                       iflag_current_model,
+                                       i, &data, &opacity);
+        g_list_store_splice(store, i, IONE, 
+                            real2_column_item_new((float) data, (float) opacity),
+                            IONE);
+    };
+    
+    gtk_widget_queue_draw(colormap_area);
+    draw_full_gl(kemo_gl);
+	return;
+};
+
 
 /*  Callbacks  */
 /* =========================================================================
@@ -47,7 +78,8 @@ static void opacity_data_change_CB(GObject *object, gpointer user_data) {
     if(item){
         item->real1 = gtk_spin_button_get_value(spin);
         g_print("data value updated! New data value: %.2f\n", item->real1);
-        sync_kemoview_opacitymap_list(store, colormap_area, *iflag_current_model, kemo_gl);
+        sync_viewer_to_opacitymap_list(kemo_gl, *iflag_current_model, 
+                                       colormap_area, store);
     }
 }
 
@@ -117,7 +149,8 @@ static void contour_opacity_change_CB(GObject *object, gpointer user_data){
     if(item){
         item->real2 = gtk_spin_button_get_value(spin);
         g_print("Real value updated! New float value: %.2f\n", item->real2);
-        sync_kemoview_opacitymap_list(store, colormap_area, *iflag_current_model, kemo_gl);
+        sync_viewer_to_opacitymap_list(kemo_gl, *iflag_current_model, 
+                                       colormap_area, store);
     }
 }
 
@@ -199,8 +232,8 @@ static void add_opacitymap_button_CB(GtkButton *button, gpointer user_data){
         item = REAL2_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), original_index));
         g_list_store_insert(store, original_index, 
                             real2_column_item_new(item->real1, item->real2));
-        sync_kemoview_opacitymap_list(store, colormap_area, 
-                                      *iflag_current_model, kemo_gl);
+        sync_viewer_to_opacitymap_list(kemo_gl, *iflag_current_model, 
+                                       colormap_area, store);
     }
     return;
 };
@@ -228,8 +261,8 @@ static void delete_opacitymap_button_CB(GtkButton *button, gpointer user_data){
         kemoview_delete_VIZ_opacity_list(original_index, 
                                          *iflag_current_model,
                                          kemo_gl->kemoview_data);
-        sync_kemoview_opacitymap_list(store, colormap_area, 
-                                      *iflag_current_model, kemo_gl);
+        sync_viewer_to_opacitymap_list(kemo_gl, *iflag_current_model, 
+                                       colormap_area, store);
     }
     return;
 };
@@ -239,7 +272,7 @@ static void delete_opacitymap_button_CB(GtkButton *button, gpointer user_data){
 static void set_opacitymap_list_store(struct kemoviewer_gl_type *kemo_gl,
                                       int *iflag_current_model,
                                       struct kemo_real2_columnview *opacitymap_vws){
-    double data, color;
+    double data, opacity;
     int i;
     // Create and populate custom list model
     int num = kemoview_get_viz_colormap_param(kemo_gl->kemoview_data, 
@@ -248,18 +281,19 @@ static void set_opacitymap_list_store(struct kemoviewer_gl_type *kemo_gl,
     for(i=0;i<num;i++){
         kemoview_get_PSF_opacity_items(kemo_gl->kemoview_data,
                                        *iflag_current_model,
-                                       i, &data, &color);
+                                       i, &data, &opacity);
         g_list_store_append(opacitymap_vws->real2_store,
-                            real2_column_item_new((float) data, (float) color));
+                            real2_column_item_new((float) data, (float) opacity));
     };
     return;
 };
 
 void reset_opacitymap_list_store(struct kemoviewer_gl_type *kemo_gl,
-                                 int *iflag_current_model,
+                                 int iflag_current_model,
+                                 GtkDrawingArea *colormap_area,
                                  struct kemo_real2_columnview *opacitymap_vws){
-    g_list_store_remove_all(opacitymap_vws->real2_store);
-    set_opacitymap_list_store(kemo_gl, iflag_current_model, opacitymap_vws);
+    sync_opacitymap_list_to_viewer(kemo_gl, iflag_current_model,
+                                   colormap_area, opacitymap_vws->real2_store);
     return;
 };
 

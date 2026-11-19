@@ -30,16 +30,28 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
     return;
 };
 
+void reset_psf_menu_params(struct kemoviewer_gl_type *kemo_gl,
+                           struct psf_gtk_menu *psf_gmenu){
+    set_gtk_isoline_menu_values(kemo_gl, psf_gmenu->psf_isoline_menu);
+    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
+    reset_colormap_menu_views(kemo_gl, psf_gmenu->color_vws);
+    
+    set_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING, 
+                            psf_gmenu->psf_vector_menu);
+    set_vector_plot_availablity(kemo_gl, SURFACE_RENDERING,
+                                psf_gmenu->psf_vector_menu);
+    return;
+};
+
 void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu){
     psf_gmenu->psf_isoline_menu = init_isoline_menu_expander(kemo_gl, psf_gmenu->psfWin);
     psf_gmenu->psf_surface_menu = init_gtk4_psf_surface_menu_expander(kemo_gl, psf_gmenu->psfWin);
-    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
-    
     psf_gmenu->color_vws = init_gtk_psf_colormap_expander(kemo_gl, SURFACE_RENDERING,
                                                           psf_gmenu->psfWin);
-    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, psf_gmenu->psfWin);
-    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu->psf_vector_menu);
+    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING,
+                                                          psf_gmenu->psfWin);
+    set_vector_plot_availablity(kemo_gl, SURFACE_RENDERING, psf_gmenu->psf_vector_menu);
     return;
 }
 

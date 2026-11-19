@@ -10,6 +10,24 @@
 
 #include "kemoview_gtk4_colormap_file_IO.h"
 
+
+void reset_colormap_views(struct kemoviewer_gl_type *kemo_gl,
+                          int iflag_current_model,
+                          GtkDrawingArea *colormap_area,
+                          struct colormode_menu *colormode_vws,
+                          struct kemo_real2_columnview *colormap_vws,
+                          struct kemo_real2_columnview *opacitymap_vws){
+    init_colormode_dropdown(kemo_gl, iflag_current_model, 
+                            colormode_vws);
+    reset_colormap_list_store(kemo_gl, iflag_current_model, 
+                              colormap_area, colormap_vws);
+    reset_opacitymap_list_store(kemo_gl, iflag_current_model, 
+                                colormap_area, opacitymap_vws);
+    return;
+};
+
+
+
 static void kemoview_open_colormap_CB(GObject *source,
                                       GAsyncResult *result,
                                       gpointer user_data){
@@ -31,10 +49,9 @@ static void kemoview_open_colormap_CB(GObject *source,
     struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
     kemoview_read_colormap_file(filename, *iflag_current_model, kemo_gl->kemoview_data);
     
-    init_colormode_dropdown(kemo_gl, *iflag_current_model, cmode_vws);
-    reset_colormap_list_store(kemo_gl, *iflag_current_model, 
-                              colormap_area, colormap_vws);
-    reset_opacitymap_list_store(kemo_gl, iflag_current_model, opacitymap_vws);
+    reset_colormap_views(kemo_gl, *iflag_current_model,
+                         colormap_area, cmode_vws,
+                         colormap_vws, opacitymap_vws);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
     draw_full_gl(kemo_gl);
@@ -62,13 +79,13 @@ static void load_colormap_CB(GtkButton *button, gpointer user_data){
     GtkWindow *window = GTK_WINDOW(g_object_get_data(G_OBJECT(user_data), "parent"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
     struct colormode_menu *cmode_vws
             = (struct colormode_menu *) g_object_get_data(G_OBJECT(user_data), "color_mode");
     struct kemo_real2_columnview *colormap_vws
             = (struct kemo_real2_columnview *) g_object_get_data(G_OBJECT(user_data), "color_map");
     struct kemo_real2_columnview *opacitymap_vws
-            = (struct kemo_real2_columnview *) g_object_get_data(G_OBJECT(user_data), "opacity_map");
-    int *iflag_current_model =      (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
+            = (struct psf_vector_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "vector_view");
     GtkDrawingArea *colormap_area = GTK_DRAWING_AREA(g_object_get_data(G_OBJECT(user_data), 
                                                                        "cbar_area"));
     
@@ -79,10 +96,10 @@ static void load_colormap_CB(GtkButton *button, gpointer user_data){
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl",   (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "current_model", (gpointer) iflag_current_model);
     g_object_set_data(G_OBJECT(entry_buf), "color_mode",    (gpointer) cmode_vws);
     g_object_set_data(G_OBJECT(entry_buf), "color_map",     (gpointer) colormap_vws);
     g_object_set_data(G_OBJECT(entry_buf), "opacity_map",   (gpointer) opacitymap_vws);
-    g_object_set_data(G_OBJECT(entry_buf), "current_model", (gpointer) iflag_current_model);
     g_object_set_data(G_OBJECT(entry_buf), "cbar_area",     (gpointer) colormap_area);
     gtk_file_dialog_open(dialog, window, cancellable, 
                          kemoview_open_colormap_CB, G_OBJECT(entry_buf));
@@ -143,14 +160,14 @@ struct colormap_file_IO_views * init_colormap_save_box(struct kemoviewer_gl_type
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
                       "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
+                      "current_model", (gpointer) iflag_current_model);
+    g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
                       "color_mode", (gpointer) colormode_vws);
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
                       "color_map", (gpointer) colormap_vws);
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
                       "opacity_map", (gpointer) opacitymap_vws);
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
-                      "current_model", (gpointer) iflag_current_model);
-    g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file), 
                       "cbar_area",     (gpointer) colormap_area);
     
     colormap_IO->saveColormap_Button = gtk_button_new_with_label("Save...");
