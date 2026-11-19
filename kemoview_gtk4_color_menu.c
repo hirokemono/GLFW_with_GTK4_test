@@ -79,6 +79,7 @@ struct colormap_views * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type
                                                             color_vws->colormap_area, window);
     color_vws->colormap_IO = init_colormap_save_box(kemo_gl,
                                                     &color_vws->iflag_current_model,
+                                                    color_vws->colormap_area,
                                                     color_vws->colormode_vws, 
                                                     color_vws->colormap_vws, 
                                                     color_vws->opacitymap_vws,
