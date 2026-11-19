@@ -34,19 +34,6 @@
 
 #include "view_modifier_glfw.h"
 
-struct psf_color_gtk_menu{
-    GtkWidget *switch_draw;
-    GtkWidget *switch_bar;
-	
-	GtkWidget *combobox_sfcolor;
-	GtkWidget *colorcell_sfcolor;
-	
-	GtkWidget *spin_opacity1;	
-	GtkWidget *spin_range_min, *spin_digit_min; 
-	GtkWidget *spin_range_max, *spin_digit_max;
-	char min_text[30], max_text[30];
-};
-
 struct psf_gtk_menu{
     int iflag_psfBox;
     GtkWidget *psfWin;
@@ -77,15 +64,7 @@ struct psf_gtk_menu{
 //  struct psf_vector_gtk_menu *psf_vector_menu;
     GtkWidget *expander_vect;
     
-    int iflag_current_model;
-    cairo_t *cmap_cr;
-    GtkWidget *colormap_area;
-    struct colormode_menu *colormode_vws;
-    struct kemo_real2_columnview *colormap_vws;
-    struct kemo_real2_columnview *opacitymap_vws;
-    struct colormap_file_IO_widgets *colormap_IO;
-    GtkWidget *saveButton_box;
-    GtkWidget *expander_color;
+    struct colormap_views *color_vws;
 };
 
 /*  prototypes */

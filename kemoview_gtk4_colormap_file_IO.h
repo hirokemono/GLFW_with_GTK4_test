@@ -26,7 +26,7 @@
 #include "columnview_colormap.h"
 #include "columnview_opacitymap.h"
 
-struct colormap_file_IO_widgets{
+struct colormap_file_IO_views{
 /**    Dummy buffer to send required pointers  **/
     GtkEntryBuffer *entry_buf_colormap_file;
 /**    Save button  **/
@@ -39,6 +39,8 @@ struct colormap_file_IO_widgets{
 };
 
 struct colormap_views{
+/**    integer flag to check data mode (surface, line, or tracer)  **/
+    int iflag_current_model;
 /**    Draw area for colorbar example  **/
     GtkWidget *colormap_area;
 /**    Draw area for color mode menu  **/
@@ -48,22 +50,23 @@ struct colormap_views{
 /**    Structure for opacity edit menu  **/
     struct kemo_real2_columnview *opacitymap_vws;
 /**    Structure for colormap file IO menu  **/
-    struct colormap_file_IO_widgets *colormap_IO;
+    struct colormap_file_IO_views *colormap_IO;
     
 /**    Expander for colormap menu  **/
     GtkWidget *expander_color;
 };
 
 /*  prototypes   */
-struct colormap_file_IO_widgets * alloc_colormap_IO_widgets(void);
-void dealloc_colormap_IO_widgets(struct colormap_file_IO_widgets *colormap_IO);
+struct colormap_file_IO_views * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
+                                                       int *iflag_current_model,
+                                                       struct colormode_menu *colormode_vws,
+                                                       struct kemo_real2_columnview *colormap_vws,
+                                                       struct kemo_real2_columnview *opacitymap_vws,
+                                                       GtkWidget *window);
+void dealloc_colormap_IO_widgets(struct colormap_file_IO_views *colormap_IO);
 
-GtkWidget * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
-                                   int *iflag_current_model,
-                                   struct colormode_menu *colormode_vws,
-                                   struct kemo_real2_columnview *colormap_vws,
-                                   struct kemo_real2_columnview *opacitymap_vws,
-                                   struct colormap_file_IO_widgets *colormap_IO,
-                                   GtkWidget *window);
+struct colormap_views * alloc_colormap_views(int iflag_model);
+void dealloc_colormap_views(struct colormap_views *color_vws);
+
 
 #endif /*  KEMOVIEW_GTK4_COLORMAP_FILE_IO_  */

@@ -10,34 +10,6 @@
 
 #include "kemoview_gtk4_colormap_file_IO.h"
 
-
-struct colormap_file_IO_widgets * alloc_colormap_IO_widgets(void){
-    struct colormap_file_IO_widgets *colormap_IO;
-    colormap_IO = (struct colormap_file_IO_widgets *) malloc(sizeof(struct colormap_file_IO_widgets));
-    if (colormap_IO == NULL) {
-        printf("malloc error for colormap_file_IO_widgets\n");
-        exit(0);
-    }
-    return colormap_IO;
-};
-
-struct colormap_views * alloc_colormap_views(void){
-    struct colormap_file_IO_widgets *colormap_IO;
-    colormap_IO = (struct colormap_file_IO_widgets *) malloc(sizeof(struct colormap_file_IO_widgets));
-    if (colormap_IO == NULL) {
-        printf("malloc error for colormap_file_IO_widgets\n");
-        exit(0);
-    }
-    return colormap_IO;
-};
-
-
-void dealloc_colormap_IO_widgets(struct colormap_file_IO_widgets *colormap_IO){
-    free(colormap_IO);
-    return;
-};
-
-
 static void kemoview_open_colormap_CB(GObject *source,
                                       GAsyncResult *result,
                                       gpointer user_data){
@@ -134,14 +106,51 @@ static void save_colormap_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-GtkWidget * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
-                                   int *iflag_current_model,
-                                   struct colormode_menu *colormode_vws,
-                                   struct kemo_real2_columnview *colormap_vws,
-                                   struct kemo_real2_columnview *opacitymap_vws,
-                                   struct colormap_file_IO_widgets *colormap_IO,
-                                   GtkWidget *window){
-    GtkWidget *hbox_viewmat_save;
+
+static struct colormap_file_IO_views * alloc_colormap_IO_widgets(void){
+    struct colormap_file_IO_views *colormap_IO;
+    colormap_IO = (struct colormap_file_IO_views *) malloc(sizeof(struct colormap_file_IO_views));
+    if (colormap_IO == NULL) {
+        printf("malloc error for colormap_file_IO_views\n");
+        exit(0);
+    }
+    return colormap_IO;
+};
+
+void dealloc_colormap_IO_widgets(struct colormap_file_IO_views *colormap_IO){
+    free(colormap_IO);
+    return;
+};
+
+struct colormap_views * alloc_colormap_views(int iflag_model){
+    struct colormap_views *color_vws;
+    color_vws = (struct colormap_views *) malloc(sizeof(struct colormap_views));
+    if (color_vws == NULL) {
+        printf("malloc error for colormap_views\n");
+        exit(0);
+    }
+    color_vws->iflag_current_model = iflag_model;
+    return color_vws;
+};
+
+void dealloc_colormap_views(struct colormap_views *color_vws){
+    dealloc_colormode_menu(color_vws->colormode_vws);
+    dealloc_kemo_real2_columnview(color_vws->colormap_vws);
+    dealloc_kemo_real2_columnview(color_vws->opacitymap_vws);
+    dealloc_colormap_IO_widgets(color_vws->colormap_IO);
+    g_object_unref(G_OBJECT(color_vws->colormap_area));
+    free(color_vws);
+    return;
+};
+
+
+struct colormap_file_IO_views * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
+                                                       int *iflag_current_model,
+                                                       struct colormode_menu *colormode_vws,
+                                                       struct kemo_real2_columnview *colormap_vws,
+                                                       struct kemo_real2_columnview *opacitymap_vws,
+                                                       GtkWidget *window){
+    struct colormap_file_IO_views *colormap_IO = alloc_colormap_IO_widgets();
     
     colormap_IO->entry_buf_colormap_file = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(colormap_IO->entry_buf_colormap_file),
@@ -166,11 +175,11 @@ GtkWidget * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
                      G_CALLBACK(load_colormap_CB), 
                      G_OBJECT(colormap_IO->entry_buf_colormap_file));
     
-    hbox_viewmat_save = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
-    gtk_box_append(GTK_BOX(hbox_viewmat_save), 
+    colormap_IO->saveButton_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(colormap_IO->saveButton_box), 
                    colormap_IO->saveColormap_Button);
-    gtk_box_append(GTK_BOX(hbox_viewmat_save), 
+    gtk_box_append(GTK_BOX(colormap_IO->saveButton_box), 
                    colormap_IO->loadColormap_Button);
     
-    return hbox_viewmat_save;
+    return colormap_IO;
 }
