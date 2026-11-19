@@ -14,17 +14,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "calypso_GTK4.h"
 #include "kemoviewer_gl.h"
 #include "m_kemoviewer_data.h"
 #include "m_kemoview_psf_menu.h"
 
 #include "t_control_chara_IO.h"
 
+#include "calypso_GTK4.h"
 #include "columnview_real2_gtk4.h"
 #include "kemoview_gtk4_color_menu.h"
 #include "kemoview_gtk4_PSF_surface_menu.h"
-//#include "kemoview_gtk_PSF_isoline_menu.h"
+#include "kemoview_gtk4_PSF_isoline_menu.h"
 //#include "kemoview_gtk_PSF_vector_menu.h"
 
 #include "view_modifier_glfw.h"
@@ -49,9 +49,8 @@ struct psf_gtk_menu{
     GtkWidget *hbox_psfs;
     GtkWidget *combobox_psfs;
     GtkStringList *psf_list_model;
-
-//    struct psf_isoline_gtk_menu *psf_isoline_menu;
-    GtkWidget *expander_iso;
+    
+    struct psf_isoline_gtk_menu *psf_isoline_menu;
     
     struct psf_surface_gtk_menu *psf_surface_menu;
     GtkWidget *expander_surf;
