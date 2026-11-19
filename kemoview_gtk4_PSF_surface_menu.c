@@ -24,6 +24,16 @@ const char * const psf_sfcolor_list[] = {hd_contour,
 
 GtkWidget *window_csel;
 
+static struct psf_surface_gtk_menu * alloc_psf_surface_gtk_menu(void){
+    struct psf_surface_gtk_menu *gtk_psf_surface;
+    gtk_psf_surface = (struct psf_surface_gtk_menu *) malloc(sizeof(struct psf_surface_gtk_menu));
+    if(gtk_psf_surface == NULL) {
+        printf("malloc error for psf_surface_gtk_menu\n");
+        exit(0);
+    }
+    return gtk_psf_surface;
+}
+
 static void init_psf_surf_colmode_dropdown(int id_color_mode,
                                            GtkWidget *surf_color_mode_button){
 	if       (id_color_mode == WHITE_SURFACE){
@@ -36,16 +46,6 @@ static void init_psf_surf_colmode_dropdown(int id_color_mode,
 		gtk_drop_down_set_selected(GTK_DROP_DOWN(surf_color_mode_button), 0);
 	};
     return;
-}
-
-struct psf_surface_gtk_menu * alloc_psf_surface_gtk_menu(void){
-    struct psf_surface_gtk_menu *gtk_psf_surface;
-    gtk_psf_surface = (struct psf_surface_gtk_menu *) malloc(sizeof(struct psf_surface_gtk_menu));
-    if(gtk_psf_surface == NULL) {
-        printf("malloc error for psf_surface_gtk_menu\n");
-        exit(0);
-    }
-    return gtk_psf_surface;
 }
 
 static void psf_surface_switch_CB(GObject *switch_draw, GParamSpec *pspec, gpointer user_data){
@@ -453,11 +453,9 @@ static GtkWidget * init_gtk4_psf_surf_color_sel(struct kemoviewer_gl_type *kemo_
     return color_hbox;
 }
 
-GtkWidget * init_gtk4_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_gl,
-                                                GtkWidget *window, 
-                                                struct psf_surface_gtk_menu *psf_surface_menu){
-    GtkWidget *expander_surf;
-    int iflag;
+struct psf_surface_gtk_menu * init_gtk4_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_gl,
+                                                                  GtkWidget *window){
+    struct psf_surface_gtk_menu *psf_surface_menu = alloc_psf_surface_gtk_menu();
     
     GtkWidget *hbox_draw = init_gtk4_psf_surface_switch_box(kemo_gl, psf_surface_menu);
     GtkWidget *hbox_cbar = init_gtk4_psf_colorbar_switch_box(kemo_gl, psf_surface_menu);
@@ -478,6 +476,24 @@ GtkWidget * init_gtk4_psf_surface_menu_expander(struct kemoviewer_gl_type *kemo_
     gtk_box_append(GTK_BOX(patch_box), hbox_max_range);
     gtk_box_append(GTK_BOX(patch_box), hbox_one_opacity);
     
-    expander_surf = wrap_into_scroll_expansion_gtk4("Surface", 420, 320, window, patch_box);
-    return expander_surf;
+    psf_surface_menu->expander_surf = wrap_into_scroll_expansion_gtk4("Surface", 420, 320,
+                                                                      window, patch_box);
+    return psf_surface_menu;
 }
+
+void dealloc_psf_surface_gtk_menu(struct psf_surface_gtk_menu *psf_surface_menu){
+    g_object_unref(psf_surface_menu->switch_draw);
+    g_object_unref(psf_surface_menu->switch_bar);
+    g_object_unref(psf_surface_menu->listbutton_sfcolor);
+    g_object_unref(psf_surface_menu->psf_color_selector);
+    g_object_unref(psf_surface_menu->label_range_min);
+    g_object_unref(psf_surface_menu->label_range_max);
+    g_object_unref(psf_surface_menu->spin_opacity1);
+    g_object_unref(psf_surface_menu->spin_range_min);
+    g_object_unref(psf_surface_menu->spin_digit_min);
+    g_object_unref(psf_surface_menu->spin_range_max);
+    g_object_unref(psf_surface_menu->spin_digit_max);
+    g_object_unref(psf_surface_menu->expander_surf);
+    free(psf_surface_menu);
+    return;
+};

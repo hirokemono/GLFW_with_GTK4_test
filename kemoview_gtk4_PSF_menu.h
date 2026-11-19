@@ -25,7 +25,7 @@
 #include "kemoview_gtk4_color_menu.h"
 #include "kemoview_gtk4_PSF_surface_menu.h"
 #include "kemoview_gtk4_PSF_isoline_menu.h"
-//#include "kemoview_gtk_PSF_vector_menu.h"
+#include "kemoview_gtk4_PSF_vector_menu.h"
 
 #include "view_modifier_glfw.h"
 
@@ -51,12 +51,8 @@ struct psf_gtk_menu{
     GtkStringList *psf_list_model;
     
     struct psf_isoline_gtk_menu *psf_isoline_menu;
-    
     struct psf_surface_gtk_menu *psf_surface_menu;
-    GtkWidget *expander_surf;
-
-//  struct psf_vector_gtk_menu *psf_vector_menu;
-    GtkWidget *expander_vect;
+    struct psf_vector_gtk_menu *psf_vector_menu;
     
     struct colormap_views *color_vws;
 };
@@ -65,9 +61,6 @@ struct psf_gtk_menu{
 struct psf_gtk_menu * alloc_psf_gtk_menu(void);
 void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 
-void set_vector_plot_availablity(int iflag_current_model,
-                                 struct kemoviewer_gl_type *kemo_gl,
-                                 struct psf_gtk_menu *psf_gmenu);
 void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                         struct psf_gtk_menu *psf_gmenu);
 void append_psf_menus_to_hbox(GtkWidget *psf_vbox,

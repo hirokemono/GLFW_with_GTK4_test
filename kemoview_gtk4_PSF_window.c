@@ -60,7 +60,7 @@ static void current_psf_select_CB(GtkDropDown *dropdown,
                                  COMPONENT_SEL_FLAG, kemo_gl->kemoview_data);
     */
     
-    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu);
+    set_vector_plot_availablity(SURFACE_RENDERING, kemo_gl, psf_gmenu->psf_vector_menu);
     
     reset_psf_field_model(kemo_gl, SURFACE_RENDERING,
                           psf_gmenu->psf_field_model);

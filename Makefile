@@ -68,6 +68,10 @@ kemoview_gtk4_color_menu.c            \
 kemoview_gtk4_PSF_surface_menu.c      \
 kemoview_gtk4_isoline_color_sel.c     \
 kemoview_gtk4_PSF_isoline_menu.c      \
+kemoview_gtk4_PSF_vec_mode_sel.c      \
+kemoview_gtk4_PSF_vec_color_sel.c     \
+kemoview_gtk4_PSF_vec_param_menu.c    \
+kemoview_gtk4_PSF_vector_menu.c       \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_selectors.c         \
 kemoview_gtk4_PSF_window.c            \
