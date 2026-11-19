@@ -21,7 +21,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-#include "kemoview_gtk4_fileselector.h"
 
 struct viewmat_file_IO_widgets{
     GtkEntryBuffer *entry_buf_viewmat_file;

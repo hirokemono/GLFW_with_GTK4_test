@@ -114,28 +114,6 @@ void save_kemoview_image_file(struct kemoviewer_gl_type *kemo_gl,
     return;
 };
 
-GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
-                                        GAsyncResult *result){
-    GError *error = NULL;
-    GFile *file = gtk_file_dialog_open_finish(dialog, result, &error);
-    if(!file){
-        g_print ("%s\n", error->message);
-        g_error_free(error);
-    }
-    return file;
-}
-
-GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
-                                        GAsyncResult *result){
-    GError *error = NULL;
-    GFile *file = gtk_file_dialog_save_finish(dialog, result, &error);
-    if(!file){
-        g_print ("%s\n", error->message);
-        g_error_free(error);
-    }
-    return file;
-}
-
 static void kemoview_file_open_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){

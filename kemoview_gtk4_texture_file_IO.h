@@ -20,7 +20,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-#include "kemoview_gtk4_fileselector.h"
 
 /*  prototypes */
 void open_texture_load_dialog(struct kemoviewer_gl_type *kemo_gl, GtkWindow *window);

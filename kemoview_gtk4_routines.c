@@ -9,6 +9,28 @@
 
 #include "kemoview_gtk4_routines.h"
 
+GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result){
+    GError *error = NULL;
+    GFile *file = gtk_file_dialog_open_finish(dialog, result, &error);
+    if(!file){
+        g_print ("%s\n", error->message);
+        g_error_free(error);
+    }
+    return file;
+}
+
+GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result){
+    GError *error = NULL;
+    GFile *file = gtk_file_dialog_save_finish(dialog, result, &error);
+    if(!file){
+        g_print ("%s\n", error->message);
+        g_error_free(error);
+    }
+    return file;
+}
+
 GtkWidget * wrap_into_frame_gtk4(const char *title, GtkWidget *box_in){
 	GtkWidget *hbox;
 	

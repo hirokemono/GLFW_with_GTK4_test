@@ -21,7 +21,6 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
-#include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_colormode_menu.h"
 #include "columnview_colormap.h"
 #include "columnview_opacitymap.h"

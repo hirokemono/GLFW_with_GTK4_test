@@ -17,6 +17,7 @@
 #include "kemoviewer_gl.h"
 
 #include "calypso_GTK4.h"
+#include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_PSF_window.h"
 #include "kemoview_gtk4_main_menu.h"
 
@@ -25,11 +26,6 @@
 void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
                                  struct main_buttons *mbot,
                                  GtkWidget *main_window);
-
-GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
-                                        GAsyncResult *result);
-GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
-                                        GAsyncResult *result);
 
 
 void kemoview_gtk4_read_file_select(GtkButton *button, GtkWindow *window,

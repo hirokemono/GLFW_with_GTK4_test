@@ -17,11 +17,8 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
-// #include "tree_view_chara_int_GTK.h"
-// #include "tree_views_4_fixed_lists_GTK.h"
-#include "kemoview_gtk4_image_format_selector.h"
-#include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_routines.h"
+#include "kemoview_gtk4_image_format_selector.h"
 
 #include "view_modifier_glfw.h"
 

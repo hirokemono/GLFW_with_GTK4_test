@@ -18,6 +18,11 @@
 
 /*  prototypes */
 
+GFile * gfile_from_kemoview_open_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result);
+GFile * gfile_from_kemoview_save_dialog(GtkFileDialog *dialog,
+                                        GAsyncResult *result);
+
 GtkWidget * wrap_into_frame_gtk4(const char *title, GtkWidget *box_in);
 GtkWidget * wrap_into_scrollbox_gtk4(int width, int height, 
                                      GtkWidget *box_in);
