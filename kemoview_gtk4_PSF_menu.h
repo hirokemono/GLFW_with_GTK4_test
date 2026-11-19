@@ -22,12 +22,7 @@
 #include "t_control_chara_IO.h"
 
 #include "columnview_real2_gtk4.h"
-#include "columnview_colormap.h"
-#include "columnview_opacitymap.h"
-#include "kemoview_cairo_colormap.h"
-#include "kemoview_gtk4_colormode_menu.h"
-#include "kemoview_gtk4_colormap_file_IO.h"
-#include "kemoview_gtk4_fileselector.h"
+#include "kemoview_gtk4_color_menu.h"
 #include "kemoview_gtk4_PSF_surface_menu.h"
 //#include "kemoview_gtk_PSF_isoline_menu.h"
 //#include "kemoview_gtk_PSF_vector_menu.h"

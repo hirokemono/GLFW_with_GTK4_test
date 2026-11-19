@@ -122,28 +122,6 @@ void dealloc_colormap_IO_widgets(struct colormap_file_IO_views *colormap_IO){
     return;
 };
 
-struct colormap_views * alloc_colormap_views(int iflag_model){
-    struct colormap_views *color_vws;
-    color_vws = (struct colormap_views *) malloc(sizeof(struct colormap_views));
-    if (color_vws == NULL) {
-        printf("malloc error for colormap_views\n");
-        exit(0);
-    }
-    color_vws->iflag_current_model = iflag_model;
-    return color_vws;
-};
-
-void dealloc_colormap_views(struct colormap_views *color_vws){
-    dealloc_colormode_menu(color_vws->colormode_vws);
-    dealloc_kemo_real2_columnview(color_vws->colormap_vws);
-    dealloc_kemo_real2_columnview(color_vws->opacitymap_vws);
-    dealloc_colormap_IO_widgets(color_vws->colormap_IO);
-    g_object_unref(G_OBJECT(color_vws->colormap_area));
-    free(color_vws);
-    return;
-};
-
-
 struct colormap_file_IO_views * init_colormap_save_box(struct kemoviewer_gl_type *kemo_gl,
                                                        int *iflag_current_model,
                                                        struct colormode_menu *colormode_vws,
