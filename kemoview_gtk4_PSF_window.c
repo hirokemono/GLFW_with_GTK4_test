@@ -66,6 +66,7 @@ static void current_psf_select_CB(GtkDropDown *dropdown,
                           psf_gmenu->psf_field_model);
     reset_psf_component_model(kemo_gl, SURFACE_RENDERING,
                               psf_gmenu->psf_component_model);
+    reset_psf_menu_params(kemo_gl, psf_gmenu);
     
     draw_full_gl(kemo_gl);
 	return;
@@ -102,6 +103,7 @@ static void psf_field_select_CB(GtkDropDown *dropdown,
     
     reset_psf_component_model(kemo_gl, SURFACE_RENDERING,
                               psf_gmenu->psf_component_model);
+    reset_psf_menu_params(kemo_gl, psf_gmenu);
     
     draw_full_gl(kemo_gl);
 	return;
@@ -130,6 +132,7 @@ static void psf_component_select_CB(GtkDropDown *dropdown,
                                  SURFACE_RENDERING,
                                  COMPONENT_SEL_FLAG,
                                  kemo_gl->kemoview_data);
+    reset_psf_menu_params(kemo_gl, psf_gmenu);
     
     draw_full_gl(kemo_gl);
     return;

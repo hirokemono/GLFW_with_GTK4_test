@@ -99,7 +99,6 @@ static GtkWidget * init_gtk4_psf_colorbar_switch_box(struct kemoviewer_gl_type *
 
 void set_gtk4_surface_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                   struct psf_surface_gtk_menu *psf_surface_menu){
-    return;
     set_gtk4_surf_draw_switch(kemo_gl, psf_surface_menu->switch_draw);
     set_gtk4_colorbar_draw_switch(kemo_gl, psf_surface_menu->switch_bar);
     
