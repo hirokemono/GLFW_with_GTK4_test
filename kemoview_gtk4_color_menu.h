@@ -48,9 +48,11 @@ struct colormap_views{
 /*  prototypes   */
 
 void reset_colormap_menu_views(struct kemoviewer_gl_type *kemo_gl,
+                               int iflag_current_model,
                                struct colormap_views *color_vws);
 struct colormap_views * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
-                                                       int iflag_model, GtkWidget *window);
+                                                       int *iflag_current_model,
+                                                       GtkWidget *window);
 void dealloc_colormap_views(struct colormap_views *color_vws);
 
 #endif /*  KEMOVIEW_GTK4_COLOR_MENU_  */

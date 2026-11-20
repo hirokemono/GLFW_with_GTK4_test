@@ -18,6 +18,7 @@ struct psf_gtk_menu * alloc_psf_gtk_menu(){
         printf("malloc error for psf_gtk_menu\n");
         exit(0);
     }
+    psf_gmenu->iflag_PSF_model = SURFACE_RENDERING;
     return psf_gmenu;
 };
 
@@ -33,12 +34,14 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu){
 void reset_psf_menu_params(struct kemoviewer_gl_type *kemo_gl,
                            struct psf_gtk_menu *psf_gmenu){
     set_gtk_isoline_menu_values(kemo_gl, psf_gmenu->psf_isoline_menu);
-    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->psf_surface_menu);
-    reset_colormap_menu_views(kemo_gl, psf_gmenu->color_vws);
+    set_gtk4_surface_menu_values(kemo_gl, psf_gmenu->iflag_PSF_model,
+                                 psf_gmenu->psf_surface_menu);
+    reset_colormap_menu_views(kemo_gl, psf_gmenu->iflag_PSF_model,
+                              psf_gmenu->color_vws);
     
-    set_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING, 
+    set_gtk_psf_vector_menu(kemo_gl, psf_gmenu->iflag_PSF_model, 
                             psf_gmenu->psf_vector_menu);
-    set_vector_plot_availablity(kemo_gl, SURFACE_RENDERING,
+    set_vector_plot_availablity(kemo_gl, psf_gmenu->iflag_PSF_model,
                                 psf_gmenu->psf_vector_menu);
     return;
 };
@@ -49,10 +52,16 @@ GtkWidget * init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *gmenu_vbox;
     
     psf_gmenu->psf_isoline_menu = init_isoline_menu_expander(kemo_gl, psf_window);
-    psf_gmenu->psf_surface_menu = init_gtk4_psf_surface_menu_expander(kemo_gl, psf_window);
-    psf_gmenu->color_vws = init_gtk_psf_colormap_expander(kemo_gl, SURFACE_RENDERING, psf_window);
-    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING, psf_window);
-    set_vector_plot_availablity(kemo_gl, SURFACE_RENDERING, psf_gmenu->psf_vector_menu);
+    psf_gmenu->psf_surface_menu = init_gtk4_psf_surface_menu_expander(kemo_gl, 
+                                                                      &psf_gmenu->iflag_PSF_model,
+                                                                      psf_window);
+    psf_gmenu->color_vws = init_gtk_psf_colormap_expander(kemo_gl, 
+                                                          &psf_gmenu->iflag_PSF_model,
+                                                          psf_window);
+    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, 
+                                                          psf_gmenu->iflag_PSF_model,
+                                                          psf_window);
+    set_vector_plot_availablity(kemo_gl, psf_gmenu->iflag_PSF_model, psf_gmenu->psf_vector_menu);
     
     gmenu_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_append(GTK_BOX(gmenu_vbox), psf_gmenu->psf_isoline_menu->expander_iso);

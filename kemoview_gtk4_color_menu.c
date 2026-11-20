@@ -10,14 +10,13 @@
 
 #include "kemoview_gtk4_color_menu.h"
 
-static struct colormap_views * alloc_colormap_views(int iflag_model){
+static struct colormap_views * alloc_colormap_views(){
     struct colormap_views *color_vws;
     color_vws = (struct colormap_views *) malloc(sizeof(struct colormap_views));
     if (color_vws == NULL) {
         printf("malloc error for colormap_views\n");
         exit(0);
     }
-    color_vws->iflag_current_model = iflag_model;
     return color_vws;
 };
 
@@ -52,29 +51,31 @@ static GtkWidget * init_colormap_draw_area(struct kemoviewer_gl_type *kemo_gl,
 }
 
 void reset_colormap_menu_views(struct kemoviewer_gl_type *kemo_gl,
-                          struct colormap_views *color_vws){
-    reset_colormap_views(kemo_gl, color_vws->iflag_current_model,
+                               int iflag_current_model,
+                               struct colormap_views *color_vws){
+    reset_colormap_views(kemo_gl, iflag_current_model,
                          color_vws->colormap_area, color_vws->colormode_vws,
                          color_vws->colormap_vws, color_vws->opacitymap_vws);
     return;
 };
 
 struct colormap_views * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type *kemo_gl,
-                                                       int iflag_model, GtkWidget *window){
-    struct colormap_views *color_vws = alloc_colormap_views(iflag_model);
+                                                       int *iflag_current_model,
+                                                       GtkWidget *window){
+    struct colormap_views *color_vws = alloc_colormap_views();
     
-    color_vws->colormap_area = init_colormap_draw_area(kemo_gl, &color_vws->iflag_current_model);
+    color_vws->colormap_area = init_colormap_draw_area(kemo_gl, iflag_current_model);
     color_vws->colormap_vws =  init_colormap_list_scroll(kemo_gl, 
-                                                         &color_vws->iflag_current_model, 
+                                                         iflag_current_model, 
                                                          color_vws->colormap_area, window);
     color_vws->colormode_vws =  make_gtk4_colormode_menu_box(kemo_gl, 
-                                                             &color_vws->iflag_current_model,
+                                                             iflag_current_model,
                                                              color_vws->colormap_area);
     color_vws->opacitymap_vws = init_opacitymap_list_scroll(kemo_gl, 
-                                                            &color_vws->iflag_current_model, 
+                                                            iflag_current_model, 
                                                             color_vws->colormap_area, window);
     color_vws->colormap_IO = init_colormap_save_box(kemo_gl,
-                                                    &color_vws->iflag_current_model,
+                                                    iflag_current_model,
                                                     color_vws->colormap_area,
                                                     color_vws->colormode_vws, 
                                                     color_vws->colormap_vws, 

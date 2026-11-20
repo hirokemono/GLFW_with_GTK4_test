@@ -30,6 +30,8 @@
 #include "view_modifier_glfw.h"
 
 struct psf_gtk_menu{
+    int iflag_PSF_model;
+    
     struct psf_isoline_gtk_menu *psf_isoline_menu;
     struct psf_surface_gtk_menu *psf_surface_menu;
     struct psf_vector_gtk_menu *psf_vector_menu;
