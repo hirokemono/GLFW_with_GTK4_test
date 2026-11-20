@@ -21,9 +21,13 @@ void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
                                  GtkWidget *main_window){
     init_psf_window(kemo_gl, mbot->psf_win_vws,
                     main_window, mbot->itemTEvo);
+    init_tracer_window(kemo_gl, mbot->tracer_win_vws, 
+//                       mbot->tracer_gmenu,
+                       main_window, mbot->itemTEvo);
+    init_fline_window(kemo_gl, mbot->fline_win_vws, 
+//                      mbot->fline_gmenu, 
+                      main_window, mbot->itemTEvo);
     /*
-    init_tracer_window(kemo_gl, mbot->tracer_gmenu, main_window, mbot->itemTEvo);
-    init_fline_window(kemo_gl, mbot->fline_gmenu,  main_window, mbot->itemTEvo);
     init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
     
     if(iflag_datatype == 0 || iflag_datatype == IFLAG_MESH){

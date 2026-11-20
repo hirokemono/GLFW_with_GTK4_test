@@ -336,6 +336,14 @@ struct psf_gtk_window_view * alloc_psf_gtk_window_view(void){
 
 void dealloc_psf_gtk_window(struct psf_gtk_window_view *psf_win_vws){
     dealloc_psf_gtk_menu(psf_win_vws->psf_gmenu);
+    g_object_unref(psf_win_vws->combobox_field);
+    g_object_unref(psf_win_vws->psf_field_model);
+    g_object_unref(psf_win_vws->combobox_comp);
+    g_object_unref(psf_win_vws->psf_component_model);
+    g_object_unref(psf_win_vws->combobox_psfs);
+    g_object_unref(psf_win_vws->closeButton);
+    g_object_unref(psf_win_vws->psf_list_model);
+    g_object_unref(psf_win_vws->psf_frame);
     g_object_unref(psf_win_vws->psfWin);
     free(psf_win_vws);
     return;
