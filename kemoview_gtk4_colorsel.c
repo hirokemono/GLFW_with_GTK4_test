@@ -26,7 +26,7 @@ void set_RGB_to_GTK(float color[4], GdkRGBA *gcolor){
 	return;
 }
 
-void set_RGB_from_GTK(GdkRGBA *gcolor, float color[4]){
+void set_RGB_from_GTK(const GdkRGBA *gcolor, float color[4]){
     color[0] = (float) gcolor->red;
     color[1] = (float) gcolor->green;
     color[2] = (float) gcolor->blue;

@@ -19,7 +19,7 @@
 
 void set_color_to_GTK(float color[4], GdkRGBA *gcolor);
 void set_RGB_to_GTK(float color[4], GdkRGBA *gcolor);
-void set_RGB_from_GTK(GdkRGBA *gcolor, float color[4]);
+void set_RGB_from_GTK(const GdkRGBA *gcolor, float color[4]);
 
 
 int kemoview_gtk_colorsel_CB(GtkWindow *parent_win, float color[4]);

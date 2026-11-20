@@ -201,7 +201,7 @@ static void kemoview_activate(GApplication *app, gpointer user_data)
                      G_CALLBACK(gtkWindowclose_CB), NULL);
     
     
-    GtkWidget *vbox_main = make_gtk4_main_menu_box(mbot, glfw_win, 
+    GtkWidget *vbox_main = make_gtk4_main_menu_box(mbot, 
                                                    quitButton, gtk_win,
                                                    kemoview_gl);
     

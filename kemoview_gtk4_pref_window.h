@@ -26,6 +26,6 @@
 
 void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
                             struct preference_view *pref_vws,
-                            GtkWidget *main_window, GLFWwindow *glfw_win);
+                            GtkWidget *main_window);
 
 #endif   /*  KEMOVIEW_GTK4_PREFERENCE_MENU_  */

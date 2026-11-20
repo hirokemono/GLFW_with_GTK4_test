@@ -65,6 +65,8 @@ kemoview_gtk4_texture_file_IO.c       \
 kemoview_gtk4_viewmatrix_menu.c       \
 kemoview_gtk4_viewmode_menu.c         \
 kemoview_gtk4_color_menu.c            \
+kemoview_gtk4_PSF_surf_color_sel.c    \
+kemoview_gtk4_PSF_range_menu.c        \
 kemoview_gtk4_PSF_surface_menu.c      \
 kemoview_gtk4_isoline_color_sel.c     \
 kemoview_gtk4_PSF_isoline_menu.c      \

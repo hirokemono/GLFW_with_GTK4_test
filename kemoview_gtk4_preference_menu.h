@@ -44,12 +44,12 @@ void dealloc_preference_view(struct preference_view *pref_vws);
 
 GtkWidget * init_preference_frame(struct kemoviewer_gl_type *kemo_gl,
                                   struct preference_view *pref_vws,
-                                  GtkWidget *window, GLFWwindow *glfw_win);
+                                  GtkWidget *window);
 GtkWidget * init_preference_scrollbox(struct kemoviewer_gl_type *kemo_gl,
                                       struct preference_view *pref_vws,
-                                      GtkWidget *window, GLFWwindow *glfw_win);
+                                      GtkWidget *window);
 GtkWidget * init_preference_expander(struct kemoviewer_gl_type *kemo_gl,
                                      struct preference_view *pref_vws,
-                                     GtkWidget *window, GLFWwindow *glfw_win);
+                                     GtkWidget *window);
 
 #endif   /*  KEMOVIEW_GTK4_PREFERENCE_MENU_  */

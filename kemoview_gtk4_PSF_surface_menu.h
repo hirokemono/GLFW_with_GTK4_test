@@ -2,8 +2,9 @@
  *  kemoview_gtk4_PSF_surface_menu.h
  *  Kemoview_Cocoa
  *
- *  Created by Hiroaki Matsui on 12/03/04.
- *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
+ *  Created by Hiroaki Matsui on Oct, 20, 2026
+ *  Copyright 2026 Dept. of Earth and Planetary Sciences,
+ *  Inst. of Science Tokyo. All rights reserved.
  *
  ***********************************************************************/
 #ifndef KEMOVIEW_GTK4_PSF_SURFACE_MENU_
@@ -21,22 +22,15 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_colorsel.h"
 #include "kemoview_gtk4_routines.h"
-#include "kemoview_gtk4_texture_file_IO.h"
+#include "kemoview_gtk4_PSF_surf_color_sel.h"
+#include "kemoview_gtk4_PSF_range_menu.h"
 
 struct psf_surface_gtk_menu{
     GtkWidget *switch_draw;
     GtkWidget *switch_bar;
 	
-	GtkWidget *listbutton_sfcolor;
-    GtkWidget *psf_color_selector;
-	
-    GtkWidget *label_range_min;
-    GtkWidget *label_range_max;
-	GtkWidget *spin_opacity1;
-    GtkWidget *spin_range_min;
-    GtkWidget *spin_digit_min; 
-    GtkWidget *spin_range_max;
-    GtkWidget *spin_digit_max;
+    struct psf_surface_range_view *psf_range_vws;
+    struct psf_surface_color_view *psf_sf_color_vws;
     
     GtkWidget *expander_surf;
 };
