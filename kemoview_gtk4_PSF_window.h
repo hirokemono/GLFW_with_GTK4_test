@@ -25,10 +25,18 @@
 
 #include "view_modifier_glfw.h"
 
+struct psf_gtk_window_view{
+    GtkWidget *psfWin;
+    
+    struct psf_gtk_menu *psf_gmenu;
+};
 
 /*  prototypes */
 void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
-                     struct psf_gtk_menu *psf_gmenu,
+                     struct psf_gtk_window_view *psf_win_vws,
                      GtkWidget *main_window, GtkWidget *itemTEvo);
+
+struct psf_gtk_window_view * alloc_psf_gtk_window_view(void);
+void dealloc_psf_gtk_window(struct psf_gtk_window_view *psf_win_vws);
 
 #endif /*  KEMOVIEW_GTK_PSF4_WINDOW_ */

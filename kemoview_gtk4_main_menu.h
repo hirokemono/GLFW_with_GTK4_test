@@ -41,7 +41,7 @@
 
 struct main_buttons{
     int id_current[1];
-    struct psf_gtk_menu *psf_gmenu;
+    struct psf_gtk_window_view *psf_win_vws;
 //    struct fieldline_gtk_menu *fline_gmenu;
 //    struct fieldline_gtk_menu *tracer_gmenu;
     

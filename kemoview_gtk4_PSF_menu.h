@@ -31,7 +31,6 @@
 
 struct psf_gtk_menu{
     int iflag_psfBox;
-    GtkWidget *psfWin;
 
     GtkWidget *psf_frame;
 
@@ -64,9 +63,8 @@ void dealloc_psf_gtk_menu(struct psf_gtk_menu *psf_gmenu);
 void reset_psf_menu_params(struct kemoviewer_gl_type *kemo_gl,
                            struct psf_gtk_menu *psf_gmenu);
 
-void init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
-                        struct psf_gtk_menu *psf_gmenu);
-void append_psf_menus_to_hbox(GtkWidget *psf_vbox,
-                              struct psf_gtk_menu *psf_gmenu);
+GtkWidget * init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
+                               GtkWidget *psf_window,
+                               struct psf_gtk_menu *psf_gmenu);
 
 #endif   /*  KEMOVIEW_GTK4_PSF_MENU_ */

@@ -14,8 +14,8 @@ const char * const null_text_list[] = {NULL};
 static void close_psf_CB(GtkButton *button, gpointer user_data){
     GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parents"));
     GtkWidget *itemTEvo = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "evolution"));
-    struct psf_gtk_menu *psf_gmenu 
-            = (struct psf_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "psfmenu");
+    struct psf_gtk_window_view *psf_win_vws 
+            = (struct psf_gtk_window_view *) g_object_get_data(G_OBJECT(user_data), "psfWinView");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
@@ -23,9 +23,9 @@ static void close_psf_CB(GtkButton *button, gpointer user_data){
     set_GLFW_viewtype_mode(VIEW_3D);
     kemoview_set_viewtype(VIEW_3D, kemo_gl->kemoview_data);
 	
-    init_psf_window(kemo_gl, psf_gmenu, main_window, itemTEvo);
+    init_psf_window(kemo_gl, psf_win_vws->psf_gmenu, main_window, itemTEvo);
     activate_evolution_menu(kemo_gl->kemoview_data, itemTEvo);
-    gtk_widget_queue_draw(psf_gmenu->psfWin);
+    gtk_widget_queue_draw(psf_win_vws->psfWin);
     draw_full_gl(kemo_gl);
     return;
 };
@@ -242,37 +242,41 @@ static GtkWidget * init_current_psf_set_hbox(struct kemoviewer_gl_type *kemo_gl,
 }
 
 static GtkWidget * init_psf_menu_frame(struct kemoviewer_gl_type *kemo_gl,
-                                       struct psf_gtk_menu *psf_gmenu,
+                                       struct psf_gtk_window_view *psf_win_vws,
                                        GtkWidget *main_window, 
                                        GtkWidget *itemTEvo){
     GtkWidget *psf_menu_frame;
-    psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
+    psf_win_vws->psf_gmenu->closeButton = gtk_button_new_with_label("Close Current PSF");
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
-    g_object_set_data(G_OBJECT(entry_buf), "parents", (gpointer)  main_window);
-    g_object_set_data(G_OBJECT(entry_buf), "psfmenu", (gpointer)  psf_gmenu);
-    g_object_set_data(G_OBJECT(entry_buf), "evolution", (gpointer)  itemTEvo);
+    g_object_set_data(G_OBJECT(entry_buf), "parents",     (gpointer)  main_window);
+    g_object_set_data(G_OBJECT(entry_buf), "psfWinView",  (gpointer)  psf_win_vws);
+    g_object_set_data(G_OBJECT(entry_buf), "evolution",  (gpointer)   itemTEvo);
     
-    g_signal_connect(G_OBJECT(psf_gmenu->closeButton), "clicked",
+    g_signal_connect(G_OBJECT(psf_win_vws->psf_gmenu->closeButton), "clicked",
                      G_CALLBACK(close_psf_CB), G_OBJECT(entry_buf));
     
-    psf_gmenu->hbox_psfs =       init_current_psf_set_hbox(kemo_gl, psf_gmenu, 
-                                                           main_window, itemTEvo);
-    psf_gmenu->hbox_field =      init_psf_draw_field_hbox(kemo_gl, psf_gmenu,
-                                                          main_window, itemTEvo);
-    psf_gmenu->hbox_component =  init_psf_draw_component_hbox(kemo_gl, psf_gmenu,
-                                                              main_window, itemTEvo);
+    psf_win_vws->psf_gmenu->hbox_psfs =       init_current_psf_set_hbox(kemo_gl,
+                                                                        psf_win_vws->psf_gmenu, 
+                                                                        main_window, itemTEvo);
+    psf_win_vws->psf_gmenu->hbox_field =      init_psf_draw_field_hbox(kemo_gl, 
+                                                                       psf_win_vws->psf_gmenu,
+                                                                       main_window, itemTEvo);
+    psf_win_vws->psf_gmenu->hbox_component =  init_psf_draw_component_hbox(kemo_gl,
+                                                                           psf_win_vws->psf_gmenu,
+                                                                           main_window, itemTEvo);
     
-    init_psf_menu_hbox(kemo_gl, psf_gmenu);
-    
+    GtkWidget *gmenu_vbox = init_psf_menu_hbox(kemo_gl, psf_win_vws->psfWin,
+                                               psf_win_vws->psf_gmenu);
+            
     GtkWidget *psf_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
-    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->closeButton);
-    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_psfs);
-    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_field);
-    gtk_box_append(GTK_BOX(psf_vbox), psf_gmenu->hbox_component);
+    gtk_box_append(GTK_BOX(psf_vbox), psf_win_vws->psf_gmenu->closeButton);
+    gtk_box_append(GTK_BOX(psf_vbox), psf_win_vws->psf_gmenu->hbox_psfs);
+    gtk_box_append(GTK_BOX(psf_vbox), psf_win_vws->psf_gmenu->hbox_field);
+    gtk_box_append(GTK_BOX(psf_vbox), psf_win_vws->psf_gmenu->hbox_component);
     
-    append_psf_menus_to_hbox(psf_vbox, psf_gmenu);
+    gtk_box_append(GTK_BOX(psf_vbox), gmenu_vbox);
     
     psf_menu_frame = wrap_into_frame_gtk4("Surfaces", psf_vbox);
     gtk_widget_set_margin_top(psf_menu_frame,    5);
@@ -289,33 +293,50 @@ static gboolean dummy_close_CB(GtkWidget *widget, GdkEvent *event, gpointer data
 }
 
 void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
-                     struct psf_gtk_menu *psf_gmenu,
+                     struct psf_gtk_window_view *psf_win_vws,
                      GtkWidget *main_window, GtkWidget *itemTEvo){
-    if(psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(GTK_WINDOW(psf_gmenu->psfWin));};
-    psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
+    if(psf_win_vws->psf_gmenu->iflag_psfBox > 0){gtk_window_destroy(GTK_WINDOW(psf_win_vws->psfWin));};
+    psf_win_vws->psf_gmenu->iflag_psfBox = kemoview_get_PSF_loaded_params(kemo_gl->kemoview_data,
                                                              NUM_LOADED);
-    if(psf_gmenu->iflag_psfBox == 0){return;}
+    if(psf_win_vws->psf_gmenu->iflag_psfBox == 0){return;}
     
     gint size_xy[2];
     size_xy[0] = gtk_widget_get_width (main_window);
     size_xy[1] = gtk_widget_get_height(main_window);
     
-    psf_gmenu->psfWin = gtk_window_new();
-    gtk_window_set_title(GTK_WINDOW(psf_gmenu->psfWin), "PSF");
-    gtk_widget_set_size_request(psf_gmenu->psfWin, 150, -1);
-    gtk_window_set_deletable(GTK_WINDOW(psf_gmenu->psfWin), FALSE);
+    psf_win_vws->psfWin = gtk_window_new();
+    gtk_window_set_title(GTK_WINDOW(psf_win_vws->psfWin), "PSF");
+    gtk_widget_set_size_request(psf_win_vws->psfWin, 150, -1);
+    gtk_window_set_deletable(GTK_WINDOW(psf_win_vws->psfWin), FALSE);
     
-    g_signal_connect(psf_gmenu->psfWin, "close-request",
+    g_signal_connect(psf_win_vws->psfWin, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
     
-    g_object_set_data(G_OBJECT(itemTEvo), "psfmenu", (gpointer) psf_gmenu);
+    g_object_set_data(G_OBJECT(itemTEvo), "psfmenu", (gpointer) psf_win_vws->psf_gmenu);
     g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(itemTEvo), "parents", (gpointer) main_window);
-    psf_gmenu->psf_frame = init_psf_menu_frame(kemo_gl, psf_gmenu, 
+    psf_win_vws->psf_gmenu->psf_frame = init_psf_menu_frame(kemo_gl, psf_win_vws, 
                                                main_window, itemTEvo);
-    gtk_window_set_child(GTK_WINDOW(psf_gmenu->psfWin), psf_gmenu->psf_frame);
+    gtk_window_set_child(GTK_WINDOW(psf_win_vws->psfWin), psf_win_vws->psf_gmenu->psf_frame);
     
-    gtk_widget_set_visible(psf_gmenu->psfWin, TRUE);
+    gtk_widget_set_visible(psf_win_vws->psfWin, TRUE);
     return;
 }
 
+struct psf_gtk_window_view * alloc_psf_gtk_window_view(void){
+    struct psf_gtk_window_view *psf_win_vws;
+    psf_win_vws = (struct psf_gtk_window_view *) malloc(sizeof(struct psf_gtk_window_view));
+    if (psf_win_vws == NULL) {
+        printf("malloc error for psf_gtk_window_view \n");
+        exit(0);
+    }
+    psf_win_vws->psf_gmenu = alloc_psf_gtk_menu();
+    return psf_win_vws;
+};
+
+void dealloc_psf_gtk_window(struct psf_gtk_window_view *psf_win_vws){
+    dealloc_psf_gtk_menu(psf_win_vws->psf_gmenu);
+    g_object_unref(psf_win_vws->psfWin);
+    free(psf_win_vws);
+    return;
+};
