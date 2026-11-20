@@ -50,10 +50,8 @@ GtkWidget * init_psf_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
     
     psf_gmenu->psf_isoline_menu = init_isoline_menu_expander(kemo_gl, psf_window);
     psf_gmenu->psf_surface_menu = init_gtk4_psf_surface_menu_expander(kemo_gl, psf_window);
-    psf_gmenu->color_vws = init_gtk_psf_colormap_expander(kemo_gl, SURFACE_RENDERING,
-                                                          psf_window);
-    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING,
-                                                          psf_window);
+    psf_gmenu->color_vws = init_gtk_psf_colormap_expander(kemo_gl, SURFACE_RENDERING, psf_window);
+    psf_gmenu->psf_vector_menu = init_gtk_psf_vector_menu(kemo_gl, SURFACE_RENDERING, psf_window);
     set_vector_plot_availablity(kemo_gl, SURFACE_RENDERING, psf_gmenu->psf_vector_menu);
     
     gmenu_vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);

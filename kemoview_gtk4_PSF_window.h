@@ -26,9 +26,24 @@
 #include "view_modifier_glfw.h"
 
 struct psf_gtk_window_view{
+    int iflag_psfBox;
+    int num_psfs;
+    
+    GtkWidget *closeButton;
+    
+    GtkWidget *psf_frame;
     GtkWidget *psfWin;
     
     struct psf_gtk_menu *psf_gmenu;
+    
+    GtkWidget *combobox_field;
+    GtkStringList *psf_field_model;
+    
+    GtkWidget *combobox_comp;
+    GtkStringList *psf_component_model;
+    
+    GtkWidget *combobox_psfs;
+    GtkStringList *psf_list_model;
 };
 
 /*  prototypes */
