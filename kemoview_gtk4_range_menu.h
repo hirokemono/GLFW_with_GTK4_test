@@ -1,5 +1,5 @@
 /***********************************************************************
- *  kemoview_gtk4_PSF_range_menu.h
+ *  kemoview_gtk4_range_menu.h
  *  Kemoview_Cocoa
  *
  *  Created by Hiroaki Matsui on Oct, 20, 2026
@@ -7,8 +7,8 @@
  *  Inst. of Science Tokyo. All rights reserved.
  *
  ***********************************************************************/
-#ifndef KEMOVIEW_GTK4_PSF_RANGE_MENU_
-#define KEMOVIEW_GTK4_PSF_RANGE_MENU_
+#ifndef KEMOVIEW_GTK4_RANGE_MENU_
+#define KEMOVIEW_GTK4_RANGE_MENU_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,9 +24,7 @@
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_texture_file_IO.h"
 
-struct psf_surface_range_view{
-    GtkWidget *spin_opacity1;
-    
+struct surface_range_view{
     GtkWidget *label_range_min;
     GtkWidget *spin_range_min;
     GtkWidget *spin_digit_min; 
@@ -41,9 +39,11 @@ struct psf_surface_range_view{
 
 /*  prototypes */
 void set_gtk4_surf_range_values(struct kemoviewer_gl_type *kemo_gl,
-                                struct psf_surface_range_view *psf_range_vws);
-struct psf_surface_range_view * init_gtk4_psf_surf_range_view(struct kemoviewer_gl_type *kemo_gl,
-                                                              GtkWidget *window);
-void dealloc_psf_surf_range_view(struct psf_surface_range_view *psf_range_vws);
+                                int id_current_model,
+                                struct surface_range_view *gtk_range_vws);
+struct surface_range_view * init_gtk_range_view(struct kemoviewer_gl_type *kemo_gl,
+                                                int *id_current_model,
+                                                GtkWidget *window);
+void dealloc_gtk_range_view(struct surface_range_view *gtk_range_vws);
 
-#endif   /*  KEMOVIEW_GTK4_PSF_RANGE_MENU_  */
+#endif   /*  KEMOVIEW_GTK4_RANGE_MENU_  */

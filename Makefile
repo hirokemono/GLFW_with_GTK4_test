@@ -64,9 +64,9 @@ kemoview_gtk4_viewmat_file_IO.c       \
 kemoview_gtk4_texture_file_IO.c       \
 kemoview_gtk4_viewmatrix_menu.c       \
 kemoview_gtk4_viewmode_menu.c         \
+kemoview_gtk4_range_menu.c            \
 kemoview_gtk4_color_menu.c            \
 kemoview_gtk4_PSF_surf_color_sel.c    \
-kemoview_gtk4_PSF_range_menu.c        \
 kemoview_gtk4_PSF_surface_menu.c      \
 kemoview_gtk4_isoline_color_sel.c     \
 kemoview_gtk4_PSF_isoline_menu.c      \
@@ -77,6 +77,9 @@ kemoview_gtk4_PSF_vector_menu.c       \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_selectors.c         \
 kemoview_gtk4_PSF_window.c            \
+kemoview_gtk4_fline_color_sel.c       \
+kemoview_gtk4_fieldline_menu.c        \
+kemoview_gtk4_Fline_window.c          \
 kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_quilt_menu.c            \
 kemoview_gtk4_lighting_menu.c         \

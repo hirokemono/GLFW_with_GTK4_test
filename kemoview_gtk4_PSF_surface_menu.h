@@ -23,13 +23,15 @@
 #include "kemoview_gtk4_colorsel.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_PSF_surf_color_sel.h"
-#include "kemoview_gtk4_PSF_range_menu.h"
+#include "kemoview_gtk4_range_menu.h"
 
 struct psf_surface_gtk_menu{
     GtkWidget *switch_draw;
     GtkWidget *switch_bar;
 	
-    struct psf_surface_range_view *psf_range_vws;
+    GtkWidget *spin_opacity1;
+    
+    struct surface_range_view     *psf_range_vws;
     struct psf_surface_color_view *psf_sf_color_vws;
     
     GtkWidget *expander_surf;

@@ -31,11 +31,6 @@ struct psf_gtk_window_view{
     
     GtkWidget *closeButton;
     
-    GtkWidget *psf_frame;
-    GtkWidget *psfWin;
-    
-    struct psf_gtk_menu *psf_gmenu;
-    
     GtkWidget *combobox_field;
     GtkStringList *psf_field_model;
     
@@ -44,6 +39,11 @@ struct psf_gtk_window_view{
     
     GtkWidget *combobox_psfs;
     GtkStringList *psf_list_model;
+    
+    struct psf_gtk_menu *psf_gmenu;
+    
+    GtkWidget *psf_frame;
+    GtkWidget *psfWin;
 };
 
 /*  prototypes */
