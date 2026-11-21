@@ -21,12 +21,20 @@
 // #include "kemoview_gtk4_fline_selectors.h"
 // #include "kemoview_gtk4_fileselector.h"
 // #include "kemoview_gtk4_fieldline_menu.h"
+#include "kemoview_gtk4_PSF_selectors.h"
+#include "kemoview_gtk4_field_selectors.h"
 #include "kemoview_gtk4_evolution_menu.h"
 
 struct tracer_gtk_window_view{
     int iflag_tracerBox;
     
     GtkWidget *closeButton;
+    
+    GtkWidget *tracer_field_model;
+    GtkWidget *combobox_field;
+    
+    GtkWidget *tracer_component_model;
+    GtkWidget *combobox_comp;
     
     GtkWidget *tracer_frame;
     GtkWidget *tracerWin;

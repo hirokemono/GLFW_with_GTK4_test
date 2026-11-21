@@ -180,6 +180,7 @@ int set_selected_psf_component_list(struct kemoviewer_gl_type *kemo_gl,
     int ipick = kemoview_get_VIZ_field_param(kemo_gl->kemoview_data, id_model,
                                              COMPONENT_SEL_FLAG);
     set_PSF_full_component_name(npick, id_coord, ipick, comp_name);
+    printf("Component name: %s\n", comp_name);
     
     char *text;
     int i;
