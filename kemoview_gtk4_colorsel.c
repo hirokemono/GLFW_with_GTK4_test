@@ -8,8 +8,6 @@
 
 #include "kemoview_gtk4_colorsel.h"
 
-GtkWidget *window_Cmap;
-
 void set_color_to_GTK(float color[4], GdkRGBA *gcolor){
     gcolor->red =   color[0];
     gcolor->green = color[1];

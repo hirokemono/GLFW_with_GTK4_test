@@ -22,6 +22,7 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_colorsel.h"
 #include "kemoview_gtk4_routines.h"
+#include "kemoview_gtk4_color_select.h"
 #include "kemoview_gtk4_texture_file_IO.h"
 
 struct psf_surface_color_view{
@@ -35,6 +36,7 @@ struct psf_surface_color_view{
 void set_gtk4_psf_surf_color_sel(struct kemoviewer_gl_type *kemo_gl,
                                  struct psf_surface_color_view *gtk_psf_surface);
 struct psf_surface_color_view * init_gtk4_psf_surf_color_sel(struct kemoviewer_gl_type *kemo_gl,
+                                                             int *id_current_model,
                                                              GtkWidget *parent_window);
 void dealloc_psf_surf_color_views(struct psf_surface_color_view *psf_sf_color_vws);
 

@@ -140,7 +140,9 @@ struct psf_surface_gtk_menu * init_gtk4_psf_surface_menu_expander(struct kemovie
     GtkWidget *hbox_cbar = init_gtk4_psf_colorbar_switch_box(kemo_gl, psf_surface_menu);
     
     psf_surface_menu->psf_range_vws =    init_gtk_range_view(kemo_gl, id_current_model, window);
-    psf_surface_menu->psf_sf_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, window);
+    psf_surface_menu->psf_sf_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
+                                                                      id_current_model, 
+                                                                      window);
     
     
     GtkAdjustment *adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
