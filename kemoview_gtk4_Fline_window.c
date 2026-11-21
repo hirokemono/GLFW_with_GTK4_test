@@ -126,11 +126,20 @@ static GtkWidget * set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_field =     init_fline_draw_field_hbox(kemo_gl, fline_win_vws, itemTEvo);
     GtkWidget *hbox_component = init_fline_color_component_hbox(kemo_gl, fline_win_vws);
     
+    fline_win_vws->fline_range_vws = init_gtk_range_view(kemo_gl,
+                                                         &fline_win_vws->iflag_fieldline_mode, 
+                                                         fline_win_vws->flineWin);
+    fline_win_vws->fline_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
+                                                                  &fline_win_vws->iflag_fieldline_mode, 
+                                                                  fline_win_vws->flineWin);
+    
     GtkWidget *fline_hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->closeButton);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_field);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_component);
     
+    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_color_vws->hbox_sf_color);
+    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_range_vws->hbox_psf_range);
     /*
 	init_fieldline_menu_hbox(kemo_gl, fline_gmenu);
     
@@ -158,14 +167,23 @@ static GtkWidget * set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
 	return fline_hbox;
 }
 
+void set_gtk4_fline_menu_values(struct kemoviewer_gl_type *kemo_gl,
+                                int id_current_model,
+                                struct fline_gtk_window_view *fline_win_vws){
+    set_gtk4_fline_surf_color_sel(kemo_gl, id_current_model,
+                                  fline_win_vws->fline_color_vws);
+    set_gtk4_surf_range_values(kemo_gl, id_current_model, 
+                               fline_win_vws->fline_range_vws);
+    return;
+};
+
 GtkWidget *  init_fline_frame(struct kemoviewer_gl_type *kemo_gl,
                               struct fline_gtk_window_view *fline_win_vws,
 //                              struct fieldline_gtk_menu *fline_gmenu,
                               GtkWidget *itemTEvo){
     GtkWidget * flineFrame;
-    
-    GtkWidget *fline_hbox = set_fieldline_menu_box(kemo_gl, fline_win_vws, 
-                                                   itemTEvo);
+    GtkWidget *fline_hbox = set_fieldline_menu_box(kemo_gl, 
+                                                   fline_win_vws, itemTEvo);
     flineFrame = wrap_into_frame_gtk4("Fieldline", fline_hbox);
     return flineFrame;
 }
@@ -214,10 +232,13 @@ struct fline_gtk_window_view * alloc_fline_gtk_window_view(void){
         printf("malloc error for fline_gtk_window_view \n");
         exit(0);
     }
+    fline_win_vws->iflag_fieldline_mode = FIELDLINE_RENDERING;
     return fline_win_vws;
 };
 
 void dealloc_fline_gtk_window(struct fline_gtk_window_view *fline_win_vws){
+    dealloc_gtk_range_view(fline_win_vws->fline_range_vws);
+    dealloc_psf_surf_color_views(fline_win_vws->fline_color_vws);
     g_object_unref(fline_win_vws->closeButton);
     g_object_unref(fline_win_vws->fline_frame);
     g_object_unref(fline_win_vws->flineWin);

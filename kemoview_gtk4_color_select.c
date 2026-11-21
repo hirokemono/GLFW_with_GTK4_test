@@ -151,6 +151,7 @@ void set_fline_surface_color_mode(int index_mode, GtkWidget *parent_window,
                                   GtkWidget *color_selector,
                                   struct kemoviewer_gl_type *kemo_gl,
                                   int id_current_model){
+    printf("*set_fline_surface_color_mode %d %d\n", id_current_model, index_mode);
     if(index_mode == ONE_COLOR_LINE){
         set_VIEWcolor_GTK(color_listbutton, color_selector, 
                           kemo_gl, id_current_model);
@@ -171,6 +172,6 @@ GtkWidget * init_PSF_sfcolor_listbutton(void){
 };
 
 GtkWidget * init_Fline_color_listbutton(void){
-    GtkStringList *fline_color_list = gtk_string_list_new(psf_sfcolor_list);
-    return init_list_button_by_list_model(fline_color_list);
+    GtkStringList *fline_color_model = gtk_string_list_new(fline_color_list);
+    return init_list_button_by_list_model(fline_color_model);
 };

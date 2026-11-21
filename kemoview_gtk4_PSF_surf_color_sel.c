@@ -36,6 +36,7 @@ static void surface_colormode_CB(GtkDropDown *dropdown,
     const char *text = gtk_string_object_get_string(selected_item);
     int index_mode = find_surface_color_mode(text);
     
+    printf("*id_current_model %d \n", *id_current_model);
     if(*id_current_model == SURFACE_RENDERING){
         set_psf_surface_color_mode(index_mode, parent_window, 
                                    listbutton_sfcolor, psf_color_selector,

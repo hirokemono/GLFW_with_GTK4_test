@@ -24,9 +24,15 @@
 #include "kemoview_gtk4_PSF_selectors.h"
 #include "kemoview_gtk4_field_selectors.h"
 #include "kemoview_gtk4_evolution_menu.h"
+#include "kemoview_gtk4_PSF_surf_color_sel.h"
+#include "kemoview_gtk4_range_menu.h"
 
 struct fline_gtk_window_view{
+    int iflag_fieldline_mode;
     int iflag_flineBox;
+    
+    struct surface_range_view * fline_range_vws;
+    struct psf_surface_color_view *fline_color_vws;
     
     GtkWidget *closeButton;
     

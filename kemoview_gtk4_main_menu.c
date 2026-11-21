@@ -18,7 +18,7 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
     }
 
     mbot->psf_win_vws =    alloc_psf_gtk_window_view();
-    mbot->fline_win_vws =  alloc_fline_gtk_window_view();;
+    mbot->fline_win_vws =  alloc_fline_gtk_window_view();
     mbot->tracer_win_vws = alloc_tracer_gtk_window_view();
 //    mbot->fline_gmenu =  (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
 //    mbot->tracer_gmenu = (struct fieldline_gtk_menu *) malloc(sizeof(struct fieldline_gtk_menu));
