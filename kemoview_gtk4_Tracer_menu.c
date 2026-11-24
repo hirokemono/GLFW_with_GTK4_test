@@ -11,7 +11,7 @@
 
 #include "kemoview_gtk4_Tracer_menu.h"
 
-static struct tracer_gtk_menu * alloc_colorbar_sw_view(void){
+static struct tracer_gtk_menu * alloc_tracer_gtk_menu(void){
     struct tracer_gtk_menu *tracer_gmenu;
     tracer_gmenu = (struct tracer_gtk_menu *) malloc(sizeof(struct tracer_gtk_menu));
     if(tracer_gmenu == NULL) {
@@ -65,7 +65,7 @@ static void set_tracer_vector_mode_switch(struct kemoviewer_gl_type *kemo_gl,
 
 struct tracer_gtk_menu * init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
                                                GtkWidget *tracerWin){
-    struct tracer_gtk_menu *tracer_gmenu = alloc_colorbar_sw_view();
+    struct tracer_gtk_menu *tracer_gmenu = alloc_tracer_gtk_menu();
     init_tracer_vector_mode_switch(kemo_gl, tracer_gmenu);
     
     tracer_gmenu->tracer_cbar_sw_vws = init_colorbar_switch_hbox(kemo_gl,
@@ -81,9 +81,11 @@ struct tracer_gtk_menu * init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_g
     tracer_gmenu->tracer_sf_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
                                                                      &tracer_gmenu->id_tracer_mode, 
                                                                      tracerWin);
-    tracer_gmenu->tracer_sf_color_vws = init_gtk_psf_colormap_expander(kemo_gl,
-                                                                       &tracer_gmenu->id_tracer_mode, 
-                                                                       tracerWin);
+    /*
+    tracer_gmenu->tracer_color_vws = init_gtk_psf_colormap_expander(kemo_gl,
+                                                                    &tracer_gmenu->id_tracer_mode, 
+                                                                    tracerWin);
+    */
     
     GtkWidget *menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_box_append(GTK_BOX(menu_box), tracer_gmenu->tracer_cbar_sw_vws->cbar_sw_hbox);
@@ -94,10 +96,9 @@ struct tracer_gtk_menu * init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_g
     
     gtk_box_append(GTK_BOX(menu_box), tracer_gmenu->tracer_sf_color_vws->hbox_sf_color);
     gtk_box_append(GTK_BOX(menu_box), tracer_gmenu->tracer_range_vws->hbox_psf_range);
-    gtk_box_append(GTK_BOX(menu_box), tracer_gmenu->tracer_color_vws->expander_color);
-    
+//    gtk_box_append(GTK_BOX(menu_box), tracer_gmenu->tracer_color_vws->expander_color);
     tracer_gmenu->tracer_menu_frame = wrap_into_frame_gtk4("Fieldline", menu_box);
-    return tracer_gmenu->tracer_menu_frame;
+    return tracer_gmenu;
 }
 
 void set_tracer_menu_parameters(struct kemoviewer_gl_type *kemo_gl,

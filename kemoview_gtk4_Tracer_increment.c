@@ -26,7 +26,7 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
 	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
 	int i_digit;
-	double current_value;
+    double current_value;
     kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
                                   TRACER_RENDERING,
                                   ISET_VECTOR_INC,
@@ -34,7 +34,7 @@ static void set_vect_increment_CB(GtkWidget *entry, gpointer user_data){
     kemoview_set_each_VIZ_vector_w_exp(ISET_VECTOR_INC,
                                       gtk_floatvalue, i_digit,
                                       TRACER_RENDERING,
-                                      kemo_gl->kemoview_data);
+                                       kemo_gl->kemoview_data);
     draw_full_gl(kemo_gl);
 	return;
 }

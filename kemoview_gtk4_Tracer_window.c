@@ -141,7 +141,6 @@ static GtkWidget * set_tracer_menu_box(struct kemoviewer_gl_type *kemo_gl,
 
 GtkWidget * init_tracer_frame(struct kemoviewer_gl_type *kemo_gl,
                               struct tracer_gtk_window_view *tracer_win_vws,
-//                              struct fieldline_gtk_menu *tracer_gmenu,
                               GtkWidget *itemTEvo){
     GtkWidget * tracerFrame;
     
@@ -167,19 +166,16 @@ void replace_tracer_frame(struct kemoviewer_gl_type *kemo_gl,
 
 void init_tracer_window(struct kemoviewer_gl_type *kemo_gl,
                         struct tracer_gtk_window_view *tracer_win_vws,
-//                        struct fieldline_gtk_menu *tracer_gmenu,
                         GtkWidget *main_window, GtkWidget *itemTEvo){
     if(tracer_win_vws->iflag_tracerBox > 0){gtk_window_destroy(GTK_WINDOW(tracer_win_vws->tracerWin));};
     tracer_win_vws->iflag_tracerBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
                                                                   TRACER_RENDERING);
     if(tracer_win_vws->iflag_tracerBox == 0){return;};
-    
     tracer_win_vws->tracerWin = gtk_window_new();
     gtk_window_set_title(GTK_WINDOW(tracer_win_vws->tracerWin), "Tracer");
     gtk_widget_set_size_request(tracer_win_vws->tracerWin, 150, -1);
     
     tracer_win_vws->tracer_frame = init_tracer_frame(kemo_gl, tracer_win_vws, itemTEvo);
-    
     gtk_window_set_child(GTK_WINDOW(tracer_win_vws->tracerWin), tracer_win_vws->tracer_frame);
     gtk_widget_set_visible(tracer_win_vws->tracerWin, TRUE);
     return;
@@ -193,6 +189,7 @@ struct tracer_gtk_window_view * alloc_tracer_gtk_window_view(void){
         printf("malloc error for tracer_gtk_window_view \n");
         exit(0);
     }
+    tracer_win_vws->iflag_tracerBox = 0;
     return tracer_win_vws;
 };
 

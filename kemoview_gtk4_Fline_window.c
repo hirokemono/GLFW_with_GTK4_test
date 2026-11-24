@@ -171,6 +171,7 @@ void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
     if(fline_win_vws->iflag_flineBox > 0){gtk_window_destroy(GTK_WINDOW(fline_win_vws->flineWin));};
     fline_win_vws->iflag_flineBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
                                                                 FIELDLINE_RENDERING);
+    printf("fieldline window %d \n", fline_win_vws->iflag_flineBox);
     if(fline_win_vws->iflag_flineBox == 0){return;};
 
     fline_win_vws->flineWin = gtk_window_new();
@@ -192,6 +193,7 @@ struct fline_gtk_window_view * alloc_fline_gtk_window_view(void){
         printf("malloc error for fline_gtk_window_view \n");
         exit(0);
     }
+    fline_win_vws->iflag_flineBox = 0;
     return fline_win_vws;
 };
 

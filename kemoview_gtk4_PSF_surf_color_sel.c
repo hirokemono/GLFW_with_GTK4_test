@@ -23,7 +23,6 @@ static struct psf_surface_color_view * alloc_psf_surface_gtk_menu(void){
 static void surface_colormode_CB(GtkDropDown *dropdown,
                                  GParamSpec *pspec,
                                  gpointer user_data){
-    GtkWidget *listbutton_sfcolor = GTK_WIDGET(dropdown);
     GtkWidget *psf_color_selector = GTK_WIDGET(user_data);
     GtkWidget *parent_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parents"));
     struct kemoviewer_gl_type *kemo_gl
@@ -38,12 +37,11 @@ static void surface_colormode_CB(GtkDropDown *dropdown,
     if(*id_current_model == SURFACE_RENDERING){
         int index_mode = find_surface_color_mode(text);
         set_psf_surface_color_mode(index_mode, parent_window, 
-                                   listbutton_sfcolor, psf_color_selector,
-                                   kemo_gl);
+                                   psf_color_selector, kemo_gl);
     }else{
         int index_mode = find_fline_color_mode(text);
         set_fline_surface_color_mode(index_mode, parent_window, 
-                                     listbutton_sfcolor, psf_color_selector,
+                                     psf_color_selector,
                                      kemo_gl, *id_current_model);
     };
     return;
@@ -60,12 +58,13 @@ static void surface_colorsel_CB(GObject    *object,
     
     if(*id_current_model == SURFACE_RENDERING){
         kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(listbutton_sfcolor), SINGLE_COLOR);
     }else{
         kemoview_set_VIZ_patch_color_mode(ONE_COLOR_LINE, *id_current_model,
                                           kemo_gl->kemoview_data);
+        gtk_drop_down_set_selected(GTK_DROP_DOWN(listbutton_sfcolor), ONE_COLOR_LINE);
     };
-    set_VIEWcolor_GTK(listbutton_sfcolor, psf_color_selector, 
-                      kemo_gl, *id_current_model);
+    set_VIEWcolor_GTK(psf_color_selector, kemo_gl, *id_current_model);
     draw_triple_gl(kemo_gl);
     return;
 };
