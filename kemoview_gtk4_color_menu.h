@@ -28,8 +28,6 @@
 #include "columnview_opacitymap.h"
 
 struct colormap_views{
-/**    integer flag to check data mode (surface, line, or tracer)  **/
-    int iflag_current_model;
 /**    Draw area for colorbar example  **/
     GtkWidget *colormap_area;
 /**    Draw area for color mode menu  **/

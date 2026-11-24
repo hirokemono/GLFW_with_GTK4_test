@@ -66,6 +66,7 @@ kemoview_gtk4_viewmatrix_menu.c       \
 kemoview_gtk4_viewmode_menu.c         \
 kemoview_gtk4_field_selectors.c       \
 kemoview_gtk4_range_menu.c            \
+kemoview_gtk4_colorbar_switch.c       \
 kemoview_gtk4_color_select.c          \
 kemoview_gtk4_color_menu.c            \
 kemoview_gtk4_isoline_color_sel.c     \
@@ -79,7 +80,11 @@ kemoview_gtk4_PSF_vector_menu.c       \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_selectors.c         \
 kemoview_gtk4_PSF_window.c            \
+kemoview_gtk4_Fline_menu.c            \
 kemoview_gtk4_Fline_window.c          \
+kemoview_gtk4_Tracer_ref_vector.c     \
+kemoview_gtk4_Tracer_increment.c      \
+kemoview_gtk4_Tracer_menu.c           \
 kemoview_gtk4_Tracer_window.c         \
 kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_quilt_menu.c            \

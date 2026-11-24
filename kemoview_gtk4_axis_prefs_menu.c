@@ -2,8 +2,11 @@
  *  kemoview_gtk4_axis_prefs_menu.c
  *  Kemoview_Cocoa
  *
- *  Created by Hiroaki Matsui on 12/03/04.
- *  Copyright 2012 Dept. of Earth and Planetary Science, UC Berkeley. All rights reserved.
+ *
+ *  Created by Hiroaki Matsui on Oct, 20, 2026
+ *  Copyright 2026 Dept. of Earth and Planetary Sciences,
+ *  Inst. of Science Tokyo. All rights reserved.
+ *
  ***********************************************************************/
 #include "kemoview_gtk4_axis_prefs_menu.h"
 

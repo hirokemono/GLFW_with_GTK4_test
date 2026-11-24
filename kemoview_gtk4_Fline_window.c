@@ -129,16 +129,19 @@ static GtkWidget * set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
     fline_win_vws->fline_range_vws = init_gtk_range_view(kemo_gl,
                                                          &fline_win_vws->iflag_fieldline_mode, 
                                                          fline_win_vws->flineWin);
-    fline_win_vws->fline_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
-                                                                  &fline_win_vws->iflag_fieldline_mode, 
-                                                                  fline_win_vws->flineWin);
+    fline_win_vws->fline_sf_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
+                                                                     &fline_win_vws->iflag_fieldline_mode, 
+                                                                     fline_win_vws->flineWin);
+    fline_win_vws->fline_sf_color_vws = init_gtk_psf_colormap_expander(kemo_gl,
+                                                                       &fline_win_vws->iflag_fieldline_mode, 
+                                                                       fline_win_vws->flineWin);
     
     GtkWidget *fline_hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->closeButton);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_field);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_component);
     
-    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_color_vws->hbox_sf_color);
+    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_sf_color_vws->hbox_sf_color);
     gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_range_vws->hbox_psf_range);
     /*
 	init_fieldline_menu_hbox(kemo_gl, fline_gmenu);
@@ -171,9 +174,11 @@ void set_gtk4_fline_menu_values(struct kemoviewer_gl_type *kemo_gl,
                                 int id_current_model,
                                 struct fline_gtk_window_view *fline_win_vws){
     set_gtk4_fline_surf_color_sel(kemo_gl, id_current_model,
-                                  fline_win_vws->fline_color_vws);
+                                  fline_win_vws->fline_sf_color_vws);
     set_gtk4_surf_range_values(kemo_gl, id_current_model, 
                                fline_win_vws->fline_range_vws);
+    reset_colormap_menu_views(kemo_gl, id_current_model, 
+                              fline_win_vws->fline_sf_color_vws);
     return;
 };
 
@@ -238,7 +243,8 @@ struct fline_gtk_window_view * alloc_fline_gtk_window_view(void){
 
 void dealloc_fline_gtk_window(struct fline_gtk_window_view *fline_win_vws){
     dealloc_gtk_range_view(fline_win_vws->fline_range_vws);
-    dealloc_psf_surf_color_views(fline_win_vws->fline_color_vws);
+    dealloc_psf_surf_color_views(fline_win_vws->fline_sf_color_vws);
+    dealloc_colormap_views(fline_win_vws->fline_sf_color_vws);
     g_object_unref(fline_win_vws->closeButton);
     g_object_unref(fline_win_vws->fline_frame);
     g_object_unref(fline_win_vws->flineWin);
