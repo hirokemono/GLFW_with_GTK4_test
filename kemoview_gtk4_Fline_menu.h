@@ -24,31 +24,32 @@
 #include "kemoview_gtk4_Fline_thickness.h"
 #include "kemoview_gtk4_Tracer_increment.h"
 #include "kemoview_gtk4_Tracer_ref_vector.h"
+#include "kemoview_gtk4_color_menu.h"
+#include "kemoview_gtk4_range_menu.h"
 
 struct fieldline_gtk_menu{
-    int iflag_flinemode;
+    int id_fline_mode;
     
     GtkWidget *switch_tube;
-    GtkWidget *fline_switch_bar;
+    GtkWidget *hbox_fline_tube;
     
-    GtkWidget *switch_vect;
+    struct colorbar_sw_view    *fline_cbar_sw_vws;
+    struct line_thickness_menu *thickness_vws;
     
-    GtkWidget *expander_fline_color;
+    struct surface_range_view     *fline_range_vws;
+    struct psf_surface_color_view *fline_sf_color_vws;
+    struct colormap_views         *fline_color_vws;
     
-    struct line_thickness_menu       *thickness_vws;
-    struct tracer_ref_vector_menu    *tracer_refvect_vws;
-    struct tracer_vec_increment_menu *tracer_increment_vws;
+    GtkWidget *fline_color_frame;
 };
 
 
 /*  prototypes */
+struct fieldline_gtk_menu * init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                                     GtkWidget *flineWin);
+void set_fieldline_menu_parameters(struct kemoviewer_gl_type *kemo_gl,
+                                   struct fieldline_gtk_menu *fline_gmenu);
+void dealloc_fieldline_gtk_menu(struct fieldline_gtk_menu *fline_gmenu);
 
-void set_gtk_fieldline_menu(struct kemoviewer_gl_type *kemo_gl,
-                            struct fieldline_gtk_menu *fline_gmenu);
-void init_fieldline_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
-                              struct fieldline_gtk_menu *fline_gmenu);
-GtkWidget * pack_fieldline_menu_frame(struct fieldline_gtk_menu *fline_gmenu);
 
-void init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
-                           struct fieldline_gtk_menu *fline_gmenu);
 #endif   /*  KEMOVIEW_GTK4_FLINE_MENU_  */

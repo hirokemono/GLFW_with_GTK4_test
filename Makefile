@@ -80,6 +80,7 @@ kemoview_gtk4_PSF_vector_menu.c       \
 kemoview_gtk4_PSF_menu.c              \
 kemoview_gtk4_PSF_selectors.c         \
 kemoview_gtk4_PSF_window.c            \
+kemoview_gtk4_Fline_thickness.c       \
 kemoview_gtk4_Fline_menu.c            \
 kemoview_gtk4_Fline_window.c          \
 kemoview_gtk4_Tracer_ref_vector.c     \

@@ -34,14 +34,14 @@ static void surface_colormode_CB(GtkDropDown *dropdown,
     
     if(selected_item == NULL) return;
     const char *text = gtk_string_object_get_string(selected_item);
-    int index_mode = find_surface_color_mode(text);
     
-    printf("*id_current_model %d \n", *id_current_model);
     if(*id_current_model == SURFACE_RENDERING){
+        int index_mode = find_surface_color_mode(text);
         set_psf_surface_color_mode(index_mode, parent_window, 
                                    listbutton_sfcolor, psf_color_selector,
                                    kemo_gl);
     }else{
+        int index_mode = find_fline_color_mode(text);
         set_fline_surface_color_mode(index_mode, parent_window, 
                                      listbutton_sfcolor, psf_color_selector,
                                      kemo_gl, *id_current_model);

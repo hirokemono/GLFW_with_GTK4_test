@@ -27,8 +27,8 @@
 #include "kemoview_gtk4_quilt_menu.h"
 #include "kemoview_gtk4_axis_menu.h"
 // #include "kemoview_gtk_mesh_menu.h"
-#include "kemoview_gtk4_PSF_menu.h"
-// #include "kemoview_gtk_Fline_window.h"
+#include "kemoview_gtk4_Fline_window.h"
+#include "kemoview_gtk4_Tracer_window.h"
 #include "kemoview_gtk4_preference_menu.h"
 #include "kemoview_gtk4_viewmatrix_menu.h"
 #include "kemoview_gtk4_viewmode_menu.h"
@@ -46,8 +46,6 @@ struct main_buttons{
     struct psf_gtk_window_view *psf_win_vws;
     struct fline_gtk_window_view *fline_win_vws;
     struct tracer_gtk_window_view *tracer_win_vws;
-    struct fieldline_gtk_menu *fline_gmenu;
-    struct fieldline_gtk_menu *tracer_gmenu;
     
     GtkWidget *meshWin;
 //    struct kemoview_mesh_view *mesh_vws;

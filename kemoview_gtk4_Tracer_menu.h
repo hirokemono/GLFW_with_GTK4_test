@@ -26,6 +26,8 @@
 #include "kemoview_gtk4_Fline_thickness.h"
 #include "kemoview_gtk4_Tracer_increment.h"
 #include "kemoview_gtk4_Tracer_ref_vector.h"
+#include "kemoview_gtk4_color_menu.h"
+#include "kemoview_gtk4_range_menu.h"
 
 struct tracer_gtk_menu{
     int id_tracer_mode;
@@ -39,12 +41,17 @@ struct tracer_gtk_menu{
     struct tracer_ref_vector_menu    *tracer_refvect_vws;
     struct tracer_vec_increment_menu *tracer_increment_vws;
     
+    struct surface_range_view        *tracer_range_vws;
+    struct psf_surface_color_view    *tracer_sf_color_vws;
+    struct colormap_views            *tracer_color_vws;
+    
     GtkWidget *tracer_menu_frame;
 };
 
 
 /*  prototypes */
-GtkWidget * init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl);
+struct tracer_gtk_menu * init_tracer_menu_hbox(struct kemoviewer_gl_type *kemo_gl,
+                                               GtkWidget *tracerWin);
 void set_tracer_menu_parameters(struct kemoviewer_gl_type *kemo_gl,
                                 struct tracer_gtk_menu *tracer_gmenu);
 void dealloc_tracer_menu_parameters(struct tracer_gtk_menu *tracer_gmenu);

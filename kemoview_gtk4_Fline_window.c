@@ -32,13 +32,12 @@ static void fline_field_select_CB(GtkDropDown *dropdown,
     GtkWidget *itemTEvo = GTK_WIDGET(user_data);
     struct fline_gtk_window_view *fline_win_vws
             = (struct fline_gtk_window_view *) g_object_get_data(G_OBJECT(user_data), "flineWinView");
-    struct fieldline_gtk_menu *fline_gmenu
-            = (struct fieldline_gtk_menu *) g_object_get_data(G_OBJECT(user_data), "fline_view");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     
-    if(kemoview_field_select_CB(kemo_gl, FIELDLINE_RENDERING, dropdown) < 0) return;
+    if(kemoview_field_select_CB(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode, dropdown) < 0) return;
 //    replace_fline_frame(kemo_gl, fline_win_vws, fline_gmenu, itemTEvo);
+    set_fieldline_menu_parameters(kemo_gl, fline_win_vws->fline_gmenu);
     
     draw_full_gl(kemo_gl);
     return;
@@ -56,12 +55,13 @@ static GtkWidget * init_fline_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl
     
     const char * const null_text_list[] = {NULL};
     fline_win_vws->fline_field_model = gtk_string_list_new(null_text_list);
-    reset_psf_field_model(kemo_gl, FIELDLINE_RENDERING, fline_win_vws->fline_field_model);
+    reset_psf_field_model(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode,
+                          fline_win_vws->fline_field_model);
     fline_win_vws->combobox_field = init_list_button_by_list_model(fline_win_vws->fline_field_model);
     g_signal_connect(G_OBJECT(fline_win_vws->combobox_field), "notify::selected-item",
                      G_CALLBACK(fline_field_select_CB), G_OBJECT(entry_buf));
     
-    int id_menu = set_selected_psf_field_list(kemo_gl, FIELDLINE_RENDERING,
+    int id_menu = set_selected_psf_field_list(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode,
                                               fline_win_vws->fline_field_model);
     gtk_drop_down_set_selected(GTK_DROP_DOWN(fline_win_vws->combobox_field), id_menu);
     
@@ -75,11 +75,13 @@ static GtkWidget * init_fline_draw_field_hbox(struct kemoviewer_gl_type *kemo_gl
 static void fline_component_select_CB(GtkDropDown *dropdown,
                                       GParamSpec *pspec,
                                       gpointer user_data){
+    struct fline_gtk_window_view *fline_win_vws
+            = (struct fline_gtk_window_view *) g_object_get_data(G_OBJECT(user_data), "flineWinView");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    int *id_current_model = (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
     
-    if(kemoview_component_select(kemo_gl, FIELDLINE_RENDERING, dropdown) < 0) return;
+    if(kemoview_component_select(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode, dropdown) < 0) return;
+    set_fieldline_menu_parameters(kemo_gl, fline_win_vws->fline_gmenu);
     
     draw_full_gl(kemo_gl);
     return;
@@ -92,16 +94,17 @@ static GtkWidget * init_fline_color_component_hbox(struct kemoviewer_gl_type *ke
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
-//    g_object_set_data(G_OBJECT(entry_buf), "psfmenu", (gpointer)  fline_win_vws->psf_gmenu);
+    g_object_set_data(G_OBJECT(entry_buf), "flineWinView", (gpointer)  fline_win_vws);
     
     const char * const null_text_list[] = {NULL};
     fline_win_vws->fline_component_model = gtk_string_list_new(null_text_list);
-    reset_psf_component_model(kemo_gl, FIELDLINE_RENDERING, fline_win_vws->fline_component_model);
+    reset_psf_component_model(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode,
+                              fline_win_vws->fline_component_model);
     fline_win_vws->combobox_comp = init_list_button_by_list_model(fline_win_vws->fline_component_model);
     g_signal_connect(G_OBJECT(fline_win_vws->combobox_comp), "notify::selected-item",
                      G_CALLBACK(fline_component_select_CB), G_OBJECT(entry_buf));
     
-    int id_menu = set_selected_psf_component_list(kemo_gl, FIELDLINE_RENDERING,
+    int id_menu = set_selected_psf_component_list(kemo_gl, fline_win_vws->fline_gmenu->id_fline_mode,
                                                   fline_win_vws->fline_component_model);
     gtk_drop_down_set_selected(GTK_DROP_DOWN(fline_win_vws->combobox_comp), id_menu);
     
@@ -114,7 +117,6 @@ static GtkWidget * init_fline_color_component_hbox(struct kemoviewer_gl_type *ke
 
 static GtkWidget * set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                           struct fline_gtk_window_view *fline_win_vws,
-//                                       struct fieldline_gtk_menu *fline_gmenu,
                                           GtkWidget *itemTEvo){
     fline_win_vws->closeButton = gtk_button_new_with_label("Close Fieldline");
     
@@ -123,64 +125,18 @@ static GtkWidget * set_fieldline_menu_box(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(G_OBJECT(fline_win_vws->closeButton), "clicked",
                      G_CALLBACK(close_fline_CB), itemTEvo);
     
+    fline_win_vws->fline_gmenu = init_fieldline_menu_hbox(kemo_gl, fline_win_vws->flineWin);
     GtkWidget *hbox_field =     init_fline_draw_field_hbox(kemo_gl, fline_win_vws, itemTEvo);
     GtkWidget *hbox_component = init_fline_color_component_hbox(kemo_gl, fline_win_vws);
-    
-    fline_win_vws->fline_range_vws = init_gtk_range_view(kemo_gl,
-                                                         &fline_win_vws->iflag_fieldline_mode, 
-                                                         fline_win_vws->flineWin);
-    fline_win_vws->fline_sf_color_vws = init_gtk4_psf_surf_color_sel(kemo_gl, 
-                                                                     &fline_win_vws->iflag_fieldline_mode, 
-                                                                     fline_win_vws->flineWin);
-    fline_win_vws->fline_sf_color_vws = init_gtk_psf_colormap_expander(kemo_gl,
-                                                                       &fline_win_vws->iflag_fieldline_mode, 
-                                                                       fline_win_vws->flineWin);
     
     GtkWidget *fline_hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
     gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->closeButton);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_field);
     gtk_box_append(GTK_BOX(fline_hbox), hbox_component);
+    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_gmenu->fline_color_frame);
     
-    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_sf_color_vws->hbox_sf_color);
-    gtk_box_append(GTK_BOX(fline_hbox), fline_win_vws->fline_range_vws->hbox_psf_range);
-    /*
-	init_fieldline_menu_hbox(kemo_gl, fline_gmenu);
-    
-    g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
-    g_object_set_data(G_OBJECT(itemTEvo), "current_model", (gpointer) tracer_gmenu->iflag_flinemode);
-    g_object_set_data(G_OBJECT(itemTEvo), "flineWinView", (gpointer) fline_win_vws);
-    g_object_set_data(G_OBJECT(itemTEvo), "flinemenu", (gpointer) fline_gmenu);
-    
-    fline_gmenu->combobox_field = draw_viz_field_gtk_box(kemo_gl, fline_gmenu->iflag_flinemode);
-    fline_gmenu->combobox_comp = draw_viz_component_gtk_box(kemo_gl, fline_gmenu->iflag_flinemode);
-    g_signal_connect(G_OBJECT(fline_gmenu->combobox_field), "changed",
-                     G_CALLBACK(fline_field_select_CB), (gpointer) itemTEvo);
-    g_signal_connect(G_OBJECT(fline_gmenu->combobox_comp), "changed",
-                     G_CALLBACK(fline_component_select_CB), (gpointer) itemTEvo);
-    
-    int itype_fline = kemoview_get_line_type_flag(kemo_gl->kemoview_data);
-    if(itype_fline == 0){
-        gtk_switch_set_active(GTK_SWITCH(fline_gmenu->switch_tube), FALSE);
-    } else {
-        gtk_switch_set_active(GTK_SWITCH(fline_gmenu->switch_tube), TRUE);
-    };
-    
-    set_gtk_fieldline_menu(kemo_gl, fline_gmenu);
-*/
 	return fline_hbox;
 }
-
-void set_gtk4_fline_menu_values(struct kemoviewer_gl_type *kemo_gl,
-                                int id_current_model,
-                                struct fline_gtk_window_view *fline_win_vws){
-    set_gtk4_fline_surf_color_sel(kemo_gl, id_current_model,
-                                  fline_win_vws->fline_sf_color_vws);
-    set_gtk4_surf_range_values(kemo_gl, id_current_model, 
-                               fline_win_vws->fline_range_vws);
-    reset_colormap_menu_views(kemo_gl, id_current_model, 
-                              fline_win_vws->fline_sf_color_vws);
-    return;
-};
 
 GtkWidget *  init_fline_frame(struct kemoviewer_gl_type *kemo_gl,
                               struct fline_gtk_window_view *fline_win_vws,
@@ -211,11 +167,10 @@ void replace_fline_frame(struct kemoviewer_gl_type *kemo_gl,
 
 void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
                        struct fline_gtk_window_view *fline_win_vws,
-//                       struct fieldline_gtk_menu *fline_gmenu,
                        GtkWidget *main_window, GtkWidget *itemTEvo){
     if(fline_win_vws->iflag_flineBox > 0){gtk_window_destroy(GTK_WINDOW(fline_win_vws->flineWin));};
     fline_win_vws->iflag_flineBox = kemoview_get_VIZ_draw_flags(kemo_gl->kemoview_data,
-                                                             FIELDLINE_RENDERING);
+                                                                FIELDLINE_RENDERING);
     if(fline_win_vws->iflag_flineBox == 0){return;};
 
     fline_win_vws->flineWin = gtk_window_new();
@@ -237,14 +192,11 @@ struct fline_gtk_window_view * alloc_fline_gtk_window_view(void){
         printf("malloc error for fline_gtk_window_view \n");
         exit(0);
     }
-    fline_win_vws->iflag_fieldline_mode = FIELDLINE_RENDERING;
     return fline_win_vws;
 };
 
 void dealloc_fline_gtk_window(struct fline_gtk_window_view *fline_win_vws){
-    dealloc_gtk_range_view(fline_win_vws->fline_range_vws);
-    dealloc_psf_surf_color_views(fline_win_vws->fline_sf_color_vws);
-    dealloc_colormap_views(fline_win_vws->fline_sf_color_vws);
+    dealloc_fieldline_gtk_menu(fline_win_vws->fline_gmenu);
     g_object_unref(fline_win_vws->closeButton);
     g_object_unref(fline_win_vws->fline_frame);
     g_object_unref(fline_win_vws->flineWin);

@@ -18,33 +18,30 @@
 #include "m_kemoviewer_data.h"
 
 #include "calypso_GTK4.h"
+#include "kemoview_gtk4_routines.h"
 // #include "kemoview_gtk4_fline_selectors.h"
 // #include "kemoview_gtk4_fileselector.h"
-// #include "kemoview_gtk4_fieldline_menu.h"
+#include "kemoview_gtk4_Fline_menu.h"
 #include "kemoview_gtk4_PSF_selectors.h"
 #include "kemoview_gtk4_field_selectors.h"
 #include "kemoview_gtk4_evolution_menu.h"
 #include "kemoview_gtk4_PSF_surf_color_sel.h"
-#include "kemoview_gtk4_color_menu.h"
-#include "kemoview_gtk4_range_menu.h"
 
 struct fline_gtk_window_view{
-    int iflag_fieldline_mode;
     int iflag_flineBox;
-    
-    struct surface_range_view * fline_range_vws;
-    struct psf_surface_color_view *fline_sf_color_vws;
     
     GtkWidget *closeButton;
     
-    GtkWidget *fline_field_model;
+    GtkStringList *fline_field_model;
     GtkWidget *combobox_field;
     
-    GtkWidget *fline_component_model;
+    GtkStringList *fline_component_model;
     GtkWidget *combobox_comp;
     
     GtkWidget *fline_frame;
     GtkWidget *flineWin;
+    
+    struct fieldline_gtk_menu *fline_gmenu;
 };
 
 /* prototypes */
