@@ -87,6 +87,7 @@ kemoview_gtk4_Tracer_ref_vector.c     \
 kemoview_gtk4_Tracer_increment.c      \
 kemoview_gtk4_Tracer_menu.c           \
 kemoview_gtk4_Tracer_window.c         \
+kemoview_gtk4_Mesh_menu.c             \
 kemoview_gtk4_Mesh_window.c           \
 kemoview_gtk4_evolution_menu.c        \
 kemoview_gtk4_quilt_menu.c            \

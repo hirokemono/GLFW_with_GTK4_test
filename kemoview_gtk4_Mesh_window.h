@@ -21,6 +21,7 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
+#include "kemoview_gtk4_Mesh_menu.h"
 
 struct mesh_gtk_window_view{
     int iflag_meshBox;
@@ -30,7 +31,7 @@ struct mesh_gtk_window_view{
     GtkWidget *mesh_frame;
     GtkWidget *meshWin;
     
-//    struct tracer_gtk_menu *tracer_gmenu;
+    struct mesh_gtk_menu *mesh_gmenu;
 };
 
 /* prototypes */
