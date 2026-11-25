@@ -24,6 +24,7 @@
 
 struct mesh_gtk_menu{
     GtkWidget *spin_dist;
+    GtkWidget *spin_num_loop;
     
     GtkWidget *mesh_menu_box;
 };
