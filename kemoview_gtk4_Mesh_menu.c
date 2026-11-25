@@ -83,11 +83,7 @@ static GtkWidget * init_subdomain_color_loop_box(struct kemoviewer_gl_type *kemo
     return hbox_num_loop;
 }
 
-void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
-                       struct mesh_gtk_menu *mesh_gmenu){
-    set_subdomain_distance_menu(kemo_gl, mesh_gmenu);
-    set_subdomain_color_loop_menu(kemo_gl, mesh_gmenu);
-};
+
 
 struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
                                           GtkWidget *window){
@@ -96,8 +92,11 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_distance = init_subdomain_distance_box(kemo_gl, mesh_gmenu);
     GtkWidget *hbox_num_loop = init_subdomain_color_loop_box(kemo_gl, mesh_gmenu);
     
+    mesh_gmenu->mesh_color_vws = init_mesh_color_views(kemo_gl);
+        
     mesh_gmenu->mesh_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_distance);
+    gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->mesh_color_vws->mesh_color_box);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_num_loop);
     
     
@@ -105,7 +104,17 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     return mesh_gmenu;
 }
 
+void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
+                       struct mesh_gtk_menu *mesh_gmenu){
+    set_subdomain_distance_menu(kemo_gl, mesh_gmenu);
+    set_subdomain_color_loop_menu(kemo_gl, mesh_gmenu);
+    
+    set_mesh_color_dropdown(kemo_gl, mesh_gmenu->mesh_color_vws);
+};
+
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu){
+    dealloc_mesh_color_views(mesh_gmenu->mesh_color_vws);
+    
     g_object_unref(mesh_gmenu->spin_dist);
     g_object_unref(mesh_gmenu->spin_num_loop);
     g_object_unref(mesh_gmenu->mesh_menu_box);

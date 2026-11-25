@@ -21,10 +21,13 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
+#include "kemoview_gtk4_Mesh_color_sel.h"
 
 struct mesh_gtk_menu{
     GtkWidget *spin_dist;
     GtkWidget *spin_num_loop;
+    
+    struct mesh_color_view *mesh_color_vws;
     
     GtkWidget *mesh_menu_box;
 };
@@ -32,6 +35,8 @@ struct mesh_gtk_menu{
 /* prototypes */
 struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
                                           GtkWidget *window);
+void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
+                       struct mesh_gtk_menu *mesh_gmenu);
 
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu);
 
