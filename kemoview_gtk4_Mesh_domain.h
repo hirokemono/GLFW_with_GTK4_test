@@ -31,7 +31,7 @@ struct domain_gtk_menu{
     GtkWidget *button_hide_grid;
     GtkWidget *button_hide_node;
     
-    GtkWidget *domain_menu_box;
+    GtkWidget *domain_menu_expander;
 };
 
 /* prototypes */

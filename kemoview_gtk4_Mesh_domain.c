@@ -78,8 +78,8 @@ static void hide_all_domain_nodes_CB(GtkButton *button, gpointer user_data)
 }
 
 
-static GtkWidget * initall_subdomain_switch_box(struct kemoviewer_gl_type *kemo_gl,
-                                                struct domain_gtk_menu *domain_gmenu){
+static GtkWidget * init_all_subdomain_switch_box(struct kemoviewer_gl_type *kemo_gl,
+                                                 struct domain_gtk_menu *domain_gmenu){
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
     
@@ -126,12 +126,13 @@ struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl
                                               GtkWidget *window){
     struct domain_gtk_menu *domain_gmenu = alloc_domain_menu();
     
-    GtkWidget *hbox_all_switch = initall_subdomain_switch_box(kemo_gl, domain_gmenu);
+    GtkWidget *hbox_all_switch = init_all_subdomain_switch_box(kemo_gl, domain_gmenu);
     
-    domain_gmenu->domain_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(domain_gmenu->domain_menu_box), hbox_all_switch);
+    GtkWidget *domain_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(domain_menu_box), hbox_all_switch);
     
-//    set_gtk_domain_menu(kemo_gl, domain_gmenu);
+    domain_gmenu->domain_menu_expander = wrap_into_scroll_expansion_gtk4("Subdomains", 360, 420,
+                                                           window, domain_menu_box);
     return domain_gmenu;
 }
 
@@ -148,7 +149,7 @@ void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu){
     g_object_unref(domain_gmenu->button_hide_grid);
     g_object_unref(domain_gmenu->button_hide_node);
     
-    g_object_unref(domain_gmenu->domain_menu_box);
+    g_object_unref(domain_gmenu->domain_menu_expander);
     free(domain_gmenu);
     return;
 };

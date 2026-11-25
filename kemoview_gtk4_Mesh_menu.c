@@ -157,7 +157,7 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     mesh_gmenu->domain_gmenu =   init_gtk_domain_menu(kemo_gl, window);
     
     mesh_gmenu->mesh_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->domain_gmenu->domain_menu_box);
+    gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->domain_gmenu->domain_menu_expander);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_distance);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_node_size);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->mesh_color_vws->mesh_color_box);
