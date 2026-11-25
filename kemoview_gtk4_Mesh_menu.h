@@ -28,6 +28,9 @@ struct mesh_gtk_menu{
     GtkWidget *spin_dist;
     GtkWidget *spin_num_loop;
     
+    GtkWidget *spin_node_size;
+    GtkWidget *spin_node_digit;
+    
     struct mesh_color_view *mesh_color_vws;
     struct domain_gtk_menu *domain_gmenu;
     
