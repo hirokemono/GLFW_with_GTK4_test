@@ -33,10 +33,6 @@ void init_fline_colmode_dropdown(int id_color_mode,
 int find_surface_color_mode(const char *text);
 int find_fline_color_mode(const char *text);
 
-void set_VIEWcolor_GTK(GtkWidget *psf_color_selector,
-                       struct kemoviewer_gl_type *kemo_gl,
-                       int id_current_model);
-
 void set_psf_surface_color_mode(int index_mode, GtkWidget *parent_window,
                                 GtkWidget *color_selector,
                                 struct kemoviewer_gl_type *kemo_gl);

@@ -44,6 +44,7 @@ static void surface_colormode_CB(GtkDropDown *dropdown,
                                      psf_color_selector,
                                      kemo_gl, *id_current_model);
     };
+    draw_double_gl(kemo_gl);
     return;
 };
 
@@ -51,21 +52,25 @@ static void surface_colorsel_CB(GObject    *object,
                                 GParamSpec *pspec,
                                 gpointer    user_data){
     GtkWidget *psf_color_selector = GTK_WIDGET(object);
-    GtkWidget *listbutton_sfcolor = GTK_WIDGET(user_data);
+    GtkWidget *parent_window = GTK_WIDGET(g_object_get_data(G_OBJECT(user_data), "parents"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *id_current_model =         (int *) g_object_get_data(G_OBJECT(user_data), "current_model");
     
-    if(*id_current_model == SURFACE_RENDERING){
-        kemoview_set_PSF_patch_color_mode(SINGLE_COLOR, kemo_gl->kemoview_data);
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(listbutton_sfcolor), SINGLE_COLOR);
-    }else{
-        kemoview_set_VIZ_patch_color_mode(ONE_COLOR_LINE, *id_current_model,
-                                          kemo_gl->kemoview_data);
-        gtk_drop_down_set_selected(GTK_DROP_DOWN(listbutton_sfcolor), ONE_COLOR_LINE);
-    };
-    set_VIEWcolor_GTK(psf_color_selector, kemo_gl, *id_current_model);
-    draw_triple_gl(kemo_gl);
+    float fcolor[4];
+    GtkColorDialogButton *color_button = GTK_COLOR_DIALOG_BUTTON(psf_color_selector);
+    const GdkRGBA *rgba = gtk_color_dialog_button_get_rgba(color_button);
+    
+    set_RGB_from_GTK(rgba, fcolor);
+    fcolor[3] = (float) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
+                                                       *id_current_model,
+                                                       ISET_OPACITY_MAX);
+    kemoview_set_VIZ_single_color(fcolor,
+                                  *id_current_model,
+                                  kemo_gl->kemoview_data);
+    
+    draw_double_gl(kemo_gl);
+    gtk_widget_queue_draw(parent_window);
     return;
 };
 
@@ -107,22 +112,15 @@ struct psf_surface_color_view * init_gtk4_psf_surf_color_sel(struct kemoviewer_g
     gtk_color_dialog_button_set_rgba(GTK_COLOR_DIALOG_BUTTON(psf_sf_color_vws->psf_color_selector),
                                      &bg_rgba);
     
-    g_object_set_data(G_OBJECT(psf_sf_color_vws->listbutton_sfcolor), 
-                      "kemoview_gl", (gpointer) kemo_gl);
-    g_object_set_data(G_OBJECT(psf_sf_color_vws->listbutton_sfcolor), 
-                      "current_model", (gpointer)  id_current_model);
-    g_object_set_data(G_OBJECT(psf_sf_color_vws->psf_color_selector), 
-                      "kemoview_gl", (gpointer)  kemo_gl);
-    g_object_set_data(G_OBJECT(psf_sf_color_vws->psf_color_selector), 
-                      "current_model", (gpointer)  id_current_model);
-    g_object_set_data(G_OBJECT(psf_sf_color_vws->psf_color_selector),
-                      "parents", (gpointer) parent_window);
+    GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
+    g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer) kemo_gl);
+    g_object_set_data(G_OBJECT(entry_buf), "current_model", (gpointer)  id_current_model);
+    g_object_set_data(G_OBJECT(entry_buf), "parents", (gpointer)  parent_window);
     
     g_signal_connect(G_OBJECT(psf_sf_color_vws->listbutton_sfcolor), "notify::selected-item", 
-                     G_CALLBACK (surface_colormode_CB), psf_sf_color_vws->psf_color_selector);
+                     G_CALLBACK (surface_colormode_CB), G_OBJECT(entry_buf));
     g_signal_connect (psf_sf_color_vws->psf_color_selector, "notify::rgba", 
-                      G_CALLBACK(surface_colorsel_CB), 
-                      G_OBJECT(psf_sf_color_vws->listbutton_sfcolor));
+                      G_CALLBACK(surface_colorsel_CB), G_OBJECT(entry_buf));
     
     psf_sf_color_vws->hbox_sf_color = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_append(GTK_BOX(psf_sf_color_vws->hbox_sf_color), gtk_label_new("Color: "));

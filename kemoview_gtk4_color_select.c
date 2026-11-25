@@ -101,48 +101,19 @@ int find_fline_color_mode(const char *text){
     return index;
 }
 
-
-void set_VIEWcolor_GTK(GtkWidget *psf_color_selector,
-                       struct kemoviewer_gl_type *kemo_gl,
-                       int id_current_model){
-    float fcolor[4];
-    GtkColorDialogButton* color_button
-            = GTK_COLOR_DIALOG_BUTTON(psf_color_selector);
-    const GdkRGBA *rgba = gtk_color_dialog_button_get_rgba(color_button);
-    
-    set_RGB_from_GTK(rgba, fcolor);
-    fcolor[3] = (float) kemoview_get_VIZ_opacity_range(kemo_gl->kemoview_data,
-                                                       id_current_model,
-                                                       ISET_OPACITY_MAX);
-    kemoview_set_VIZ_single_color(fcolor,
-                                  id_current_model,
-                                  kemo_gl->kemoview_data);
-    
-    kemoview_gl_background_color(kemo_gl->kemoview_data);
-    draw_fast_gl(kemo_gl);
-    kemoview_gl_background_color(kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-	return;
-}
-
 void set_psf_surface_color_mode(int index_mode, GtkWidget *parent_window,
                                 GtkWidget *color_selector,
                                 struct kemoviewer_gl_type *kemo_gl){
     if(index_mode == TEXTURE_PSF_SURF){
 		open_texture_load_dialog(kemo_gl, GTK_WINDOW(parent_window));
-        draw_full_gl(kemo_gl);
 /*
 	}else if(index_mode == CHANGE_PSF_COLOR){
 		gtk_combo_box_set_active(GTK_COMBO_BOX(color_listbutton), 2);
-        draw_full_gl(kemo_gl);
 */
     }else if(index_mode == SINGLE_COLOR){
-        set_VIEWcolor_GTK(color_selector, kemo_gl, SURFACE_RENDERING);
         kemoview_set_PSF_patch_color_mode(index_mode, kemo_gl->kemoview_data);
-        draw_triple_gl(kemo_gl);
     }else{
         kemoview_set_PSF_patch_color_mode(index_mode, kemo_gl->kemoview_data);
-        draw_full_gl(kemo_gl);
     };
     return;
 }
@@ -152,14 +123,11 @@ void set_fline_surface_color_mode(int index_mode, GtkWidget *parent_window,
                                   struct kemoviewer_gl_type *kemo_gl,
                                   int id_current_model){
     if(index_mode == ONE_COLOR_LINE){
-        set_VIEWcolor_GTK(color_selector, kemo_gl, id_current_model);
         kemoview_set_VIZ_patch_color_mode(index_mode, id_current_model,
                                           kemo_gl->kemoview_data);
-        draw_triple_gl(kemo_gl);
     }else{
         kemoview_set_VIZ_patch_color_mode(index_mode, id_current_model,
                                           kemo_gl->kemoview_data);
-        draw_full_gl(kemo_gl);
     };
     return;
 }
