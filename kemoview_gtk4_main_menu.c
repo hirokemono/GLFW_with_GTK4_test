@@ -20,7 +20,8 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
     mbot->psf_win_vws =    alloc_psf_gtk_window_view();
     mbot->fline_win_vws =  alloc_fline_gtk_window_view();
     mbot->tracer_win_vws = alloc_tracer_gtk_window_view();
-//    mbot->mesh_vws = (struct kemoview_mesh_view *) malloc(sizeof(struct kemoview_mesh_view));
+    mbot->mesh_win_vws =   alloc_mesh_window_view();
+    
     mbot->evo_gmenu = init_evoluaiton_menu_box(kemoviewer_data);
     mbot->view_menu = init_viewmat_widgets();
     mbot->rot_gmenu =   init_rotation_menu_box();
@@ -31,13 +32,12 @@ struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data)
 
 void dealloc_main_buttons(struct main_buttons *mbot){
     dealloc_psf_gtk_window(mbot->psf_win_vws);
-    dealloc_psf_gtk_window(mbot->fline_win_vws);
-    dealloc_psf_gtk_window(mbot->tracer_win_vws);
-//    free(mbot->mesh_vws);
+    dealloc_fline_gtk_window(mbot->fline_win_vws);
+    dealloc_tracer_gtk_window(mbot->tracer_win_vws);
+    dealloc_mesh_window_view(mbot->mesh_win_vws);
+    
     free(mbot->evo_gmenu);
-    
     dealloc_preference_view(mbot->pref_vws);
-    
     free(mbot->rot_gmenu);
     dealloc_viewmat_widgets(mbot->view_menu);
     

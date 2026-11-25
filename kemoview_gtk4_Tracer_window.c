@@ -25,7 +25,7 @@ static void close_tracer_CB(GtkButton *button, gpointer user_data){
     draw_full_gl(kemo_gl);
 };
 
-static void fline_tracer_select_CB(GtkDropDown *dropdown,
+static void tracer_field_select_CB(GtkDropDown *dropdown,
                                    GParamSpec *pspec,
                                    gpointer user_data){
     GtkWidget *itemTEvo = GTK_WIDGET(user_data);
@@ -58,7 +58,7 @@ static GtkWidget * init_tracer_draw_field_hbox(struct kemoviewer_gl_type *kemo_g
                           tracer_win_vws->tracer_field_model);
     tracer_win_vws->combobox_field = init_list_button_by_list_model(tracer_win_vws->tracer_field_model);
     g_signal_connect(G_OBJECT(tracer_win_vws->combobox_field), "notify::selected-item",
-                     G_CALLBACK(fline_tracer_select_CB), G_OBJECT(entry_buf));
+                     G_CALLBACK(tracer_field_select_CB), G_OBJECT(entry_buf));
     
     int id_menu = set_selected_psf_field_list(kemo_gl, 
                                               tracer_win_vws->tracer_gmenu->id_tracer_mode,
@@ -119,7 +119,7 @@ static GtkWidget * init_tracer_color_component_hbox(struct kemoviewer_gl_type *k
 static GtkWidget * set_tracer_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                        struct tracer_gtk_window_view *tracer_win_vws,
                                        GtkWidget *itemTEvo){
-    tracer_win_vws->closeButton = gtk_button_new_with_label("Close Fieldline");
+    tracer_win_vws->closeButton = gtk_button_new_with_label("Close Tracer");
 
     g_object_set_data(G_OBJECT(tracer_win_vws->closeButton), "kemoview_gl", (gpointer) kemo_gl);
     g_object_set_data(G_OBJECT(tracer_win_vws->closeButton), "tracerWinView", (gpointer) tracer_win_vws);

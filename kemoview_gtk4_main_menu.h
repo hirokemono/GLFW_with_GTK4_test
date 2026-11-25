@@ -26,7 +26,6 @@
 #include "kemoview_gtk4_rotation_expander.h"
 #include "kemoview_gtk4_quilt_menu.h"
 #include "kemoview_gtk4_axis_menu.h"
-// #include "kemoview_gtk_mesh_menu.h"
 #include "kemoview_gtk4_Fline_window.h"
 #include "kemoview_gtk4_Tracer_window.h"
 #include "kemoview_gtk4_preference_menu.h"
@@ -37,18 +36,17 @@
 #include "kemoview_gtk4_PSF_window.h"
 #include "kemoview_gtk4_Fline_window.h"
 #include "kemoview_gtk4_Tracer_window.h"
+#include "kemoview_gtk4_Mesh_window.h"
 
 #include "view_modifier_glfw.h"
 
 
 struct main_buttons{
     int id_current[1];
-    struct psf_gtk_window_view *psf_win_vws;
-    struct fline_gtk_window_view *fline_win_vws;
+    struct psf_gtk_window_view    *psf_win_vws;
+    struct fline_gtk_window_view  *fline_win_vws;
     struct tracer_gtk_window_view *tracer_win_vws;
-    
-    GtkWidget *meshWin;
-//    struct kemoview_mesh_view *mesh_vws;
+    struct mesh_gtk_window_view   *mesh_win_vws;
     
     GtkWidget *itemTEvo;
     struct evolution_gtk_menu *evo_gmenu;
@@ -69,10 +67,10 @@ struct main_buttons{
 struct main_buttons * init_main_buttons(struct kemoviewer_type *kemoviewer_data);
 void dealloc_main_buttons(struct main_buttons *mbot);
 
-void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
-                               struct kv_string *filename, 
-                               struct main_buttons *mbot,
-                               GtkWidget *main_window);
+int open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
+                              struct kv_string *filename, 
+                              struct main_buttons *mbot,
+                              GtkWidget *main_window);
 
 GtkWidget * make_gtk4_main_menu_box(struct main_buttons *mbot,
                                     GtkWidget *quitButton, GtkWidget *main_window,

@@ -16,7 +16,8 @@ static const gchar *gtk_selected_filename;
    Constract input windows
 */
 
-void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
+void open_window_for_opened_file(int iflag_datatype,
+                                 struct kemoviewer_gl_type *kemo_gl,
                                  struct main_buttons *mbot,
                                  GtkWidget *main_window){
     init_psf_window(kemo_gl, mbot->psf_win_vws,
@@ -25,9 +26,7 @@ void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
                        main_window, mbot->itemTEvo);
     init_fline_window(kemo_gl, mbot->fline_win_vws, 
                       main_window, mbot->itemTEvo);
-    /*
-    init_mesh_window(kemo_gl, mbot->mesh_vws,  main_window, mbot->meshWin);
-    
+    init_mesh_window(kemo_gl, mbot->mesh_win_vws, main_window);
     if(iflag_datatype == 0 || iflag_datatype == IFLAG_MESH){
         mbot->evo_gmenu->istart_evo = 1;
         mbot->evo_gmenu->iend_evo =   1;
@@ -36,18 +35,20 @@ void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
         mbot->evo_gmenu->iend_evo =   kemo_gl->kemoview_data->istep_evo;
     }
     printf("kemo_gl->kemoview_data->istep_evo %d\n", kemo_gl->kemoview_data->istep_evo);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_start), (double) mbot->evo_gmenu->istart_evo);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_end),   (double) mbot->evo_gmenu->iend_evo);
-    */
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_start), 
+                              (double) mbot->evo_gmenu->istart_evo);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(mbot->evo_gmenu->spin_evo_end),
+                              (double) mbot->evo_gmenu->iend_evo);
+    
     activate_evolution_menu(kemo_gl->kemoview_data, mbot->itemTEvo);
     draw_full_gl(kemo_gl);
     return;
 };
 
-void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
-                               struct kv_string *filename,
-                               struct main_buttons *mbot,
-                               GtkWidget *main_window){
+int open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
+                              struct kv_string *filename,
+                              struct main_buttons *mbot,
+                              GtkWidget *main_window){
     struct kv_string *file_prefix = kemoview_alloc_kvstring();
     struct kv_string *stripped_ext = kemoview_alloc_kvstring();
 	int iflag_datatype = kemoview_set_data_format_flag(filename, file_prefix, stripped_ext);
@@ -58,7 +59,7 @@ void open_kemoviewer_file_glfw(struct kemoviewer_gl_type *kemo_gl,
     kemoview_free_kvstring(stripped_ext);
     kemoview_free_kvstring(file_prefix);
 	iflag_datatype = kemoview_open_data(filename, kemo_gl->kemoview_data);
-	return;
+	return iflag_datatype;
 };
 
 void save_kemoview_image_file(struct kemoviewer_gl_type *kemo_gl, 
@@ -135,35 +136,12 @@ static void kemoview_file_open_CB(GObject *source,
     gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
                               strlen(g_file_get_basename(file))+1);
     struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
-	kemoview_free_kvstring(filename);
-    g_object_unref(file);
-    
-    open_window_for_opened_file(kemo_gl, mbot, main_window);
+    int iflag_datatype = open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
+    open_window_for_opened_file(iflag_datatype, kemo_gl, mbot, main_window);
     draw_full_gl(kemo_gl);
-    return;
-}
-
-static void kemoview_file_save_CB(GObject *source,
-                                  GAsyncResult *result,
-                                  gpointer data){
-	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
-    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
-    struct kemoviewer_gl_type *kemo_gl
-            = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
-    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(data), "buttons");
     
-    GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
-    
-    if(!file) return;
-    gtk_entry_buffer_set_text(entry_buf, g_file_get_basename(file), 
-                              strlen(g_file_get_basename(file))+1);
-    struct kv_string *filename = kemoview_init_kvstring_by_string(g_file_get_path(file));
-    open_kemoviewer_file_glfw(kemo_gl, filename, mbot, main_window);
 	kemoview_free_kvstring(filename);
     g_object_unref(file);
-    
-    open_window_for_opened_file(kemo_gl, mbot, main_window);
     return;
 }
 

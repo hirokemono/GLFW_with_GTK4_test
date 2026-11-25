@@ -143,10 +143,10 @@ void dropFileToGlfw_CB(GLFWwindow *window, int num, const char **paths) {
     struct kv_string *filename;
     for (int i = 0; i < num; i++) {
         filename = kemoview_init_kvstring_by_string(paths[i]);
-        open_kemoviewer_file_glfw(kemoview_gl, filename, mbot, gtk_win);
-        kemoview_free_kvstring(filename);
-        open_window_for_opened_file(kemoview_gl, mbot, gtk_win);
+        int iflag_datatype = open_kemoviewer_file_glfw(kemoview_gl, filename, mbot, gtk_win);
+        open_window_for_opened_file(iflag_datatype, kemoview_gl, mbot, gtk_win);
         printf("Drugged file: %s\n", filename->string);
+        kemoview_free_kvstring(filename);
     }
 }
 

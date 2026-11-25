@@ -29,6 +29,9 @@ struct evolution_gtk_menu{
     int iend_evo;
     int inc_evo;
     int i_FPS;
+    
+    GtkWidget *spin_evo_start;
+    GtkWidget *spin_evo_end;
 };
 
 /*  prototypes */

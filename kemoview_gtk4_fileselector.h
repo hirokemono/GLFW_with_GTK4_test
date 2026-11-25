@@ -23,7 +23,8 @@
 
 /*  prototypes */
 /* Routines for inout from console */
-void open_window_for_opened_file(struct kemoviewer_gl_type *kemo_gl,
+void open_window_for_opened_file(int iflag_datatype,
+                                 struct kemoviewer_gl_type *kemo_gl,
                                  struct main_buttons *mbot,
                                  GtkWidget *main_window);
 
