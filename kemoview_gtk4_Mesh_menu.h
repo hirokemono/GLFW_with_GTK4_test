@@ -22,12 +22,14 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_Mesh_color_sel.h"
+#include "kemoview_gtk4_Mesh_domain.h"
 
 struct mesh_gtk_menu{
     GtkWidget *spin_dist;
     GtkWidget *spin_num_loop;
     
     struct mesh_color_view *mesh_color_vws;
+    struct domain_gtk_menu *domain_gmenu;
     
     GtkWidget *mesh_menu_box;
 };

@@ -20,8 +20,7 @@ static struct mesh_gtk_menu * alloc_mesh_menu(void){
     return mesh_gmenu;
 };
 
-static void subdoain_distance_CB(GtkWidget *entry, gpointer data)
-{
+static void subdomain_distance_CB(GtkWidget *entry, gpointer data){
     struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) data;
     double dist = gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
     if(dist >= 0.0) kemoview_set_domain_distance(dist, kemo_gl->kemoview_data);
@@ -43,7 +42,7 @@ static GtkWidget * init_subdomain_distance_box(struct kemoviewer_gl_type *kemo_g
     GtkAdjustment *adj_dist = gtk_adjustment_new(0.0, 0.0, 10.0, 0.005, 0.005, 0.0);
     mesh_gmenu->spin_dist = gtk_spin_button_new(GTK_ADJUSTMENT(adj_dist), 0, 3);
     g_signal_connect(mesh_gmenu->spin_dist, "value-changed",
-                     G_CALLBACK(subdoain_distance_CB), (gpointer) kemo_gl);
+                     G_CALLBACK(subdomain_distance_CB), (gpointer) kemo_gl);
     
     GtkWidget *hbox_distance = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_append(GTK_BOX(hbox_distance), gtk_label_new("Subdomain distance: "));
@@ -93,8 +92,10 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_num_loop = init_subdomain_color_loop_box(kemo_gl, mesh_gmenu);
     
     mesh_gmenu->mesh_color_vws = init_mesh_color_views(kemo_gl);
-        
+    mesh_gmenu->domain_gmenu =   init_gtk_domain_menu(kemo_gl, window);
+    
     mesh_gmenu->mesh_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->domain_gmenu->domain_menu_box);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_distance);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->mesh_color_vws->mesh_color_box);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_num_loop);
@@ -110,10 +111,12 @@ void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     set_subdomain_color_loop_menu(kemo_gl, mesh_gmenu);
     
     set_mesh_color_dropdown(kemo_gl, mesh_gmenu->mesh_color_vws);
+    set_gtk_domain_menu(kemo_gl, mesh_gmenu->domain_gmenu);
 };
 
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu){
     dealloc_mesh_color_views(mesh_gmenu->mesh_color_vws);
+    dealloc_domain_menu(mesh_gmenu->domain_gmenu);
     
     g_object_unref(mesh_gmenu->spin_dist);
     g_object_unref(mesh_gmenu->spin_num_loop);
