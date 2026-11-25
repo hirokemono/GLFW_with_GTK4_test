@@ -1,3 +1,8 @@
+# Executable
+
+kemo_gtk4_test
+kemo_gtk4_test.* 
+
 # Prerequisites
 *.d
 
