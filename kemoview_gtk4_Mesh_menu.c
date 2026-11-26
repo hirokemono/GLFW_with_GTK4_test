@@ -179,7 +179,7 @@ void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     
     set_mesh_color_dropdown(kemo_gl, mesh_gmenu->mesh_color_vws);
     set_polygon_select_dropdown(kemo_gl, mesh_gmenu->polygon_select_vws);
-//    set_gtk_domain_menu(kemo_gl, mesh_gmenu->domain_gmenu);
+    set_gtk_domain_menu(kemo_gl, mesh_gmenu->domain_gmenu);
 };
 
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu){

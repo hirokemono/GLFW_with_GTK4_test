@@ -22,9 +22,15 @@
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
 #include "kemoview_gtk4_Mesh_draw_all.h"
+#include "kemoview_gtk4_Mesh_color_menu.h"
 
 struct domain_gtk_menu{
     struct show_all_gtk_menu *all_domain_vws;
+    
+    GtkWidget *spin_patch_opacity;
+    struct mesh_color_menu *domain_patch_color_vws;
+    struct mesh_color_menu *domain_grid_color_vws;
+    struct mesh_color_menu *domain_node_color_vws;
     
     GtkWidget *domain_menu_expander;
 };
@@ -32,8 +38,8 @@ struct domain_gtk_menu{
 /* prototypes */
 struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
                                               GtkWidget *window);
-struct show_all_gtk_menu * init_show_all_node_menu(struct kemoviewer_gl_type *kemo_gl);
-
+void set_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl, 
+                         struct domain_gtk_menu *domain_gmenu);
 void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu);
 
 #endif /*  KEMOVIEW_GTK4_MESH_DOMAIN_  */
