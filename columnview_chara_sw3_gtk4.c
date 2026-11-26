@@ -477,7 +477,7 @@ GtkWidget * csw3_columnview_init(GListStore *store){
     return cview;
 }
 
-struct kemo_chara_sw3_columnview * alloc_kemo_real2_columnview(){
+struct kemo_chara_sw3_columnview * alloc_kemo_csw3_columnview(){
     struct kemo_chara_sw3_columnview *sw3_vws;
     sw3_vws = (struct kemo_chara_sw3_columnview *) malloc(sizeof(struct kemo_chara_sw3_columnview *));
     if (sw3_vws == NULL){
@@ -487,16 +487,8 @@ struct kemo_chara_sw3_columnview * alloc_kemo_real2_columnview(){
     return sw3_vws;
 };
 
-void dealloc_kemo_real2_columnview(struct kemo_chara_sw3_columnview *sw3_vws){
-    g_object_unref(G_OBJECT(sw3_vws->ci3_store));
-    g_object_unref(G_OBJECT(sw3_vws->ci3_store));
-    g_object_unref(G_OBJECT(sw3_vws->ci3_cview_scroll));
-    free(sw3_vws);
-    return;
-}
-
 struct kemo_chara_sw3_columnview * init_csw3_columnview_scroll(int num, char *string, int **iarray3){
-    struct kemo_chara_sw3_columnview *sw3_vws = alloc_kemo_real2_columnview();
+    struct kemo_chara_sw3_columnview *sw3_vws = alloc_kemo_csw3_columnview();
     
     // Add column view.  Put in scrolled window.  
     sw3_vws->ci3_store = init_csw3_list_store(num, string, iarray3); 
@@ -541,3 +533,10 @@ struct kemo_chara_sw3_columnview * init_csw3_columnview_scroll(int num, char *st
     return sw3_vws;
 };
 
+void dealloc_kemo_csw3_columnview(struct kemo_chara_sw3_columnview *sw3_vws){
+    g_object_unref(G_OBJECT(sw3_vws->ci3_store));
+    g_object_unref(G_OBJECT(sw3_vws->ci3_store));
+    g_object_unref(G_OBJECT(sw3_vws->ci3_cview_scroll));
+    free(sw3_vws);
+    return;
+}
