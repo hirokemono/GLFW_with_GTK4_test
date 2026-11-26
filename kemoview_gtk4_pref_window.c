@@ -29,6 +29,11 @@ void init_preference_window(struct kemoviewer_gl_type *kemo_gl,
     
     GtkWidget *pref_frame = init_preference_scrollbox(kemo_gl, pref_vws,
                                                       main_window);
+    gtk_widget_set_margin_top(pref_frame,    5);
+    gtk_widget_set_margin_bottom(pref_frame, 5);
+    gtk_widget_set_margin_start(pref_frame,  5);
+    gtk_widget_set_margin_end(pref_frame,    5);
+    
     gtk_window_set_child(GTK_WINDOW(pref_vws->pref_window), pref_frame);
     gtk_widget_set_visible(pref_vws->pref_window, TRUE);
     return;

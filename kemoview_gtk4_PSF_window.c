@@ -256,11 +256,13 @@ void init_psf_window(struct kemoviewer_gl_type *kemo_gl,
     g_signal_connect(psf_win_vws->psfWin, "close-request",
                      G_CALLBACK(dummy_close_CB), NULL);
     
-//    g_object_set_data(G_OBJECT(itemTEvo), "psfmenu", (gpointer) psf_win_vws->psf_gmenu);
-//    g_object_set_data(G_OBJECT(itemTEvo), "kemoview_gl", (gpointer) kemo_gl);
-//    g_object_set_data(G_OBJECT(itemTEvo), "parents", (gpointer) main_window);
     psf_win_vws->psf_frame = init_psf_menu_frame(kemo_gl, psf_win_vws, 
                                                  main_window, itemTEvo);
+    gtk_widget_set_margin_top(psf_win_vws->psf_frame,    5);
+    gtk_widget_set_margin_bottom(psf_win_vws->psf_frame, 5);
+    gtk_widget_set_margin_start(psf_win_vws->psf_frame,  5);
+    gtk_widget_set_margin_end(psf_win_vws->psf_frame,    5);
+    
     gtk_window_set_child(GTK_WINDOW(psf_win_vws->psfWin), psf_win_vws->psf_frame);
     
     gtk_widget_set_visible(psf_win_vws->psfWin, TRUE);

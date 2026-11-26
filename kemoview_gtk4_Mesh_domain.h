@@ -21,15 +21,10 @@
 
 #include "calypso_GTK4.h"
 #include "kemoview_gtk4_routines.h"
+#include "kemoview_gtk4_Mesh_draw_all.h"
 
 struct domain_gtk_menu{
-    GtkWidget *button_draw_patch;
-    GtkWidget *button_draw_grid;
-    GtkWidget *button_draw_node;
-    
-    GtkWidget *button_hide_patch;
-    GtkWidget *button_hide_grid;
-    GtkWidget *button_hide_node;
+    struct show_all_gtk_menu *all_domain_vws;
     
     GtkWidget *domain_menu_expander;
 };
@@ -37,8 +32,7 @@ struct domain_gtk_menu{
 /* prototypes */
 struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
                                               GtkWidget *window);
-void set_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
-                         struct domain_gtk_menu *domain_gmenu);
+struct show_all_gtk_menu * init_show_all_node_menu(struct kemoviewer_gl_type *kemo_gl);
 
 void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu);
 

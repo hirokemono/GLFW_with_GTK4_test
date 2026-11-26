@@ -51,6 +51,10 @@ void init_mesh_window(struct kemoviewer_gl_type *kemo_gl,
     gtk_widget_set_size_request(mesh_win_vws->meshWin, 150, -1);
     
     mesh_win_vws->mesh_frame = set_mesh_menu_box(kemo_gl, mesh_win_vws);
+    gtk_widget_set_margin_top(mesh_win_vws->mesh_frame,    5);
+    gtk_widget_set_margin_bottom(mesh_win_vws->mesh_frame, 5);
+    gtk_widget_set_margin_start(mesh_win_vws->mesh_frame,  5);
+    gtk_widget_set_margin_end(mesh_win_vws->mesh_frame,    5);
     gtk_window_set_child(GTK_WINDOW(mesh_win_vws->meshWin), mesh_win_vws->mesh_frame);
     gtk_widget_set_visible(mesh_win_vws->meshWin, TRUE);
     return;

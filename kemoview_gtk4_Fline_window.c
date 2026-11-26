@@ -180,6 +180,10 @@ void init_fline_window(struct kemoviewer_gl_type *kemo_gl,
     
     fline_win_vws->fline_frame = init_fline_frame(kemo_gl, fline_win_vws, 
                                                   itemTEvo);
+    gtk_widget_set_margin_top(fline_win_vws->fline_frame,    5);
+    gtk_widget_set_margin_bottom(fline_win_vws->fline_frame, 5);
+    gtk_widget_set_margin_start(fline_win_vws->fline_frame,  5);
+    gtk_widget_set_margin_end(fline_win_vws->fline_frame,    5);
     
     gtk_window_set_child(GTK_WINDOW(fline_win_vws->flineWin), fline_win_vws->fline_frame);
     gtk_widget_set_visible(fline_win_vws->flineWin, TRUE);

@@ -176,6 +176,11 @@ void init_tracer_window(struct kemoviewer_gl_type *kemo_gl,
     gtk_widget_set_size_request(tracer_win_vws->tracerWin, 150, -1);
     
     tracer_win_vws->tracer_frame = init_tracer_frame(kemo_gl, tracer_win_vws, itemTEvo);
+    gtk_widget_set_margin_top(tracer_win_vws->tracer_frame,    5);
+    gtk_widget_set_margin_bottom(tracer_win_vws->tracer_frame, 5);
+    gtk_widget_set_margin_start(tracer_win_vws->tracer_frame,  5);
+    gtk_widget_set_margin_end(tracer_win_vws->tracer_frame,    5);
+    
     gtk_window_set_child(GTK_WINDOW(tracer_win_vws->tracerWin), tracer_win_vws->tracer_frame);
     gtk_widget_set_visible(tracer_win_vws->tracerWin, TRUE);
     return;
