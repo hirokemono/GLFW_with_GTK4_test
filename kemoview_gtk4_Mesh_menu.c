@@ -153,11 +153,14 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     GtkWidget *hbox_num_loop =  init_subdomain_color_loop_box(kemo_gl, mesh_gmenu);
     GtkWidget *hbox_node_size = init_mesh_node_size_box(kemo_gl, mesh_gmenu);
     
-    mesh_gmenu->mesh_color_vws = init_mesh_color_views(kemo_gl);
-    mesh_gmenu->domain_gmenu =   init_gtk_domain_menu(kemo_gl, window);
+    mesh_gmenu->mesh_color_vws =     init_mesh_color_views(kemo_gl);
+    mesh_gmenu->polygon_select_vws = init_polygon_select_views(kemo_gl);
+    mesh_gmenu->domain_gmenu =       init_gtk_domain_menu(kemo_gl, window);
     
     mesh_gmenu->mesh_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->domain_gmenu->domain_menu_expander);
+    gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box),
+                   mesh_gmenu->polygon_select_vws->polygon_sel_box);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_distance);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), hbox_node_size);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->mesh_color_vws->mesh_color_box);
@@ -175,11 +178,13 @@ void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     set_mesh_node_size(kemo_gl, mesh_gmenu);
     
     set_mesh_color_dropdown(kemo_gl, mesh_gmenu->mesh_color_vws);
+    set_polygon_select_dropdown(kemo_gl, mesh_gmenu->polygon_select_vws);
 //    set_gtk_domain_menu(kemo_gl, mesh_gmenu->domain_gmenu);
 };
 
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu){
     dealloc_mesh_color_views(mesh_gmenu->mesh_color_vws);
+    dealloc_mesh_polygon_selector(mesh_gmenu->polygon_select_vws);
     dealloc_domain_menu(mesh_gmenu->domain_gmenu);
     
     g_object_unref(mesh_gmenu->spin_dist);

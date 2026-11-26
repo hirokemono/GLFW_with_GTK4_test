@@ -88,6 +88,7 @@ kemoview_gtk4_Tracer_increment.c      \
 kemoview_gtk4_Tracer_menu.c           \
 kemoview_gtk4_Tracer_window.c         \
 kemoview_gtk4_Mesh_color_sel.c        \
+kemoview_gtk4_Mesh_polygon_sel.c      \
 kemoview_gtk4_Mesh_draw_all.c         \
 kemoview_gtk4_Mesh_domain.c           \
 kemoview_gtk4_Mesh_menu.c             \
