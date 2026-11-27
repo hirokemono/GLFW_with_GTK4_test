@@ -41,6 +41,8 @@ struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl
     
     domain_gmenu->all_domain_vws = init_show_all_mesh_menu(kemo_gl, DOMAIN_FLAG);
     
+    domain_gmenu->draw_domain_vws = init_draw_mesh_list_scroll(kemo_gl, window);
+    
     domain_gmenu->domain_patch_color_vws = init_mesh_color_menu_box(kemo_gl, "Patch color",
                                                                     DOMAIN_FLAG, SURFSOLID_TOGGLE);
     domain_gmenu->domain_grid_color_vws =  init_mesh_color_menu_box(kemo_gl, "Grid color",
@@ -58,6 +60,7 @@ struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl
     gtk_box_append(GTK_BOX(hbox_opacity), domain_gmenu->spin_patch_opacity);
     
     GtkWidget *domain_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(domain_menu_box), domain_gmenu->draw_domain_vws->real3_cview_scroll);
     gtk_box_append(GTK_BOX(domain_menu_box), domain_gmenu->all_domain_vws->show_all_box);
     
     gtk_box_append(GTK_BOX(domain_menu_box), hbox_opacity);

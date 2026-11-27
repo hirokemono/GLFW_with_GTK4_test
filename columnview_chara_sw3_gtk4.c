@@ -344,7 +344,7 @@ static void unbind_int3_button_CB(GtkSignalListItemFactory *factory,
 /* =========================================================================
  *   Callbacks for buttuns to control list model data
  * ========================================================================= */
-void show_all_real2_button_CB(GtkButton *button, gpointer user_data){
+void show_all_csw3_button_CB(GtkButton *button, gpointer user_data){
     CharaSwitch3ColumnItem *item;
     GListStore *store = G_LIST_STORE(user_data);
     guint num = g_list_model_get_n_items(G_LIST_MODEL(store));
@@ -358,7 +358,7 @@ void show_all_real2_button_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-void show_each_real2_button_CB(GtkButton *button, gpointer user_data){
+void show_each_csw3_button_CB(GtkButton *button, gpointer user_data){
     CharaSwitch3ColumnItem *item;
     GtkColumnView *column_view = GTK_COLUMN_VIEW(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
@@ -509,11 +509,11 @@ struct kemo_chara_sw3_columnview * init_csw3_columnview_scroll(int num, char *st
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
-                     G_CALLBACK(show_all_real2_button_CB), G_OBJECT(sw3_vws->ci3_store));
+                     G_CALLBACK(show_all_csw3_button_CB), G_OBJECT(sw3_vws->ci3_store));
     
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
-                     G_CALLBACK(show_each_real2_button_CB), G_OBJECT(sw3_vws->ci3_cview));
+                     G_CALLBACK(show_each_csw3_button_CB), G_OBJECT(sw3_vws->ci3_cview));
     
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_attach(GTK_GRID(grid), sw3_vws->ci3_cview, 0, 0, 4, 1);
