@@ -81,8 +81,8 @@ GtkWidget * init_draw_domain_scloolbox(struct kemoviewer_gl_type *kemo_gl,
 }
 
 struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
-                                              GtkWidget *window){
-    struct domain_gtk_menu *domain_gmenu = alloc_domain_menu(DOMAIN_FLAG);
+                                              int iflag_group, GtkWidget *window){
+    struct domain_gtk_menu *domain_gmenu = alloc_domain_menu(iflag_group);
     
     GtkWidget *scrool_draw = init_draw_domain_scloolbox(kemo_gl, window, domain_gmenu);
     domain_gmenu->domain_patch_color_vws = init_mesh_color_menu_box(kemo_gl, "Patch color",

@@ -34,7 +34,9 @@ struct mesh_gtk_menu{
     
     struct mesh_color_view       *mesh_color_vws;
     struct mesh_polygon_selector *polygon_select_vws;
+    
     struct domain_gtk_menu       *domain_gmenu;
+    struct domain_gtk_menu       *element_grp_gmenu;
     
     GtkWidget *mesh_menu_box;
 };

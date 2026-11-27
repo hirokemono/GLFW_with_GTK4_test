@@ -42,7 +42,7 @@ struct domain_gtk_menu{
 
 /* prototypes */
 struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
-                                              GtkWidget *window);
+                                              int iflag_group, GtkWidget *window);
 void set_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl, 
                          struct domain_gtk_menu *domain_gmenu);
 void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu);

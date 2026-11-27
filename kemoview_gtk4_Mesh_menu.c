@@ -155,7 +155,8 @@ struct mesh_gtk_menu * init_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     
     mesh_gmenu->mesh_color_vws =     init_mesh_color_views(kemo_gl);
     mesh_gmenu->polygon_select_vws = init_polygon_select_views(kemo_gl);
-    mesh_gmenu->domain_gmenu =       init_gtk_domain_menu(kemo_gl, window);
+    mesh_gmenu->domain_gmenu =       init_gtk_domain_menu(kemo_gl, DOMAIN_FLAG, window);
+//    mesh_gmenu->element_grp_gmenu =  init_gtk_domain_menu(kemo_gl, ELEM_GRP_FLAG, window);
     
     mesh_gmenu->mesh_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(mesh_gmenu->mesh_menu_box), mesh_gmenu->domain_gmenu->domain_menu_expander);
@@ -180,12 +181,14 @@ void set_gtk_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
     set_mesh_color_dropdown(kemo_gl, mesh_gmenu->mesh_color_vws);
     set_polygon_select_dropdown(kemo_gl, mesh_gmenu->polygon_select_vws);
     set_gtk_domain_menu(kemo_gl, mesh_gmenu->domain_gmenu);
+//    set_gtk_domain_menu(kemo_gl, mesh_gmenu->element_grp_gmenu);
 };
 
 void dealloc_mesh_menu(struct mesh_gtk_menu *mesh_gmenu){
     dealloc_mesh_color_views(mesh_gmenu->mesh_color_vws);
     dealloc_mesh_polygon_selector(mesh_gmenu->polygon_select_vws);
     dealloc_domain_menu(mesh_gmenu->domain_gmenu);
+//    dealloc_domain_menu(mesh_gmenu->element_grp_gmenu);
     
     g_object_unref(mesh_gmenu->spin_dist);
     g_object_unref(mesh_gmenu->spin_num_loop);
