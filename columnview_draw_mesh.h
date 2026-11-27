@@ -21,6 +21,8 @@
 /* prototypes */
 struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
                                                           GtkWidget *mesh_window);
+void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
+                           struct kemo_real3_columnview *draw_mesh_vws);
 
 #endif /* COLUMNVIEW_DRAW_MESH_ */
 

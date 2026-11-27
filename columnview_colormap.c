@@ -22,15 +22,15 @@ static void sync_viewer_to_colormap_list(struct kemoviewer_gl_type *kemo_gl,
                                      iflag_current_model,
                                      kemo_gl->kemoview_data);
     };
-    gtk_widget_queue_draw(colormap_area);
+    gtk_widget_queue_draw(GTK_WIDGET(colormap_area));
     draw_full_gl(kemo_gl);
 	return;
 };
 
 static void sync_colormap_list_to_viewer(struct kemoviewer_gl_type *kemo_gl,
                                          int iflag_current_model,
-                                         GListStore *store,
-                                         GtkDrawingArea *colormap_area){
+                                         GtkDrawingArea *colormap_area,
+                                         GListStore *store){
     double data, color;
 	int i;
 	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
@@ -43,16 +43,16 @@ static void sync_colormap_list_to_viewer(struct kemoviewer_gl_type *kemo_gl,
         g_list_store_append(store, real2_column_item_new(ZERO, ZERO));
     };
     
+    gpointer additions[1];
 	for(i=0;i<num_data;i++){
         kemoview_get_VIZ_color_RGB_value(kemo_gl->kemoview_data,
                                          iflag_current_model,
                                          i, &data, &color);
-        g_list_store_splice(store, i, IONE, 
-                            real2_column_item_new((float) data, (float) color),
-                            IONE);
+        additions[0] = G_OBJECT(real2_column_item_new((float) data, (float) color));
+        g_list_store_splice(store, i, IONE, additions, IONE);
     };
     
-    gtk_widget_queue_draw(colormap_area);
+    gtk_widget_queue_draw(GTK_WIDGET(colormap_area));
     draw_full_gl(kemo_gl);
 	return;
 };

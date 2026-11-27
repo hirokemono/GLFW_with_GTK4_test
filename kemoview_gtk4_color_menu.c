@@ -54,8 +54,10 @@ void reset_colormap_menu_views(struct kemoviewer_gl_type *kemo_gl,
                                int iflag_current_model,
                                struct colormap_views *color_vws){
     reset_colormap_views(kemo_gl, iflag_current_model,
-                         color_vws->colormap_area, color_vws->colormode_vws,
-                         color_vws->colormap_vws, color_vws->opacitymap_vws);
+                         GTK_DRAWING_AREA(color_vws->colormap_area),
+                         color_vws->colormode_vws,
+                         color_vws->colormap_vws,
+                         color_vws->opacitymap_vws);
     return;
 };
 
@@ -67,16 +69,18 @@ struct colormap_views * init_gtk_psf_colormap_expander(struct kemoviewer_gl_type
     color_vws->colormap_area = init_colormap_draw_area(kemo_gl, iflag_current_model);
     color_vws->colormap_vws =  init_colormap_list_scroll(kemo_gl, 
                                                          iflag_current_model, 
-                                                         color_vws->colormap_area, window);
+                                                         GTK_DRAWING_AREA(color_vws->colormap_area),
+                                                         window);
     color_vws->colormode_vws =  make_gtk4_colormode_menu_box(kemo_gl, 
                                                              iflag_current_model,
-                                                             color_vws->colormap_area);
+                                                             GTK_DRAWING_AREA(color_vws->colormap_area));
     color_vws->opacitymap_vws = init_opacitymap_list_scroll(kemo_gl, 
                                                             iflag_current_model, 
-                                                            color_vws->colormap_area, window);
+                                                            GTK_DRAWING_AREA(color_vws->colormap_area),
+                                                            window);
     color_vws->colormap_IO = init_colormap_save_box(kemo_gl,
                                                     iflag_current_model,
-                                                    color_vws->colormap_area,
+                                                    GTK_DRAWING_AREA(color_vws->colormap_area),
                                                     color_vws->colormode_vws, 
                                                     color_vws->colormap_vws, 
                                                     color_vws->opacitymap_vws,

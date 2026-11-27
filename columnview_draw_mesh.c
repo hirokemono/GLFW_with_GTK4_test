@@ -26,6 +26,26 @@ static void sync_kemoview_draw_mesh_from_list(GListStore *store, int iflag_group
 	return;
 };
 
+static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
+                                              int iflag_group,
+                                              GListStore *store){
+    double data, opacity;
+    int iflag_patch, iflag_grid, iflag_node;
+	int i;
+    gpointer additions[1];
+	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
+    for(i=0;i<num_list;i++){
+        iflag_patch = kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
+        iflag_grid =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFGRID_TOGGLE,  i);
+        iflag_node =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFNOD_TOGGLE,   i);
+        additions[0] = G_OBJECT(real3_column_item_new((float) iflag_patch, 
+                                                      (float) iflag_grid,
+                                                      (float) iflag_node));
+        g_list_store_splice(store, i, IONE, additions, IONE);
+    };
+	return;
+};
+
 /*  Callbacks  */
 /* =========================================================================
  *   GtkColumnView Factory Callbacks for real spin button
@@ -287,26 +307,26 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 
 struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
                                                           GtkWidget *mesh_window){
-    struct kemo_real3_columnview *light_vws = alloc_kemo_real3_columnview();
+    struct kemo_real3_columnview *draw_mesh_vws = alloc_kemo_real3_columnview();
     
     // Add column view.  Put in scrolled window.  
-    light_vws->real3_store = init_lightposition_list_store(DOMAIN_FLAG, kemo_gl->kemoview_data); 
-    light_vws->real3_cview = light_position_columnview_init(kemo_gl, light_vws->real3_store);
-    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (light_vws->real3_cview),TRUE);
-    g_object_set_data(G_OBJECT(light_vws->real3_cview), "list_store",
-                      G_OBJECT(light_vws->real3_store));
-    g_object_set_data(G_OBJECT(light_vws->real3_cview), "kemoview_gl",
+    draw_mesh_vws->real3_store = init_lightposition_list_store(DOMAIN_FLAG, kemo_gl->kemoview_data); 
+    draw_mesh_vws->real3_cview = light_position_columnview_init(kemo_gl, draw_mesh_vws->real3_store);
+    gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (draw_mesh_vws->real3_cview),TRUE);
+    g_object_set_data(G_OBJECT(draw_mesh_vws->real3_cview), "list_store",
+                      G_OBJECT(draw_mesh_vws->real3_store));
+    g_object_set_data(G_OBJECT(draw_mesh_vws->real3_cview), "kemoview_gl",
                       G_OBJECT(kemo_gl));
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
-                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(light_vws->real3_store));
+                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(draw_mesh_vws->real3_store));
     
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
-                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(light_vws->real3_cview));
+                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(draw_mesh_vws->real3_cview));
     GtkWidget *grid = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid), light_vws->real3_cview, 0, 0, 4, 1);
+    gtk_grid_attach(GTK_GRID(grid), draw_mesh_vws->real3_cview, 0, 0, 4, 1);
     
     gtk_grid_attach(GTK_GRID(grid), show_all_button,         0, 2, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), show_each_button,        2, 2, 2, 1);
@@ -317,7 +337,13 @@ struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_t
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll_win), grid);
     
     
-    light_vws->real3_cview_scroll = wrap_into_scrollbox_gtk4(480, 320, scroll_win);
-    return light_vws;
+    draw_mesh_vws->real3_cview_scroll = wrap_into_scrollbox_gtk4(480, 320, scroll_win);
+    return draw_mesh_vws;
 };
 
+void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
+                           struct kemo_real3_columnview *draw_mesh_vws){
+    sync_list_from_kemoview_draw_mesh(kemo_gl->kemoview_data, DOMAIN_FLAG,
+                                      draw_mesh_vws->real3_store);
+    return;
+};

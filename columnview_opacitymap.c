@@ -22,7 +22,7 @@ static void sync_viewer_to_opacitymap_list(struct kemoviewer_gl_type *kemo_gl,
                                       iflag_current_model,
                                       kemo_gl->kemoview_data);
 	};
-    gtk_widget_queue_draw(colormap_area);
+    gtk_widget_queue_draw(GTK_WIDGET(colormap_area));
     draw_full_gl(kemo_gl);
 	return;
 };
@@ -43,16 +43,16 @@ static void sync_opacitymap_list_to_viewer(struct kemoviewer_gl_type *kemo_gl,
         g_list_store_append(store, real2_column_item_new(ZERO, ZERO));
     };
     
+    gpointer additions[1];
 	for(i=0;i<num_data;i++){
         kemoview_get_PSF_opacity_items(kemo_gl->kemoview_data,
                                        iflag_current_model,
                                        i, &data, &opacity);
-        g_list_store_splice(store, i, IONE, 
-                            real2_column_item_new((float) data, (float) opacity),
-                            IONE);
+        additions[0] = G_OBJECT(real2_column_item_new((float) data, (float) opacity));
+        g_list_store_splice(store, i, IONE, additions, IONE);
     };
     
-    gtk_widget_queue_draw(colormap_area);
+    gtk_widget_queue_draw(GTK_WIDGET(colormap_area));
     draw_full_gl(kemo_gl);
 	return;
 };
