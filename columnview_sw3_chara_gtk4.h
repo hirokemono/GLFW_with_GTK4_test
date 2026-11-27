@@ -32,7 +32,7 @@ struct _Sw3cColumnItem
 };
 
 struct kemo_sw3c_columnview{
-    GtkWidget  *real3_cview_scroll;
+    GtkWidget  *sw3c_view_scroll;
     
     GListStore *real3_store; 
     GtkWidget  *real3_cview;

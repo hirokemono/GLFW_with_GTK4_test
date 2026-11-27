@@ -470,6 +470,7 @@ struct kemo_sw3c_columnview * alloc_kemo_sw3c_columnview(){
 void dealloc_kemo_sw3c_columnview(struct kemo_sw3c_columnview *sw3c_vws){
     g_object_unref(G_OBJECT(sw3c_vws->real3_cview));
     g_object_unref(G_OBJECT(sw3c_vws->real3_store));
+    g_object_unref(G_OBJECT(sw3c_vws->sw3c_view_scroll));
     free(sw3c_vws);
     return;
 }
@@ -512,10 +513,10 @@ struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, int **iarray3
     gtk_grid_attach(GTK_GRID(grid), show_each_button, 2, 2, 2, 1);
     
     // scrolled window
-    sw3c_vws->real3_cview_scroll = gtk_scrolled_window_new(); 
-    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(sw3c_vws->real3_cview_scroll),  480);
-    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(sw3c_vws->real3_cview_scroll), 240);
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw3c_vws->real3_cview_scroll), grid);
+    sw3c_vws->sw3c_view_scroll = gtk_scrolled_window_new(); 
+    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(sw3c_vws->sw3c_view_scroll),  480);
+    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(sw3c_vws->sw3c_view_scroll), 240);
+    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(sw3c_vws->sw3c_view_scroll), grid);
     
     return sw3c_vws;
 };

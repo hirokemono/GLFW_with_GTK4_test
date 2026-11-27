@@ -19,8 +19,8 @@
 #include "columnview_sw3_chara_gtk4.h"
 
 /* prototypes */
-struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
-                                                         GtkWidget *mesh_window);
+struct kemo_sw3c_columnview * init_draw_mesh_list_box(struct kemoviewer_gl_type *kemo_gl,
+                                                      GtkWidget *mesh_window);
 void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
                            struct kemo_sw3c_columnview *draw_mesh_vws);
 

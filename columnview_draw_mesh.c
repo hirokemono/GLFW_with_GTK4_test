@@ -45,7 +45,7 @@ static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
                                                      label));
         g_list_store_splice(draw_mesh_vws->real3_store, i, IONE, additions, IONE);
     };
-    gtk_widget_queue_draw(GTK_WIDGET(draw_mesh_vws->real3_cview_scroll));
+    gtk_widget_queue_draw(GTK_WIDGET(draw_mesh_vws->sw3c_view_scroll));
     return;
 };
 
@@ -324,8 +324,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 }
 
 
-struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
-                                                          GtkWidget *mesh_window){
+struct kemo_sw3c_columnview * init_draw_mesh_list_box(struct kemoviewer_gl_type *kemo_gl,
+                                                      GtkWidget *mesh_window){
     struct kemo_sw3c_columnview *draw_mesh_vws = alloc_kemo_sw3c_columnview();
     
     // Add column view.  Put in scrolled window.  
@@ -344,20 +344,23 @@ struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_ty
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
                      G_CALLBACK(show_each_sw3c_button_CB), G_OBJECT(draw_mesh_vws->real3_cview));
-    GtkWidget *grid = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid), draw_mesh_vws->real3_cview, 0, 0, 4, 1);
     
+    
+    draw_mesh_vws->sw3c_view_scroll = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(draw_mesh_vws->sw3c_view_scroll), draw_mesh_vws->real3_cview);
+    
+    /*
+    GtkWidget *draw_mesh_vws->sw3c_view_scroll = gtk_grid_new();
+    gtk_grid_attach(GTK_GRID(draw_mesh_vws->sw3c_view_scroll), draw_mesh_vws->real3_cview, 0, 0, 4, 1);
     gtk_grid_attach(GTK_GRID(grid), show_all_button,         0, 2, 2, 1);
     gtk_grid_attach(GTK_GRID(grid), show_each_button,        2, 2, 2, 1);
-    // scrolled window
     GtkWidget *scroll_win = gtk_scrolled_window_new(); 
     gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(scroll_win),  480);
     gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll_win), 320);
     gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll_win), grid);
+    */
+    // scrolled window
     
-    
-    draw_mesh_vws->real3_cview_scroll = wrap_into_scrollbox_gtk4(480, 320, scroll_win);
-//    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     return draw_mesh_vws;
 };
 

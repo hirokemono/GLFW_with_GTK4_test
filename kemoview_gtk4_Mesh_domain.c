@@ -34,14 +34,49 @@ static void set_domain_opacity_CB(GtkWidget *entry, gpointer user_data)
 	return;
 }
 
+GtkWidget * init_domain_opacity_box(struct kemoviewer_gl_type *kemo_gl,
+                                    struct domain_gtk_menu *domain_gmenu){
+    GtkAdjustment *adj_opacity2 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
+    domain_gmenu->spin_patch_opacity = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity2), 0, 2);
+    g_signal_connect(domain_gmenu->spin_patch_opacity, "value-changed",
+                     G_CALLBACK(set_domain_opacity_CB), (gpointer) kemo_gl);
+    
+    GtkWidget *hbox_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    gtk_box_append(GTK_BOX(hbox_opacity), gtk_label_new("Patch opacity"));
+    gtk_box_append(GTK_BOX(hbox_opacity), domain_gmenu->spin_patch_opacity);
+    return hbox_opacity;
+}
+
+void set_gtk_domain_opacity(struct kemoviewer_gl_type *kemo_gl,
+                            struct domain_gtk_menu *domain_gmenu){
+    float color4[4];
+    kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
+                                 SURFSOLID_TOGGLE, color4);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(domain_gmenu->spin_patch_opacity),
+                              (double) color4[3]);
+    return;
+}
+
+GtkWidget * init_draw_domain_scloolbox(struct kemoviewer_gl_type *kemo_gl,
+                                       GtkWidget *window,
+                                       struct domain_gtk_menu *domain_gmenu){
+    domain_gmenu->draw_domain_vws = init_draw_mesh_list_box(kemo_gl, window);
+    domain_gmenu->all_domain_vws = init_show_all_mesh_menu(kemo_gl, DOMAIN_FLAG,
+                                                           domain_gmenu->draw_domain_vws);
+    
+    GtkWidget *draw_domain_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+    gtk_box_append(GTK_BOX(draw_domain_box), domain_gmenu->draw_domain_vws->sw3c_view_scroll);
+    gtk_box_append(GTK_BOX(draw_domain_box), domain_gmenu->all_domain_vws->show_all_box);
+    
+    return wrap_into_scrollbox_gtk4(480, 320, draw_domain_box);
+}
 
 struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
                                               GtkWidget *window){
     struct domain_gtk_menu *domain_gmenu = alloc_domain_menu();
     
-    domain_gmenu->draw_domain_vws = init_draw_mesh_list_scroll(kemo_gl, window);
-    domain_gmenu->all_domain_vws = init_show_all_mesh_menu(kemo_gl, DOMAIN_FLAG,
-                                                           domain_gmenu->draw_domain_vws);
+    
+    GtkWidget *scrool_draw = init_draw_domain_scloolbox(kemo_gl, window, domain_gmenu);
     
     domain_gmenu->domain_patch_color_vws = init_mesh_color_menu_box(kemo_gl, "Patch color",
                                                                     DOMAIN_FLAG, SURFSOLID_TOGGLE);
@@ -49,19 +84,11 @@ struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl
                                                                     DOMAIN_FLAG, SURFGRID_TOGGLE);
     domain_gmenu->domain_node_color_vws =  init_mesh_color_menu_box(kemo_gl, "Node color",
                                                                     DOMAIN_FLAG, SURFNOD_TOGGLE);
+    GtkWidget *hbox_opacity = init_domain_opacity_box(kemo_gl, domain_gmenu);
     
-    GtkAdjustment *adj_opacity1 = gtk_adjustment_new(1.0, 0.0, 1.0, 0.01, 0.01, 0.0);
-    domain_gmenu->spin_patch_opacity = gtk_spin_button_new(GTK_ADJUSTMENT(adj_opacity1), 0, 2);
-    g_signal_connect(domain_gmenu->spin_patch_opacity, "value-changed",
-                     G_CALLBACK(set_domain_opacity_CB), (gpointer) kemo_gl);
-    
-    GtkWidget *hbox_opacity = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 10);
-    gtk_box_append(GTK_BOX(hbox_opacity), gtk_label_new("Patch opacity"));
-    gtk_box_append(GTK_BOX(hbox_opacity), domain_gmenu->spin_patch_opacity);
     
     GtkWidget *domain_menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_append(GTK_BOX(domain_menu_box), domain_gmenu->draw_domain_vws->real3_cview_scroll);
-    gtk_box_append(GTK_BOX(domain_menu_box), domain_gmenu->all_domain_vws->show_all_box);
+    gtk_box_append(GTK_BOX(domain_menu_box), scrool_draw);
     
     gtk_box_append(GTK_BOX(domain_menu_box), hbox_opacity);
     gtk_box_append(GTK_BOX(domain_menu_box), domain_gmenu->domain_patch_color_vws->color_sel_box);
@@ -79,11 +106,7 @@ void set_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl,
     set_mesh_color_menu(kemo_gl, domain_gmenu->domain_grid_color_vws);
     set_mesh_color_menu(kemo_gl, domain_gmenu->domain_node_color_vws);
     
-    float color4[4];
-    kemoview_get_mesh_color_code(kemo_gl->kemoview_data, DOMAIN_FLAG,
-                                 SURFSOLID_TOGGLE, color4);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(domain_gmenu->spin_patch_opacity),
-                              (double) color4[3]);
+    set_gtk_domain_opacity(kemo_gl, domain_gmenu);
 }
 
 void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu){
