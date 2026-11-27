@@ -30,7 +30,7 @@ struct psf_vector_color_view{
 /* protypes */
 void set_psf_vector_color_dropdown(struct kemoviewer_gl_type *kemo_gl,
                                    struct psf_vector_color_view *vector_color_vws);
-GtkWidget * init_psf_vector_color_views(struct kemoviewer_gl_type *kemo_gl);
+struct psf_vector_color_view * init_psf_vector_color_views(struct kemoviewer_gl_type *kemo_gl);
 void dealloc_psf_vector_color_view(struct psf_vector_color_view *vector_color_vws);
 
 #endif  /*  KEMOVIEW_GTK4_PSF_VEC_COLOR_SEL_  */

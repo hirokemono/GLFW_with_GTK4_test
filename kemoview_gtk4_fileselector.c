@@ -10,8 +10,6 @@
 #include "kemoview_gtk4_fileselector.h"
 #include "kemoview_gtk4_main_menu.h"
 
-static const gchar *gtk_selected_filename;
-
 /*
    Constract input windows
 */
@@ -166,10 +164,8 @@ static void kemoview_save_image_CB(GObject *source,
                                   GAsyncResult *result,
                                   gpointer data){
 	GtkEntryBuffer *entry_buf = GTK_ENTRY_BUFFER(data);
-    GtkWidget *main_window = GTK_WIDGET(g_object_get_data(G_OBJECT(data), "window"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(data), "kemoview_gl");
-    struct main_buttons *mbot = (struct main_buttons *) g_object_get_data(G_OBJECT(data), "buttons");
     
     GFile *file = gfile_from_kemoview_save_dialog(GTK_FILE_DIALOG (source), result);
     

@@ -30,7 +30,7 @@ struct psf_vector_mode_view{
 /* protypes */
 void set_psf_vector_mode_dropdown(struct kemoviewer_gl_type *kemo_gl,
                                   struct psf_vector_mode_view *vector_mode_vws);
-GtkWidget * init_psf_vector_mode_views(struct kemoviewer_gl_type *kemo_gl);
+struct psf_vector_mode_view * init_psf_vector_mode_views(struct kemoviewer_gl_type *kemo_gl);
 void dealloc_psf_vector_mode_view(struct psf_vector_mode_view *vector_mode_vws);
 
 #endif  /*  KEMOVIEW_GTK4_PSF_VEC_MODE_SEL_  */

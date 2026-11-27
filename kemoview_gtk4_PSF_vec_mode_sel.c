@@ -87,7 +87,7 @@ void set_psf_vector_mode_dropdown(struct kemoviewer_gl_type *kemo_gl,
     return;
 }
 
-GtkWidget * init_psf_vector_mode_views(struct kemoviewer_gl_type *kemo_gl){
+struct psf_vector_mode_view * init_psf_vector_mode_views(struct kemoviewer_gl_type *kemo_gl){
     struct psf_vector_mode_view *vector_mode_vws = alloc_psf_vector_mode_view();
     
     GtkStringList *vecotor_mode_model = gtk_string_list_new(vector_mode_list);

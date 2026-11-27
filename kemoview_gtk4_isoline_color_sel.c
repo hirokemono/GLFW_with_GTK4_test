@@ -96,7 +96,7 @@ void set_isoline_color_dropdown(struct kemoviewer_gl_type *kemo_gl,
     return;
 }
 
-GtkWidget * init_isoline_color_views(struct kemoviewer_gl_type *kemo_gl){
+struct isoline_color_view * init_isoline_color_views(struct kemoviewer_gl_type *kemo_gl){
     struct isoline_color_view *isoline_color_vws = alloc_isoline_color_views();
     
     GtkStringList *isoline_color_model = gtk_string_list_new(line_color_list);

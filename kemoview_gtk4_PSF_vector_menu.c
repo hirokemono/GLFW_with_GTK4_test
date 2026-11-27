@@ -30,24 +30,6 @@ static void psf_vector_switch_CB(GObject *switch_vect, GParamSpec *pspec, gpoint
 	return;
 };
 
-static void set_ref_vector_CB(GtkWidget *entry, gpointer user_data)
-{
-    struct kemoviewer_gl_type *kemo_gl = (struct kemoviewer_gl_type *) user_data;
-	double gtk_floatvalue = (double) gtk_spin_button_get_value(GTK_SPIN_BUTTON(entry));
-	int i_digit;
-	double current_value;
-    kemoview_get_VIZ_vector_w_exp(kemo_gl->kemoview_data,
-                                  SURFACE_RENDERING, ISET_PSF_REFVECT,
-                                  &current_value, &i_digit);
-    kemoview_set_each_VIZ_vector_w_exp(ISET_PSF_REFVECT,
-                                       gtk_floatvalue, i_digit,
-                                       SURFACE_RENDERING,
-                                       kemo_gl->kemoview_data);
-    draw_full_gl(kemo_gl);
-	return;
-}
-
-
 void set_vector_plot_availablity(struct kemoviewer_gl_type *kemo_gl,
                                  int iflag_current_model,
                                  struct psf_vector_gtk_menu *psf_vector_menu){

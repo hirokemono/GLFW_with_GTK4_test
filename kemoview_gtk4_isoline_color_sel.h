@@ -30,7 +30,7 @@ struct isoline_color_view{
 /* protypes */
 void set_isoline_color_dropdown(struct kemoviewer_gl_type *kemo_gl,
                                 struct isoline_color_view *isoline_color_vws);
-GtkWidget * init_isoline_color_views(struct kemoviewer_gl_type *kemo_gl);
+struct isoline_color_view * init_isoline_color_views(struct kemoviewer_gl_type *kemo_gl);
 void dealloc_isoline_color_views(struct isoline_color_view *isoline_color_vws);
 
 #endif  /*  KEMOVIEW_GTK4_ISOLINE_COLOR_SEL_  */

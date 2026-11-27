@@ -87,7 +87,7 @@ void set_psf_vector_color_dropdown(struct kemoviewer_gl_type *kemo_gl,
     return;
 }
 
-GtkWidget * init_psf_vector_color_views(struct kemoviewer_gl_type *kemo_gl){
+struct psf_vector_color_view * init_psf_vector_color_views(struct kemoviewer_gl_type *kemo_gl){
     struct psf_vector_color_view *vector_color_vws = alloc_psf_vector_color_view();
     
     GtkStringList *vecotor_color_model = gtk_string_list_new(vector_color_list);
