@@ -11,11 +11,11 @@
 
 static void sync_kemoview_draw_mesh_from_list(GListStore *store, int iflag_group,
                                               struct kemoviewer_type *kemo_sgl){
-    Real3ColumnItem *item;
+    Sw3cColumnItem *item;
     int i;
 	int num = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
 	for(i=0;i<num;i++){
-        item = REAL3_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), i));
+        item = SW3C_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), i));
         kemoview_set_draw_mesh_item(iflag_group, SURFSOLID_TOGGLE, i,
                                     (int) item->real1, kemo_sgl);
         kemoview_set_draw_mesh_item(iflag_group, SURFGRID_TOGGLE, i,
@@ -38,9 +38,9 @@ static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
         iflag_patch = kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
         iflag_grid =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFGRID_TOGGLE,  i);
         iflag_node =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFNOD_TOGGLE,   i);
-        additions[0] = G_OBJECT(real3_column_item_new((float) iflag_patch, 
-                                                      (float) iflag_grid,
-                                                      (float) iflag_node));
+        additions[0] = G_OBJECT(sw3c_column_item_new((float) iflag_patch, 
+                                                     (float) iflag_grid,
+                                                     (float) iflag_node));
         g_list_store_splice(store, i, IONE, additions, IONE);
     };
 	return;
@@ -55,7 +55,7 @@ static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
 static void real_light_radius_change_CB(GObject *object, gpointer user_data) {
     GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
@@ -92,7 +92,7 @@ static void bind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
     g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_radius_change_CB, listitem);
@@ -120,7 +120,7 @@ static void real_light_elevation_change_CB(GObject *object, gpointer user_data) 
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
         item->real2 = gtk_spin_button_get_value(spin);
@@ -154,7 +154,7 @@ static void bind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(spin), "kemoview_gl",    G_OBJECT(kemo_gl));
     g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_elevation_change_CB, listitem);
@@ -183,7 +183,7 @@ static void real_light_azimuth_change_CB(GObject *object, gpointer user_data) {
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
         item->real3 = gtk_spin_button_get_value(spin);
@@ -217,7 +217,7 @@ static void bind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
     g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
-    Real3ColumnItem *item = gtk_list_item_get_item(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_azimuth_change_CB, listitem);
@@ -251,7 +251,7 @@ static GListStore *init_lightposition_list_store(int iflag_group,
         rtp[0] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
         rtp[1] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFGRID_TOGGLE, i);
         rtp[2] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFNOD_TOGGLE, i);
-        g_list_store_append(store, real3_column_item_new(rtp[0], rtp[1], rtp[2]));
+        g_list_store_append(store, sw3c_column_item_new(rtp[0], rtp[1], rtp[2]));
     };
     return store;
 };
@@ -274,8 +274,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory1, "bind",   G_CALLBACK(bind_light_radius_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_light_radius_spin_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Patch", factory1);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM,
-                                                                             NULL, "real1")));
+    sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
+                                                                           NULL, "real1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
@@ -285,8 +285,8 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory2, "bind",   G_CALLBACK(bind_light_elevation_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_light_elevation_spin_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Grid", factory2);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new (REAL3_COLUMN_TYPE_ITEM,
-                                                                             NULL, "real2")));
+    sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
+                                                                           NULL, "real2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
@@ -296,7 +296,7 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory3, "bind",   G_CALLBACK(bind_light_azimuth_spin_CB),   G_OBJECT(store));
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_light_azimuth_spin_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Node", factory3);
-    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(REAL3_COLUMN_TYPE_ITEM,
+    sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
                                                                             NULL, "real3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
@@ -305,9 +305,9 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 }
 
 
-struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
+struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
                                                           GtkWidget *mesh_window){
-    struct kemo_real3_columnview *draw_mesh_vws = alloc_kemo_real3_columnview();
+    struct kemo_sw3c_columnview *draw_mesh_vws = alloc_kemo_sw3c_columnview();
     
     // Add column view.  Put in scrolled window.  
     draw_mesh_vws->real3_store = init_lightposition_list_store(DOMAIN_FLAG, kemo_gl->kemoview_data); 
@@ -320,11 +320,11 @@ struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_t
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");
     g_signal_connect(G_OBJECT(show_all_button), "clicked",
-                     G_CALLBACK(show_all_real3_button_CB), G_OBJECT(draw_mesh_vws->real3_store));
+                     G_CALLBACK(show_all_sw3c_button_CB), G_OBJECT(draw_mesh_vws->real3_store));
     
     GtkWidget *show_each_button = gtk_button_new_with_label("Show selected");
     g_signal_connect(G_OBJECT(show_each_button), "clicked",
-                     G_CALLBACK(show_each_real3_button_CB), G_OBJECT(draw_mesh_vws->real3_cview));
+                     G_CALLBACK(show_each_sw3c_button_CB), G_OBJECT(draw_mesh_vws->real3_cview));
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_attach(GTK_GRID(grid), draw_mesh_vws->real3_cview, 0, 0, 4, 1);
     
@@ -342,7 +342,7 @@ struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_t
 };
 
 void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
-                           struct kemo_real3_columnview *draw_mesh_vws){
+                           struct kemo_sw3c_columnview *draw_mesh_vws){
     sync_list_from_kemoview_draw_mesh(kemo_gl->kemoview_data, DOMAIN_FLAG,
                                       draw_mesh_vws->real3_store);
     return;

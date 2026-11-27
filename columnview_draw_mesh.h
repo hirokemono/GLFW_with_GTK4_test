@@ -15,14 +15,14 @@
 #include "view_modifier_glfw.h"
 
 #include "calypso_GTK4.h"
-#include "columnview_real3_gtk4.h"
 #include "kemoview_gtk4_routines.h"
+#include "columnview_sw3_chara_gtk4.h"
 
 /* prototypes */
-struct kemo_real3_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
-                                                          GtkWidget *mesh_window);
+struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_type *kemo_gl,
+                                                         GtkWidget *mesh_window);
 void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
-                           struct kemo_real3_columnview *draw_mesh_vws);
+                           struct kemo_sw3c_columnview *draw_mesh_vws);
 
 #endif /* COLUMNVIEW_DRAW_MESH_ */
 

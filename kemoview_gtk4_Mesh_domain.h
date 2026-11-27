@@ -28,7 +28,7 @@
 struct domain_gtk_menu{
     struct show_all_gtk_menu *all_domain_vws;
     
-    struct kemo_real3_columnview *draw_domain_vws;
+    struct kemo_sw3c_columnview *draw_domain_vws;
     
     GtkWidget *spin_patch_opacity;
     struct mesh_color_menu *domain_patch_color_vws;

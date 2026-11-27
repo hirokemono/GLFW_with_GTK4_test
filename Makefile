@@ -44,9 +44,9 @@ movie_from_GLFW_by_FFMPEG.c \
 view_modifier_glfw.c \
 \
 calypso_GTK4.c \
-columnview_chara_sw3_gtk4.c           \
 columnview_real2_gtk4.c               \
 columnview_real3_gtk4.c               \
+columnview_sw3_chara_gtk4.c           \
 columnview_colormap.c                 \
 columnview_opacitymap.c               \
 columnview_light_positions.c          \
