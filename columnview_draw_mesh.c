@@ -17,11 +17,11 @@ static void sync_kemoview_draw_mesh_from_list(GListStore *store, int iflag_group
 	for(i=0;i<num;i++){
         item = SW3C_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), i));
         kemoview_set_draw_mesh_item(iflag_group, SURFSOLID_TOGGLE, i,
-                                    (int) item->real1, kemo_sgl);
+                                    item->int1, kemo_sgl);
         kemoview_set_draw_mesh_item(iflag_group, SURFGRID_TOGGLE, i,
-                                    (int) item->real2, kemo_sgl);
+                                    item->int2, kemo_sgl);
         kemoview_set_draw_mesh_item(iflag_group, SURFNOD_TOGGLE, i,
-                                    (int) item->real3, kemo_sgl);
+                                    item->int3, kemo_sgl);
 	};
 	return;
 };
@@ -63,8 +63,8 @@ static void real_light_radius_change_CB(GObject *object, gpointer user_data) {
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     
     if(item){
-        item->real1 = gtk_spin_button_get_value(spin);
-        g_print("Real value updated! New float value: %.2f\n", item->real1);
+        item->int1 = gtk_spin_button_get_value(spin);
+        g_print("Value updated! New integer value: %d\n", item->int1);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
@@ -75,10 +75,10 @@ static void setup_light_radius_spin_CB(GtkSignalListItemFactory *factory,
                                        GtkListItem *listitem,
                                        gpointer user_data){
     /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0.0, 0.0, 1000.0, 0.25, 1.0, 0.0);
+    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
     
     /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 5.0, 2);
+    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
     
     gtk_list_item_set_child(listitem, spin);
@@ -98,7 +98,7 @@ static void bind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_radius_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->real1);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int1);
     g_signal_handlers_unblock_by_func(spin, real_light_radius_change_CB, listitem);
 
     /* Track user adjustments */
@@ -125,8 +125,8 @@ static void real_light_elevation_change_CB(GObject *object, gpointer user_data) 
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->real2 = gtk_spin_button_get_value(spin);
-        g_print("Real value updated! New float value: %.2f\n", item->real2);
+        item->int2 = gtk_spin_button_get_value(spin);
+        g_print("Value updated! New integer value: %d\n", item->int2);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
@@ -137,10 +137,10 @@ static void setup_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
                                           GtkListItem *listitem,
                                           gpointer user_data){
     /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0.0, -90.0, 90.0, 0.25, 10.0, 0.);
+    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
     
     /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 90.0, 2);
+    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
     
     gtk_list_item_set_child(listitem, spin);
@@ -160,7 +160,7 @@ static void bind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_elevation_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->real2);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int2);
     g_signal_handlers_unblock_by_func(spin, real_light_elevation_change_CB, listitem);
 
     /* Track user adjustments */
@@ -188,8 +188,8 @@ static void real_light_azimuth_change_CB(GObject *object, gpointer user_data) {
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->real3 = gtk_spin_button_get_value(spin);
-        g_print("Real value updated! New float value: %.2f\n", item->real3);
+        item->int3 = gtk_spin_button_get_value(spin);
+        g_print("Value updated! New integer value: %d\n", item->int3);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
@@ -200,10 +200,10 @@ static void setup_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
                                         GtkListItem *listitem,
                                         gpointer user_data){
     /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0.0, -180.0, 180.0, 0.25, 10.0, 0.);
+    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
     
     /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 180.0, 2);
+    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
     gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
     
     gtk_list_item_set_child(listitem, spin);
@@ -223,7 +223,7 @@ static void bind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
 
     /* Block signals temporarily to prevent loop during programmatic change */
     g_signal_handlers_block_by_func(spin, real_light_azimuth_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->real3);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int3);
     g_signal_handlers_unblock_by_func(spin, real_light_azimuth_change_CB, listitem);
 
     /* Track user adjustments */
@@ -236,6 +236,28 @@ static void unbind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
                                          gpointer user_data){
     GtkWidget *spin = gtk_list_item_get_child(listitem);
     g_signal_handlers_disconnect_by_func(spin, real_light_azimuth_change_CB, listitem);
+}
+
+/* =========================================================================
+ *   GtkColumnView Factory Callbacks for label box
+ * ========================================================================= */
+/* Bind: Populate widget data from model and listen for changes */
+/* Setup: Allocate and configure the float-capable GtkSpinButton */
+static void setup_str_label_CB(GtkSignalListItemFactory *factory,
+                               GtkListItem *listitem,
+                               gpointer user_data){
+    GtkWidget *label = gtk_label_new(NULL);
+    gtk_list_item_set_child(GTK_LIST_ITEM(listitem),label);
+}
+
+static void bind_str_label_CB(GtkSignalListItemFactory *factory,
+                              GtkListItem *listitem,
+                              gpointer user_data){
+    GtkWidget *label = gtk_list_item_get_child(listitem);
+    Sw3cColumnItem *item = gtk_list_item_get_item(GTK_LIST_ITEM(listitem));
+    const char *string = item->str;
+    g_print("bind_col1_CB value is %s\n",string); // Show on std out
+    gtk_label_set_text(GTK_LABEL(label), string);
 }
 
 /* =========================================================================
@@ -279,7 +301,7 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_light_radius_spin_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Patch", factory1);
     sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
-                                                                           NULL, "real1")));
+                                                                           NULL, "int1")));
     gtk_column_view_column_set_sorter (column1, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column1);
 
@@ -290,7 +312,7 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_light_elevation_spin_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Grid", factory2);
     sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
-                                                                           NULL, "real2")));
+                                                                           NULL, "int2")));
     gtk_column_view_column_set_sorter (column2, GTK_SORTER (sorter));
     gtk_column_view_append_column (GTK_COLUMN_VIEW(cview), column2);
 
@@ -301,10 +323,20 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
     g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_light_azimuth_spin_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Node", factory3);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
-                                                                            NULL, "real3")));
+                                                                            NULL, "int3")));
     gtk_column_view_column_set_sorter (column3, GTK_SORTER (sorter));
     gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column3);
     
+    // Factory setup and bind for column 4
+    GtkListItemFactory *factory4 = gtk_signal_list_item_factory_new();
+    g_signal_connect(factory4, "setup",  G_CALLBACK(setup_str_label_CB),  NULL);
+    g_signal_connect(factory4, "bind",   G_CALLBACK(bind_str_label_CB),   NULL);
+//    g_signal_connect(factory4, "unbind", G_CALLBACK(unbind_str_label_CB), NULL);
+    GtkColumnViewColumn *column4 = gtk_column_view_column_new("Group", factory4);
+    sorter = GTK_SORTER (gtk_string_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
+                                                                           NULL, "string")));
+    gtk_column_view_column_set_sorter (column4, GTK_SORTER(sorter));
+    gtk_column_view_append_column(GTK_COLUMN_VIEW(cview), column4);
     return cview;
 }
 

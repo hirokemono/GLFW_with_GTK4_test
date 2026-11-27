@@ -25,9 +25,9 @@ enum {
 struct _Sw3cColumnItem
 {
     GObject parent_instance;
-    float real1;
-    float real2;
-    float real3;
+    int int1;
+    int int2;
+    int int3;
     char  *str;
 };
 
@@ -48,9 +48,9 @@ G_DECLARE_FINAL_TYPE(Sw3cColumnItem, sw3c_column_item, SW3C_COLUMN, ITEM, GObjec
 
 
 /* prototypes */
-Sw3cColumnItem * sw3c_column_item_new(const float real1,
-                                      const float real2,
-                                      const float real3,
+Sw3cColumnItem * sw3c_column_item_new(const int int1,
+                                      const int int2,
+                                      const int int3,
                                       const char *str);
 
 int find_original_index_of_sw3c_column(GtkColumnView *column_view);
@@ -58,11 +58,11 @@ int find_original_index_of_sw3c_column(GtkColumnView *column_view);
 void show_all_sw3c_button_CB(GtkButton *button, gpointer user_data);
 void show_each_sw3c_button_CB(GtkButton *button, gpointer user_data);
 
-GListStore *init_sw3c_list_store(int num, float **array3, char **str);
+GListStore *init_sw3c_list_store(int num, int **iarray3, char **str);
 GtkWidget * sw3c_columnview_init(GListStore *store);
 
 struct kemo_sw3c_columnview * alloc_kemo_sw3c_columnview();
-struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, float **array3, char **str);
+struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, int **iarray3, char **str);
 void dealloc_kemo_sw3c_columnview(struct kemo_sw3c_columnview *sw3c_vws);
 
 G_END_DECLS
