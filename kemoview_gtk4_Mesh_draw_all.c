@@ -114,41 +114,46 @@ struct show_all_gtk_menu * init_show_all_mesh_menu(struct kemoviewer_gl_type *ke
                       (gpointer) &show_all_vws->iflag_group);
     g_object_set_data(G_OBJECT(entry_buf), "mesh_menu", (gpointer) draw_mesh_vws);
     
-    show_all_vws->button_draw_patch = gtk_button_new_with_label("Draw patch");
+    show_all_vws->button_draw_patch = gtk_button_new_with_label("Draw");
     g_signal_connect(G_OBJECT(show_all_vws->button_draw_patch), "clicked",
                      G_CALLBACK(draw_all_mesh_patch_CB), (gpointer) entry_buf);
     
-    show_all_vws->button_draw_grid = gtk_button_new_with_label("Draw grids");
+    show_all_vws->button_draw_grid = gtk_button_new_with_label("Draw");
     g_signal_connect(G_OBJECT(show_all_vws->button_draw_grid), "clicked",
                      G_CALLBACK(draw_all_mesh_grids_CB), (gpointer) entry_buf);
     
-    show_all_vws->button_draw_node = gtk_button_new_with_label("Draw nodes");
+    show_all_vws->button_draw_node = gtk_button_new_with_label("Draw");
     g_signal_connect(G_OBJECT(show_all_vws->button_draw_node), "clicked",
                      G_CALLBACK(draw_all_mesh_nodes_CB), (gpointer) entry_buf);
     
     
-    show_all_vws->button_hide_patch = gtk_button_new_with_label("Hide patch");
+    show_all_vws->button_hide_patch = gtk_button_new_with_label("Hide");
     g_signal_connect(G_OBJECT(show_all_vws->button_hide_patch), "clicked",
                      G_CALLBACK(hide_all_mesh_patch_CB), (gpointer) entry_buf);
     
-    show_all_vws->button_hide_grid = gtk_button_new_with_label("Hide grids");
+    show_all_vws->button_hide_grid = gtk_button_new_with_label("Hide");
     g_signal_connect(G_OBJECT(show_all_vws->button_hide_grid), "clicked",
                      G_CALLBACK(hide_all_mesh_grids_CB), (gpointer) entry_buf);
     
-    show_all_vws->button_hide_node = gtk_button_new_with_label("Hide nodes");
+    show_all_vws->button_hide_node = gtk_button_new_with_label("Hide");
     g_signal_connect(G_OBJECT(show_all_vws->button_hide_node), "clicked",
                      G_CALLBACK(hide_all_mesh_nodes_CB), (gpointer) entry_buf);
     
     GtkWidget *grid_all_switch = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Draw all: "),     0, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_patch, 1, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_grid,  2, 0, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_node,  3, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new(" "),              0, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Patch"),          1, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Grid"),           2, 0, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Node"),           3, 0, 1, 1);
     
-    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Hide all: "),     0, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_patch, 1, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_grid,  2, 1, 1, 1);
-    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_node,  3, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Draw all: "),     0, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_patch, 1, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_grid,  2, 1, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_draw_node,  3, 1, 1, 1);
+    
+    gtk_grid_attach(GTK_GRID(grid_all_switch), gtk_label_new("Hide all: "),     0, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_patch, 1, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_grid,  2, 2, 1, 1);
+    gtk_grid_attach(GTK_GRID(grid_all_switch), show_all_vws->button_hide_node,  3, 2, 1, 1);
     
     show_all_vws->show_all_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_box_append(GTK_BOX(show_all_vws->show_all_box), grid_all_switch);
