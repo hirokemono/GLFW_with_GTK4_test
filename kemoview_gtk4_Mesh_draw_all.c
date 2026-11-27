@@ -21,7 +21,7 @@ static struct show_all_gtk_menu * alloc_show_all_mesh_menu(int iflag_group){
     return show_all_vws;
 };
 
-void set_deaw_all_mesh_flags(int iflag, int iflag_group, int selected,
+void set_draw_all_mesh_flags(int iflag, int iflag_group, int selected,
                              struct kemoviewer_type *kemoviewer){
 	int num = kemoview_get_num_of_mesh_group(kemoviewer, iflag_group);
     int i;
@@ -33,66 +33,86 @@ void set_deaw_all_mesh_flags(int iflag, int iflag_group, int selected,
 }
 
 static void draw_all_mesh_patch_CB(GtkButton *button, gpointer user_data){
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IONE, *iflag_group, SURFSOLID_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IONE, *iflag_group, SURFSOLID_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 static void draw_all_mesh_grids_CB(GtkButton *button, gpointer user_data){
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IONE, *iflag_group, SURFGRID_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IONE, *iflag_group, SURFGRID_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 static void draw_all_mesh_nodes_CB(GtkButton *button, gpointer user_data){
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IONE, *iflag_group, SURFNOD_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IONE, *iflag_group, SURFNOD_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 
 static void hide_all_mesh_patch_CB(GtkButton *button, gpointer user_data)
 {
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IZERO, *iflag_group, SURFSOLID_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IZERO, *iflag_group, SURFSOLID_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 static void hide_all_mesh_grids_CB(GtkButton *button, gpointer user_data)
 {
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IZERO, *iflag_group, SURFGRID_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IZERO, *iflag_group, SURFGRID_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 static void hide_all_mesh_nodes_CB(GtkButton *button, gpointer user_data)
 {
+    struct kemo_sw3c_columnview *draw_mesh_vws
+            = (struct kemo_sw3c_columnview *) g_object_get_data(G_OBJECT(user_data), "mesh_menu");
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
     int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
-    set_deaw_all_mesh_flags(IZERO, *iflag_group, SURFNOD_TOGGLE, kemo_gl->kemoview_data);
+    set_draw_all_mesh_flags(IZERO, *iflag_group, SURFNOD_TOGGLE, kemo_gl->kemoview_data);
+    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     draw_full_gl(kemo_gl);
 }
 
 
 struct show_all_gtk_menu * init_show_all_mesh_menu(struct kemoviewer_gl_type *kemo_gl,
-                                                   int iflag_group){
+                                                   int iflag_group,
+                                                   struct kemo_sw3c_columnview *draw_mesh_vws){
     struct show_all_gtk_menu *show_all_vws = alloc_show_all_mesh_menu(iflag_group);
     
     GtkEntryBuffer *entry_buf = gtk_entry_buffer_new("", -1);
     g_object_set_data(G_OBJECT(entry_buf), "kemoview_gl", (gpointer)  kemo_gl);
     g_object_set_data(G_OBJECT(entry_buf), "group_flag",
                       (gpointer) &show_all_vws->iflag_group);
+    g_object_set_data(G_OBJECT(entry_buf), "mesh_menu", (gpointer) draw_mesh_vws);
     
     show_all_vws->button_draw_patch = gtk_button_new_with_label("Draw patch");
     g_signal_connect(G_OBJECT(show_all_vws->button_draw_patch), "clicked",
@@ -135,8 +155,10 @@ struct show_all_gtk_menu * init_show_all_mesh_menu(struct kemoviewer_gl_type *ke
     return show_all_vws;
 }
 
-struct show_all_gtk_menu * init_show_all_node_menu(struct kemoviewer_gl_type *kemo_gl){
-    struct show_all_gtk_menu *show_all_vws = init_show_all_mesh_menu(kemo_gl, NODE_GRP_FLAG);
+struct show_all_gtk_menu * init_show_all_node_menu(struct kemoviewer_gl_type *kemo_gl,
+                                                   struct kemo_sw3c_columnview *draw_mesh_vws){
+    struct show_all_gtk_menu *show_all_vws = init_show_all_mesh_menu(kemo_gl, NODE_GRP_FLAG,
+                                                                     draw_mesh_vws);
     
     gtk_widget_set_visible(show_all_vws->button_draw_patch, FALSE);
     gtk_widget_set_visible(show_all_vws->button_draw_grid,  FALSE);

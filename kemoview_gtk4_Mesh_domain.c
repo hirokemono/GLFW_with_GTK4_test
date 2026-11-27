@@ -39,9 +39,9 @@ struct domain_gtk_menu * init_gtk_domain_menu(struct kemoviewer_gl_type *kemo_gl
                                               GtkWidget *window){
     struct domain_gtk_menu *domain_gmenu = alloc_domain_menu();
     
-    domain_gmenu->all_domain_vws = init_show_all_mesh_menu(kemo_gl, DOMAIN_FLAG);
-    
     domain_gmenu->draw_domain_vws = init_draw_mesh_list_scroll(kemo_gl, window);
+    domain_gmenu->all_domain_vws = init_show_all_mesh_menu(kemo_gl, DOMAIN_FLAG,
+                                                           domain_gmenu->draw_domain_vws);
     
     domain_gmenu->domain_patch_color_vws = init_mesh_color_menu_box(kemo_gl, "Patch color",
                                                                     DOMAIN_FLAG, SURFSOLID_TOGGLE);
@@ -93,6 +93,7 @@ void dealloc_domain_menu(struct domain_gtk_menu *domain_gmenu){
     dealloc_mesh_color_menu(domain_gmenu->domain_patch_color_vws);
     dealloc_mesh_color_menu(domain_gmenu->domain_grid_color_vws);
     dealloc_mesh_color_menu(domain_gmenu->domain_node_color_vws);
+    dealloc_kemo_sw3c_columnview(domain_gmenu->draw_domain_vws);
     
     g_object_unref(domain_gmenu->domain_menu_expander);
     free(domain_gmenu);
