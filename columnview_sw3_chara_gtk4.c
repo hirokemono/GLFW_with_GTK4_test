@@ -23,21 +23,21 @@ struct _Sw3cColumnItemClass
 G_DEFINE_TYPE(Sw3cColumnItem, sw3c_column_item, G_TYPE_OBJECT)
 
 // Setup custom type - each item has two strings which will be displayed in two columns
-static void real3_column_item_get_property(GObject *object,
-                                           guint prop_id,
-                                           GValue *value,
-                                           GParamSpec *pspec){
+static void sw3c_column_item_get_property(GObject *object,
+                                          guint prop_id,
+                                          GValue *value,
+                                          GParamSpec *pspec){
     Sw3cColumnItem *self = (Sw3cColumnItem *)object;
 
     switch (prop_id) {
     case PROP_SW3C_SW1:
-        g_value_set_float(value, (gfloat) self->int1);
+        g_value_set_int(value, self->int1);
         break;
     case PROP_SW3C_SW2:
-        g_value_set_float(value, (gfloat) self->int2);
+        g_value_set_int(value, self->int2);
         break;
     case PROP_SW3C_SW3:
-        g_value_set_float(value, (gfloat) self->int3);
+        g_value_set_int(value, self->int3);
         break;
     case PROP_SW3C_STR:
         g_value_set_string(value, self->str);
@@ -47,10 +47,10 @@ static void real3_column_item_get_property(GObject *object,
     }
 }
 
-static void real3_column_item_set_property(GObject *object,
-                                           guint prop_id,
-                                           const GValue *value,
-                                           GParamSpec *pspec){
+static void sw3c_column_item_set_property(GObject *object,
+                                          guint prop_id,
+                                          const GValue *value,
+                                          GParamSpec *pspec){
     Sw3cColumnItem *self = (Sw3cColumnItem *)object;
     
     switch (prop_id) {
@@ -77,8 +77,8 @@ static GParamSpec *obj_properties[N_PROPS_SW3C] = { NULL, };
 static void sw3c_column_item_class_init(Sw3cColumnItemClass *class){
     GObjectClass *gobject_class = G_OBJECT_CLASS(class);
 
-    gobject_class->get_property = real3_column_item_get_property;
-    gobject_class->set_property = real3_column_item_set_property;
+    gobject_class->get_property = sw3c_column_item_get_property;
+    gobject_class->set_property = sw3c_column_item_set_property;
 
     obj_properties[PROP_SW3C_SW1] = g_param_spec_int("int1",
                                                      "Int1",
@@ -150,162 +150,144 @@ int find_original_index_of_sw3c_column(GtkColumnView *column_view){
 
 /*  Callbacks  */
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button 1
+ *   GtkColumnView Factory Callbacks for button 1
  * ========================================================================= */
-/*  Float spin button callbacks */
-static void real_spin1_value_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin1 = GTK_SPIN_BUTTON(object);
+/*  check button callbacks */
+static void first_check_button_change_CB(GObject *object, gpointer user_data) {
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->int1 = gtk_spin_button_get_value(spin1);
+        item->int1 = (int) gtk_check_button_get_active(button);
         g_print("1st value updated! New integer value: %d\n", item->int1);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_real1_spin_CB(GtkSignalListItemFactory *factory,
-                                GtkListItem *listitem,
-                                gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
+/* Setup: Allocate and configure the check button */
+static void setup_1st_check_button_CB(GtkSignalListItemFactory *factory,
+                                      GtkListItem *listitem,
+                                      gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
 }
 
 /* Bind: Populate widget data from model and listen for changes */
-static void bind_real1_spin_CB(GtkSignalListItemFactory *factory,
-                               GtkListItem *listitem,
-                               gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
+static void bind_1st_check_button_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_spin1_value_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int1);
-    g_signal_handlers_unblock_by_func(spin, real_spin1_value_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, first_check_button_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int1);
+    g_signal_handlers_unblock_by_func(button, first_check_button_change_CB, listitem);
     
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_spin1_value_change_CB), listitem);
+    g_signal_connect(button, "value-changed", G_CALLBACK(first_check_button_change_CB), listitem);
 }
 
 /* Unbind: Clean up connection when cell is ready for recycling */
-static void unbind_real1_spin_CB(GtkSignalListItemFactory *factory,
-                                 GtkListItem *listitem,
-                                 gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_spin1_value_change_CB, listitem);
+static void unbind_1st_check_button_CB(GtkSignalListItemFactory *factory,
+                                       GtkListItem *listitem,
+                                       gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, first_check_button_change_CB, listitem);
 }
 
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button 2
+ *   GtkColumnView Factory Callbacks for button 2
  * ========================================================================= */
-/*  Float spin button callbacks */
-static void real_spin2_value_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+/*  check button callbacks */
+static void second_check_button_change_CB(GObject *object, gpointer user_data) {
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->int2 = gtk_spin_button_get_value(spin);
+        item->int2 = (int) gtk_check_button_get_active(button);
         g_print("2nd value updated! New integer value: %d\n", item->int2);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_real2_spin_CB(GtkSignalListItemFactory *factory,
-                                GtkListItem *listitem,
-                                gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
+/* Setup: Allocate and configure the check button */
+static void setup_2nd_check_button_CB(GtkSignalListItemFactory *factory,
+                                      GtkListItem *listitem,
+                                      gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
 }
 
 /* Bind: Populate widget data from model and listen for changes */
-static void bind_real2_spin_CB(GtkSignalListItemFactory *factory,
-                               GtkListItem *listitem,
-                               gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
+static void bind_2nd_check_button_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_spin2_value_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int2);
-    g_signal_handlers_unblock_by_func(spin, real_spin2_value_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, second_check_button_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int2);
+    g_signal_handlers_unblock_by_func(button, second_check_button_change_CB, listitem);
     
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_spin2_value_change_CB), listitem);
+    g_signal_connect(button, "value-changed", G_CALLBACK(second_check_button_change_CB), listitem);
 }
 
 /* Unbind: Clean up connection when cell is ready for recycling */
-static void unbind_real2_spin_CB(GtkSignalListItemFactory *factory,
-                                 GtkListItem *listitem,
-                                 gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_spin2_value_change_CB, listitem);
+static void unbind_2nd_check_button_CB(GtkSignalListItemFactory *factory,
+                                       GtkListItem *listitem,
+                                       gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, second_check_button_change_CB, listitem);
 }
 
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button 3
+ *   GtkColumnView Factory Callbacks for button 3
  * ========================================================================= */
-/*  Float spin button callbacks */
-static void real_spin3_value_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+/*  check button callbacks */
+static void third_check_button_change_CB(GObject *object, gpointer user_data) {
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->int3 = gtk_spin_button_get_value(spin);
+        item->int3 = (int) gtk_check_button_get_active(button);
         g_print("3rd value updated! New inteegr value: %d\n", item->int3);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_real3_spin_CB(GtkSignalListItemFactory *factory,
-                                GtkListItem *listitem,
-                                gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
+/* Setup: Allocate and configure the check button */
+static void setup_3rd_check_button_CB(GtkSignalListItemFactory *factory,
+                                      GtkListItem *listitem,
+                                      gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
 }
 
 /* Bind: Populate widget data from model and listen for changes */
-static void bind_real3_spin_CB(GtkSignalListItemFactory *factory,
-                               GtkListItem *listitem,
-                               gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
+static void bind_3rd_check_button_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_spin3_value_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int3);
-    g_signal_handlers_unblock_by_func(spin, real_spin3_value_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, third_check_button_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int3);
+    g_signal_handlers_unblock_by_func(button, third_check_button_change_CB, listitem);
     
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_spin3_value_change_CB), listitem);
+    g_signal_connect(button, "value-changed", G_CALLBACK(third_check_button_change_CB), listitem);
 }
 
 /* Unbind: Clean up connection when cell is ready for recycling */
-static void unbind_real3_spin_CB(GtkSignalListItemFactory *factory,
-                                 GtkListItem *listitem,
-                                 gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_spin3_value_change_CB, listitem);
+static void unbind_3rd_check_button_CB(GtkSignalListItemFactory *factory,
+                                       GtkListItem *listitem,
+                                       gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, third_check_button_change_CB, listitem);
 }
 
 /* =========================================================================
@@ -372,7 +354,7 @@ void show_each_sw3c_button_CB(GtkButton *button, gpointer user_data){
     return;
 };
 
-static void add_item_button_CB(GtkButton *button, gpointer user_data){
+static void add_sw3c_item_button_CB(GtkButton *button, gpointer user_data){
     Sw3cColumnItem *item;
     GtkColumnView *column_view = GTK_COLUMN_VIEW(user_data);
 	GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
@@ -390,7 +372,7 @@ static void add_item_button_CB(GtkButton *button, gpointer user_data){
 };
 
 
-static void delete_item_button_CB(GtkButton *button, gpointer user_data){
+static void delete_sw3c_item_button_CB(GtkButton *button, gpointer user_data){
     GtkColumnView *column_view = GTK_COLUMN_VIEW(user_data);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(user_data), "list_store"));
     
@@ -430,9 +412,9 @@ GtkWidget * sw3c_columnview_init(GListStore *store){
 
     // Factory setup and bind for column 1 
     GtkListItemFactory *factory1 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory1, "setup",  G_CALLBACK(setup_real1_spin_CB),  NULL);
-    g_signal_connect(factory1, "bind",   G_CALLBACK(bind_real1_spin_CB),   NULL);
-    g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_real1_spin_CB), NULL);
+    g_signal_connect(factory1, "setup",  G_CALLBACK(setup_1st_check_button_CB),  NULL);
+    g_signal_connect(factory1, "bind",   G_CALLBACK(bind_1st_check_button_CB),   NULL);
+    g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_1st_check_button_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Data1", factory1);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
                                                                             NULL, "int1")));
@@ -441,9 +423,9 @@ GtkWidget * sw3c_columnview_init(GListStore *store){
 
     // Factory setup and bind for column 2
     GtkListItemFactory *factory2 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory2, "setup",  G_CALLBACK(setup_real2_spin_CB),  NULL);
-    g_signal_connect(factory2, "bind",   G_CALLBACK(bind_real2_spin_CB),   NULL);
-    g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_real2_spin_CB), NULL);
+    g_signal_connect(factory2, "setup",  G_CALLBACK(setup_2nd_check_button_CB),  NULL);
+    g_signal_connect(factory2, "bind",   G_CALLBACK(bind_2nd_check_button_CB),   NULL);
+    g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_2nd_check_button_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Data2", factory2);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
                                                                             NULL, "int2")));
@@ -452,9 +434,9 @@ GtkWidget * sw3c_columnview_init(GListStore *store){
 
     // Factory setup and bind for column 3
     GtkListItemFactory *factory3 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory3, "setup",  G_CALLBACK(setup_real3_spin_CB),  NULL);
-    g_signal_connect(factory3, "bind",   G_CALLBACK(bind_real3_spin_CB),   NULL);
-    g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_real3_spin_CB), NULL);
+    g_signal_connect(factory3, "setup",  G_CALLBACK(setup_3rd_check_button_CB),  NULL);
+    g_signal_connect(factory3, "bind",   G_CALLBACK(bind_3rd_check_button_CB),   NULL);
+    g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_3rd_check_button_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Data3", factory3);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
                                                                             NULL, "int3")));
@@ -505,11 +487,11 @@ struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, int **iarray3
     
     GtkWidget *add_item_button = gtk_button_new_with_label("Add");
     g_signal_connect(G_OBJECT(add_item_button), "clicked",
-                     G_CALLBACK(add_item_button_CB), G_OBJECT(sw3c_vws->real3_cview));
+                     G_CALLBACK(add_sw3c_item_button_CB), G_OBJECT(sw3c_vws->real3_cview));
     
     GtkWidget *del_item_button = gtk_button_new_with_label("Delete");
     g_signal_connect(G_OBJECT(del_item_button), "clicked",
-                     G_CALLBACK(delete_item_button_CB), G_OBJECT(sw3c_vws->real3_cview));
+                     G_CALLBACK(delete_sw3c_item_button_CB), G_OBJECT(sw3c_vws->real3_cview));
     
     
     GtkWidget *show_all_button = gtk_button_new_with_label("Show data");

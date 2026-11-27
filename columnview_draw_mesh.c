@@ -28,12 +28,12 @@ static void sync_kemoview_draw_mesh_from_list(GListStore *store, int iflag_group
 
 static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
                                               int iflag_group,
-                                              GListStore *store){
+                                              struct kemo_sw3c_columnview *draw_mesh_vws){
     char label[64];
     int iflag_patch, iflag_grid, iflag_node;
 	int i;
     gpointer additions[1];
-	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
+	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(draw_mesh_vws->real3_store));
     for(i=0;i<num_list;i++){
         sprintf(label, "Domain %d", i);
         iflag_patch = kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
@@ -43,19 +43,20 @@ static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
                                                      (float) iflag_grid,
                                                      (float) iflag_node,
                                                      label));
-        g_list_store_splice(store, i, IONE, additions, IONE);
+        g_list_store_splice(draw_mesh_vws->real3_store, i, IONE, additions, IONE);
     };
-	return;
+    gtk_widget_queue_draw(GTK_WIDGET(draw_mesh_vws->real3_cview_scroll));
+    return;
 };
 
 /*  Callbacks  */
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button
+ *   GtkColumnView Factory Callbacks for draw patch button
  * ========================================================================= */
 
-/*  Float spin button callbacks */
-static void real_light_radius_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+/*  draw button callbacks */
+static void draw_patch_flag_change_CB(GObject *object, gpointer user_data) {
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
@@ -63,61 +64,55 @@ static void real_light_radius_change_CB(GObject *object, gpointer user_data) {
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
     
     if(item){
-        item->int1 = gtk_spin_button_get_value(spin);
-        g_print("Value updated! New integer value: %d\n", item->int1);
+        item->int1 = (int) gtk_check_button_get_active(button);
+        g_print("Patch draw flag is updated! New integer value: %d\n", item->int1);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_light_radius_spin_CB(GtkSignalListItemFactory *factory,
-                                       GtkListItem *listitem,
-                                       gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
-}
-
-// Bind: Populate widget data from model and listen for changes
-static void bind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
+/* Setup: Allocate and configure the check button */
+static void setup_draw_patch_check_CB(GtkSignalListItemFactory *factory,
                                       GtkListItem *listitem,
                                       gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
+}
+
+// Bind: Populate widget data from model and listen for changes
+static void bind_draw_patch_check_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(button), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_light_radius_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int1);
-    g_signal_handlers_unblock_by_func(spin, real_light_radius_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, draw_patch_flag_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int1);
+    g_signal_handlers_unblock_by_func(button, draw_patch_flag_change_CB, listitem);
 
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_radius_change_CB), listitem);
+    g_signal_connect(button, "toggled", G_CALLBACK(draw_patch_flag_change_CB), listitem);
 }
 
 // Unbind: Clean up connection when cell is ready for recycling
-static void unbind_light_radius_spin_CB(GtkSignalListItemFactory *factory,
-                                        GtkListItem *listitem,
-                                        gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_light_radius_change_CB, listitem);
+static void unbind_draw_patch_check_CB(GtkSignalListItemFactory *factory,
+                                       GtkListItem *listitem,
+                                       gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, draw_patch_flag_change_CB, listitem);
 }
 
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button
+ *   GtkColumnView Factory Callbacks for draw grid button
  * ========================================================================= */
-static void real_light_elevation_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+static void draw_grid_flag_change_CB(GObject *object, gpointer user_data){
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
@@ -125,62 +120,56 @@ static void real_light_elevation_change_CB(GObject *object, gpointer user_data) 
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->int2 = gtk_spin_button_get_value(spin);
-        g_print("Value updated! New integer value: %d\n", item->int2);
+        item->int2 = (int) gtk_check_button_get_active(button);
+        g_print("Grid draw flag is updated! New integer value: %d\n", item->int2);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
-                                          GtkListItem *listitem,
-                                          gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
+/* Setup: Allocate and configure the check button */
+static void setup_draw_grid_check_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
 }
 
 // Bind: Populate widget data from model and listen for changes
-static void bind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
-                                         GtkListItem *listitem,
-                                         gpointer user_data){
+static void bind_draw_grid_check_CB(GtkSignalListItemFactory *factory,
+                                    GtkListItem *listitem,
+                                    gpointer user_data){
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",    G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(button), "kemoview_gl",    G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_light_elevation_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int2);
-    g_signal_handlers_unblock_by_func(spin, real_light_elevation_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, draw_grid_flag_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int2);
+    g_signal_handlers_unblock_by_func(button, draw_grid_flag_change_CB, listitem);
 
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_elevation_change_CB), listitem);
+    g_signal_connect(button, "toggled", G_CALLBACK(draw_grid_flag_change_CB), listitem);
 }
 
 // Unbind: Clean up connection when cell is ready for recycling
-static void unbind_light_elevation_spin_CB(GtkSignalListItemFactory *factory,
-                                           GtkListItem *listitem,
-                                           gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_light_elevation_change_CB, listitem);
+static void unbind_draw_grid_check_CB(GtkSignalListItemFactory *factory,
+                                      GtkListItem *listitem,
+                                      gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, draw_grid_flag_change_CB, listitem);
 }
 
 
 /* =========================================================================
- *   GtkColumnView Factory Callbacks for real spin button
+ *   GtkColumnView Factory Callbacks for draw node button
  * ========================================================================= */
-static void real_light_azimuth_change_CB(GObject *object, gpointer user_data) {
-    GtkSpinButton *spin = GTK_SPIN_BUTTON(object);
+static void draw_node_flag_change_CB(GObject *object, gpointer user_data) {
+    GtkCheckButton *button = GTK_CHECK_BUTTON(object);
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
@@ -188,54 +177,48 @@ static void real_light_azimuth_change_CB(GObject *object, gpointer user_data) {
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
-        item->int3 = gtk_spin_button_get_value(spin);
+        item->int3 = (int) gtk_check_button_get_active(button);
         g_print("Value updated! New integer value: %d\n", item->int3);
         sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
 
-/* Setup: Allocate and configure the float-capable GtkSpinButton */
-static void setup_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
-                                        GtkListItem *listitem,
-                                        gpointer user_data){
-    /* parameters: initial_value, lower, upper, step_increment, page_increment, page_size */
-    GtkAdjustment *adjustment = gtk_adjustment_new(0, -1000, 1000, 1, 0, 0);
-    
-    /* parameters: adjustment, climb_rate, decimal_digits */
-    GtkWidget *spin = gtk_spin_button_new(adjustment, 0, 0);
-    gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(spin), TRUE);
-    
-    gtk_list_item_set_child(listitem, spin);
+/* Setup: Allocate and configure the check button */
+static void setup_draw_node_check_CB(GtkSignalListItemFactory *factory,
+                                     GtkListItem *listitem,
+                                     gpointer user_data){
+    GtkWidget *button = gtk_check_button_new();
+    gtk_list_item_set_child(listitem, button);
 }
 
 // Bind: Populate widget data from model and listen for changes
-static void bind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
-                                       GtkListItem *listitem,
-                                       gpointer user_data){
+static void bind_draw_node_check_CB(GtkSignalListItemFactory *factory,
+                                    GtkListItem *listitem,
+                                    gpointer user_data){
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_object_set_data(G_OBJECT(spin), "kemoview_gl",   G_OBJECT(kemo_gl));
-    g_object_set_data(G_OBJECT(spin), "list_store", G_OBJECT(store));
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_object_set_data(G_OBJECT(button), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
     /* Block signals temporarily to prevent loop during programmatic change */
-    g_signal_handlers_block_by_func(spin, real_light_azimuth_change_CB, listitem);
-    gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin), item->int3);
-    g_signal_handlers_unblock_by_func(spin, real_light_azimuth_change_CB, listitem);
+    g_signal_handlers_block_by_func(button, draw_node_flag_change_CB, listitem);
+    gtk_check_button_set_active(GTK_CHECK_BUTTON(button), (gboolean) item->int3);
+    g_signal_handlers_unblock_by_func(button, draw_node_flag_change_CB, listitem);
 
     /* Track user adjustments */
-    g_signal_connect(spin, "value-changed", G_CALLBACK(real_light_azimuth_change_CB), listitem);
+    g_signal_connect(button, "toggled", G_CALLBACK(draw_node_flag_change_CB), listitem);
 }
 
 // Unbind: Clean up connection when cell is ready for recycling
-static void unbind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
-                                         GtkListItem *listitem,
-                                         gpointer user_data){
-    GtkWidget *spin = gtk_list_item_get_child(listitem);
-    g_signal_handlers_disconnect_by_func(spin, real_light_azimuth_change_CB, listitem);
+static void unbind_draw_node_check_CB(GtkSignalListItemFactory *factory,
+                                      GtkListItem *listitem,
+                                      gpointer user_data){
+    GtkWidget *button = gtk_list_item_get_child(listitem);
+    g_signal_handlers_disconnect_by_func(button, draw_node_flag_change_CB, listitem);
 }
 
 /* =========================================================================
@@ -296,9 +279,9 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 
     // Factory setup and bind for column 1 
     GtkListItemFactory *factory1 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory1, "setup",  G_CALLBACK(setup_light_radius_spin_CB),  NULL);
-    g_signal_connect(factory1, "bind",   G_CALLBACK(bind_light_radius_spin_CB),   G_OBJECT(store));
-    g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_light_radius_spin_CB), NULL);
+    g_signal_connect(factory1, "setup",  G_CALLBACK(setup_draw_patch_check_CB),  NULL);
+    g_signal_connect(factory1, "bind",   G_CALLBACK(bind_draw_patch_check_CB),   G_OBJECT(store));
+    g_signal_connect(factory1, "unbind", G_CALLBACK(unbind_draw_patch_check_CB), NULL);
     GtkColumnViewColumn *column1 = gtk_column_view_column_new("Patch", factory1);
     sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
                                                                            NULL, "int1")));
@@ -307,9 +290,9 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 
     // Factory setup and bind for column 2
     GtkListItemFactory *factory2 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory2, "setup",  G_CALLBACK(setup_light_elevation_spin_CB),  NULL);
-    g_signal_connect(factory2, "bind",   G_CALLBACK(bind_light_elevation_spin_CB),   G_OBJECT(store));
-    g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_light_elevation_spin_CB), NULL);
+    g_signal_connect(factory2, "setup",  G_CALLBACK(setup_draw_grid_check_CB),  NULL);
+    g_signal_connect(factory2, "bind",   G_CALLBACK(bind_draw_grid_check_CB),   G_OBJECT(store));
+    g_signal_connect(factory2, "unbind", G_CALLBACK(unbind_draw_grid_check_CB), NULL);
     GtkColumnViewColumn *column2 = gtk_column_view_column_new("Grid", factory2);
     sorter = GTK_SORTER(gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM, 
                                                                            NULL, "int2")));
@@ -318,9 +301,9 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 
     // Factory setup and bind for column 3
     GtkListItemFactory *factory3 = gtk_signal_list_item_factory_new();
-    g_signal_connect(factory3, "setup",  G_CALLBACK(setup_light_azimuth_spin_CB),  NULL);
-    g_signal_connect(factory3, "bind",   G_CALLBACK(bind_light_azimuth_spin_CB),   G_OBJECT(store));
-    g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_light_azimuth_spin_CB), NULL);
+    g_signal_connect(factory3, "setup",  G_CALLBACK(setup_draw_node_check_CB),  NULL);
+    g_signal_connect(factory3, "bind",   G_CALLBACK(bind_draw_node_check_CB),   G_OBJECT(store));
+    g_signal_connect(factory3, "unbind", G_CALLBACK(unbind_draw_node_check_CB), NULL);
     GtkColumnViewColumn *column3 = gtk_column_view_column_new("Node", factory3);
     sorter = GTK_SORTER (gtk_numeric_sorter_new(gtk_property_expression_new(SW3C_COLUMN_TYPE_ITEM,
                                                                             NULL, "int3")));
@@ -374,12 +357,13 @@ struct kemo_sw3c_columnview * init_draw_mesh_list_scroll(struct kemoviewer_gl_ty
     
     
     draw_mesh_vws->real3_cview_scroll = wrap_into_scrollbox_gtk4(480, 320, scroll_win);
+//    update_draw_mesh_list(kemo_gl, draw_mesh_vws);
     return draw_mesh_vws;
 };
 
 void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
                            struct kemo_sw3c_columnview *draw_mesh_vws){
     sync_list_from_kemoview_draw_mesh(kemo_gl->kemoview_data, DOMAIN_FLAG,
-                                      draw_mesh_vws->real3_store);
+                                      draw_mesh_vws);
     return;
 };

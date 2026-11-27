@@ -34,13 +34,13 @@ static void chara_sw3_column_item_get_property(GObject *object,
         g_value_set_string(value, self->string);
         break;
     case PROP_CHARA_SW3_I1:
-        g_value_set_int(value, (gint) self->int1);
+        g_value_set_int(value, self->int1);
         break;
     case PROP_CHARA_SW3_I2:
-        g_value_set_int(value, (gint) self->int2);
+        g_value_set_int(value, self->int2);
         break;
     case PROP_CHARA_SW3_I3:
-        g_value_set_int(value, (gint) self->int3);
+        g_value_set_int(value, self->int3);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
