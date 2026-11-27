@@ -20,8 +20,9 @@
 
 /* prototypes */
 struct kemo_sw3c_columnview * init_draw_mesh_list_box(struct kemoviewer_gl_type *kemo_gl,
+                                                      int *iflag_group,
                                                       GtkWidget *mesh_window);
-void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
+void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl, int iflag_group, 
                            struct kemo_sw3c_columnview *draw_mesh_vws);
 
 #endif /* COLUMNVIEW_DRAW_MESH_ */

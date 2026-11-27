@@ -26,6 +26,8 @@
 #include "kemoview_gtk4_Mesh_color_menu.h"
 
 struct domain_gtk_menu{
+    int iflag_group;
+    
     struct show_all_gtk_menu *all_domain_vws;
     
     struct kemo_sw3c_columnview *draw_domain_vws;

@@ -62,11 +62,12 @@ static void draw_patch_flag_change_CB(GObject *object, gpointer user_data) {
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(object), "group_flag");
     
     if(item){
         item->int1 = (int) gtk_check_button_get_active(button);
         g_print("Patch draw flag is updated! New integer value: %d\n", item->int1);
-        sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
+        sync_kemoview_draw_mesh_from_list(store, *iflag_group, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
@@ -86,8 +87,10 @@ static void bind_draw_patch_check_CB(GtkSignalListItemFactory *factory,
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
     GtkWidget *button = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(button), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "group_flag",  (gpointer) iflag_group);
     g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
@@ -116,13 +119,14 @@ static void draw_grid_flag_change_CB(GObject *object, gpointer user_data){
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(object), "group_flag");
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
         item->int2 = (int) gtk_check_button_get_active(button);
         g_print("Grid draw flag is updated! New integer value: %d\n", item->int2);
-        sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
+        sync_kemoview_draw_mesh_from_list(store, *iflag_group, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
@@ -142,8 +146,10 @@ static void bind_draw_grid_check_CB(GtkSignalListItemFactory *factory,
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
     GtkWidget *button = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(button), "kemoview_gl",    G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "group_flag",  (gpointer) iflag_group);
     g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
@@ -173,13 +179,14 @@ static void draw_node_flag_change_CB(GObject *object, gpointer user_data) {
     GListStore *store = G_LIST_STORE(g_object_get_data(G_OBJECT(object), "list_store"));
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(object), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(object), "group_flag");
     GtkListItem *listitem = GTK_LIST_ITEM(user_data);
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
     
     if(item){
         item->int3 = (int) gtk_check_button_get_active(button);
         g_print("Value updated! New integer value: %d\n", item->int3);
-        sync_kemoview_draw_mesh_from_list(store, DOMAIN_FLAG, kemo_gl->kemoview_data);
+        sync_kemoview_draw_mesh_from_list(store, *iflag_group, kemo_gl->kemoview_data);
         draw_full_gl(kemo_gl);
     }
 }
@@ -199,8 +206,10 @@ static void bind_draw_node_check_CB(GtkSignalListItemFactory *factory,
     GListStore *store = G_LIST_STORE(user_data);
     struct kemoviewer_gl_type *kemo_gl
             = (struct kemoviewer_gl_type *) g_object_get_data(G_OBJECT(user_data), "kemoview_gl");
+    int *iflag_group = (int *) g_object_get_data(G_OBJECT(user_data), "group_flag");
     GtkWidget *button = gtk_list_item_get_child(listitem);
     g_object_set_data(G_OBJECT(button), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(button), "group_flag",  (gpointer) iflag_group);
     g_object_set_data(G_OBJECT(button), "list_store", G_OBJECT(store));
     Sw3cColumnItem *item = gtk_list_item_get_item(listitem);
 
@@ -266,9 +275,11 @@ static GListStore *init_lightposition_list_store(int iflag_group,
 };
 
 static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kemo_gl,
+                                                  int *iflag_group,
                                                   GListStore *store){
     GtkWidget *cview = gtk_column_view_new(NULL);
     g_object_set_data(G_OBJECT(store), "kemoview_gl",   G_OBJECT(kemo_gl));
+    g_object_set_data(G_OBJECT(store), "group_flag",  (gpointer) iflag_group);
     
     // Setup sort model then overlay with with columnview
     GtkSorter *sorter = g_object_ref(gtk_column_view_get_sorter (GTK_COLUMN_VIEW(cview)));
@@ -325,12 +336,13 @@ static GtkWidget * light_position_columnview_init(struct kemoviewer_gl_type *kem
 
 
 struct kemo_sw3c_columnview * init_draw_mesh_list_box(struct kemoviewer_gl_type *kemo_gl,
+                                                      int *iflag_group,
                                                       GtkWidget *mesh_window){
     struct kemo_sw3c_columnview *draw_mesh_vws = alloc_kemo_sw3c_columnview();
-    
     // Add column view.  Put in scrolled window.  
-    draw_mesh_vws->real3_store = init_lightposition_list_store(DOMAIN_FLAG, kemo_gl->kemoview_data); 
-    draw_mesh_vws->real3_cview = light_position_columnview_init(kemo_gl, draw_mesh_vws->real3_store);
+    draw_mesh_vws->real3_store = init_lightposition_list_store(*iflag_group, kemo_gl->kemoview_data); 
+    draw_mesh_vws->real3_cview = light_position_columnview_init(kemo_gl, iflag_group,
+                                                                draw_mesh_vws->real3_store);
     gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW (draw_mesh_vws->real3_cview),TRUE);
     g_object_set_data(G_OBJECT(draw_mesh_vws->real3_cview), "list_store",
                       G_OBJECT(draw_mesh_vws->real3_store));
@@ -349,24 +361,12 @@ struct kemo_sw3c_columnview * init_draw_mesh_list_box(struct kemoviewer_gl_type 
     draw_mesh_vws->sw3c_view_scroll = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     gtk_box_append(GTK_BOX(draw_mesh_vws->sw3c_view_scroll), draw_mesh_vws->real3_cview);
     
-    /*
-    GtkWidget *draw_mesh_vws->sw3c_view_scroll = gtk_grid_new();
-    gtk_grid_attach(GTK_GRID(draw_mesh_vws->sw3c_view_scroll), draw_mesh_vws->real3_cview, 0, 0, 4, 1);
-    gtk_grid_attach(GTK_GRID(grid), show_all_button,         0, 2, 2, 1);
-    gtk_grid_attach(GTK_GRID(grid), show_each_button,        2, 2, 2, 1);
-    GtkWidget *scroll_win = gtk_scrolled_window_new(); 
-    gtk_scrolled_window_set_min_content_width(GTK_SCROLLED_WINDOW(scroll_win),  480);
-    gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scroll_win), 320);
-    gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scroll_win), grid);
-    */
-    // scrolled window
-    
     return draw_mesh_vws;
 };
 
-void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl,
+void update_draw_mesh_list(struct kemoviewer_gl_type *kemo_gl, int iflag_group,
                            struct kemo_sw3c_columnview *draw_mesh_vws){
-    sync_list_from_kemoview_draw_mesh(kemo_gl->kemoview_data, DOMAIN_FLAG,
+    sync_list_from_kemoview_draw_mesh(kemo_gl->kemoview_data, iflag_group,
                                       draw_mesh_vws);
     return;
 };

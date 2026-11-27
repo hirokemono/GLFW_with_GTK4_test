@@ -22,7 +22,7 @@ const char * const mesh_color_mode_list[] = {hd_domain,
                                              NULL};
 
 
-static struct mesh_color_menu * alloc_mesh_color_menu(int iflag_group, int selected_type){
+static struct mesh_color_menu * alloc_mesh_color_menu(int selected_type){
     struct mesh_color_menu *mesh_color_menu_vws;
     mesh_color_menu_vws = (struct mesh_color_menu *) malloc(sizeof(struct mesh_color_menu));
     if (mesh_color_menu_vws == NULL) {
@@ -30,7 +30,6 @@ static struct mesh_color_menu * alloc_mesh_color_menu(int iflag_group, int selec
         exit(0);
     }
     
-    mesh_color_menu_vws->iflag_group =   iflag_group;
     mesh_color_menu_vws->selected_type = selected_type;
     return mesh_color_menu_vws;
 }
@@ -155,20 +154,18 @@ static GtkWidget * init_mesh_color_cell(struct kemoviewer_gl_type *kemo_gl,
 
 struct mesh_color_menu * init_mesh_color_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                                   char *menu_label,
-                                                  int iflag_group,
+                                                  int *iflag_group,
                                                   int selected_type){
-    struct mesh_color_menu *mesh_color_menu_vws = alloc_mesh_color_menu(iflag_group, selected_type);
+    struct mesh_color_menu *mesh_color_menu_vws = alloc_mesh_color_menu(selected_type);
     
     GtkStringList *polygon_side_model = gtk_string_list_new(mesh_color_mode_list);
     mesh_color_menu_vws->color_sel_dropdown
-            = init_mesh_color_mode_button(kemo_gl,
-                                          &mesh_color_menu_vws->iflag_group, 
+            = init_mesh_color_mode_button(kemo_gl, iflag_group, 
                                           &mesh_color_menu_vws->selected_type,
                                           polygon_side_model);
     g_object_unref(polygon_side_model);
     
-    mesh_color_menu_vws->color_pick_cell = init_mesh_color_cell(kemo_gl,
-                                                                &mesh_color_menu_vws->iflag_group, 
+    mesh_color_menu_vws->color_pick_cell = init_mesh_color_cell(kemo_gl, iflag_group, 
                                                                 &mesh_color_menu_vws->selected_type);
     
     mesh_color_menu_vws->color_sel_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
@@ -178,20 +175,17 @@ struct mesh_color_menu * init_mesh_color_menu_box(struct kemoviewer_gl_type *kem
     return mesh_color_menu_vws;
 }
 
-void set_mesh_color_menu(struct kemoviewer_gl_type *kemo_gl,
+void set_mesh_color_menu(struct kemoviewer_gl_type *kemo_gl, int iflag_group,
                          struct mesh_color_menu *mesh_color_menu_vws){
-    int id_mode = kemoview_get_mesh_color_flag(kemo_gl->kemoview_data, 
-                                               mesh_color_menu_vws->iflag_group, 
+    int id_mode = kemoview_get_mesh_color_flag(kemo_gl->kemoview_data, iflag_group,
                                                mesh_color_menu_vws->selected_type);
-    set_mesh_color_mode_button(id_mode, kemo_gl, 
-                               mesh_color_menu_vws->iflag_group, 
+    set_mesh_color_mode_button(id_mode, kemo_gl, iflag_group,
                                mesh_color_menu_vws->selected_type,
                                mesh_color_menu_vws->color_pick_cell);
     
     float color[4];
     GdkRGBA mesh_rgba;
-    kemoview_get_mesh_color_code(kemo_gl->kemoview_data,
-                                 mesh_color_menu_vws->iflag_group, 
+    kemoview_get_mesh_color_code(kemo_gl->kemoview_data, iflag_group,
                                  mesh_color_menu_vws->selected_type, 
                                  color);
     set_RGB_to_GTK(color, &mesh_rgba);

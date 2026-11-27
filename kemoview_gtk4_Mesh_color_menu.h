@@ -35,9 +35,9 @@ struct mesh_color_menu{
 /* protypes */
 struct mesh_color_menu * init_mesh_color_menu_box(struct kemoviewer_gl_type *kemo_gl,
                                                   char *menu_label,
-                                                  int iflag_group,
+                                                  int *iflag_group,
                                                   int selected_type);
-void set_mesh_color_menu(struct kemoviewer_gl_type *kemo_gl,
+void set_mesh_color_menu(struct kemoviewer_gl_type *kemo_gl, int iflag_group,
                          struct mesh_color_menu *mesh_color_menu_vws);
 
 void dealloc_mesh_color_menu(struct mesh_color_menu *mesh_color_menu_vws);
