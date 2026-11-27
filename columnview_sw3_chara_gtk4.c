@@ -39,6 +39,9 @@ static void real3_column_item_get_property(GObject *object,
     case PROP_SW3C_SW3:
         g_value_set_float(value, (gfloat) self->real3);
         break;
+    case PROP_SW3C_STR:
+        g_value_set_string(value, self->str);
+        break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
     }
@@ -49,7 +52,7 @@ static void real3_column_item_set_property(GObject *object,
                                            const GValue *value,
                                            GParamSpec *pspec){
     Sw3cColumnItem *self = (Sw3cColumnItem *)object;
-
+    
     switch (prop_id) {
     case PROP_SW3C_SW1:
         self->real1 = (float) g_value_get_float(value);
@@ -59,6 +62,10 @@ static void real3_column_item_set_property(GObject *object,
         break;
     case PROP_SW3C_SW3:
         self->real3 = (float) g_value_get_float(value);
+        break;
+    case PROP_SW3C_STR:
+        g_free(self->str);
+        self->str = g_value_dup_string(value);
         break;
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -97,6 +104,12 @@ static void sw3c_column_item_class_init(Sw3cColumnItemClass *class){
                                                        0.0,
                                                        G_PARAM_READWRITE);
     
+    obj_properties[PROP_SW3C_STR] = g_param_spec_string("string",
+                                                       "String",
+                                                       "forth string",
+                                                       NULL,
+                                                       G_PARAM_READWRITE);
+    
     g_object_class_install_properties(gobject_class, N_PROPS_SW3C, obj_properties);
 }
 
@@ -104,15 +117,18 @@ static void sw3c_column_item_init(Sw3cColumnItem *item){
     item->real1 = 0.;
     item->real2 = 0.;
     item->real3 = 0.;
+    item->str = "";
 }
 
 Sw3cColumnItem * sw3c_column_item_new(const float real1,
-                                              const float real2,
-                                              const float real3){
+                                      const float real2,
+                                      const float real3,
+                                      const char *str){
     Sw3cColumnItem  *item = g_object_new(SW3C_COLUMN_TYPE_ITEM, NULL);
     item->real1 = real1;
     item->real2 = real2;
     item->real3 = real3;
+    item->str =   g_strdup(str);
     return item;
 }
 
@@ -303,8 +319,8 @@ void show_all_sw3c_button_CB(GtkButton *button, gpointer user_data){
     int i;
     for(i=0;i<num;i++){
         item = SW3C_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), i));
-        printf("Data at %d: %f %f %f\n", i, 
-               item->real1, item->real2, item->real3);
+        printf("Data at %d: %s: %f %f %f\n", i, 
+               item->str, item->real1, item->real2, item->real3);
     }
     return;
 };
@@ -320,8 +336,8 @@ void show_each_sw3c_button_CB(GtkButton *button, gpointer user_data){
         return;
     }else if(original_index < g_list_model_get_n_items(G_LIST_MODEL(store))){
         item = SW3C_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), original_index));
-        printf("Data at %d: %f %f %f \n", original_index, 
-               item->real1, item->real2, item->real3);
+        printf("Data at %d: %s: %f %f %f \n", original_index, 
+               item->str, item->real1, item->real2, item->real3);
     }
     return;
 };
@@ -338,7 +354,7 @@ static void add_item_button_CB(GtkButton *button, gpointer user_data){
     }else if(original_index < g_list_model_get_n_items(G_LIST_MODEL(store))){
         item = SW3C_COLUMN_ITEM(g_list_model_get_object(G_LIST_MODEL(store), original_index));
         g_list_store_insert(store, original_index, 
-                            sw3c_column_item_new(item->real1, item->real2, item->real3));
+                            sw3c_column_item_new(item->real1, item->real2, item->real3, item->str));
     }
     return;
 };
@@ -361,12 +377,12 @@ static void delete_item_button_CB(GtkButton *button, gpointer user_data){
 /* =========================================================================
  *   Construct columnview
  * ========================================================================= */
-GListStore *init_sw3c_list_store(int num, float **array3){
+GListStore *init_sw3c_list_store(int num, float **array3, char **str){
     int i;
     // Create and populate custom list model
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
     for(i=0;i<num;i++){
-        g_list_store_append(store,sw3c_column_item_new(array3[i][0], array3[i][1], array3[i][2]));
+        g_list_store_append(store,sw3c_column_item_new(array3[i][0], array3[i][1], array3[i][2], str[i]));
     };
     return store;
 };
@@ -434,11 +450,11 @@ void dealloc_kemo_sw3c_columnview(struct kemo_sw3c_columnview *sw3c_vws){
     return;
 }
 
-struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, float **array3){
+struct kemo_sw3c_columnview * init_sw3c_columnview_scroll(int num, float **array3, char **str){
     struct kemo_sw3c_columnview *sw3c_vws = alloc_kemo_sw3c_columnview();
     
     // Add column view.  Put in scrolled window.  
-    sw3c_vws->real3_store = init_sw3c_list_store(num, array3); 
+    sw3c_vws->real3_store = init_sw3c_list_store(num, array3, str); 
     sw3c_vws->real3_cview = sw3c_columnview_init(sw3c_vws->real3_store);
     gtk_column_view_set_show_column_separators(GTK_COLUMN_VIEW(sw3c_vws->real3_cview),TRUE);
     g_object_set_data(G_OBJECT(sw3c_vws->real3_cview), "list_store",

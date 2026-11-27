@@ -29,18 +29,20 @@ static void sync_kemoview_draw_mesh_from_list(GListStore *store, int iflag_group
 static void sync_list_from_kemoview_draw_mesh(struct kemoviewer_type *kemo_sgl,
                                               int iflag_group,
                                               GListStore *store){
-    double data, opacity;
+    char label[64];
     int iflag_patch, iflag_grid, iflag_node;
 	int i;
     gpointer additions[1];
 	int num_list = (int) g_list_model_get_n_items(G_LIST_MODEL(store));
     for(i=0;i<num_list;i++){
+        sprintf(label, "Domain %d", i);
         iflag_patch = kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
         iflag_grid =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFGRID_TOGGLE,  i);
         iflag_node =  kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFNOD_TOGGLE,   i);
         additions[0] = G_OBJECT(sw3c_column_item_new((float) iflag_patch, 
                                                      (float) iflag_grid,
-                                                     (float) iflag_node));
+                                                     (float) iflag_node,
+                                                     label));
         g_list_store_splice(store, i, IONE, additions, IONE);
     };
 	return;
@@ -243,15 +245,17 @@ static void unbind_light_azimuth_spin_CB(GtkSignalListItemFactory *factory,
 /* Construct columnview */
 static GListStore *init_lightposition_list_store(int iflag_group, 
                                                  struct kemoviewer_type *kemo_sgl){
+    char label[64];
     float rtp[3];
     int i;
     // Create and populate custom list model
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
     for(i=0;i<kemoview_get_num_of_mesh_group(kemo_sgl, iflag_group);i++){
+        sprintf(label, "Domain %d", i);
         rtp[0] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFSOLID_TOGGLE, i);
         rtp[1] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFGRID_TOGGLE, i);
         rtp[2] = (float) kemoview_get_draw_mesh_item(kemo_sgl, iflag_group, SURFNOD_TOGGLE, i);
-        g_list_store_append(store, sw3c_column_item_new(rtp[0], rtp[1], rtp[2]));
+        g_list_store_append(store, sw3c_column_item_new(rtp[0], rtp[1], rtp[2], label));
     };
     return store;
 };
